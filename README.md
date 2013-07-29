@@ -43,7 +43,49 @@ Yummy Noodle Bar wants to provide a RESTful web service to a set of aggregators 
 
 You are given the task of helping Yummy Noodle Bar to extend the successful Yummy Noodle Bar internal application to create a new public Web API for submitting, tracking, cancelling and amending orders.
 
-## Step 1: Exposing CRUD for an Order
+## Modelling RESTful Service Domain
+
+TODO Zoomed in on the core components of the system in the Life Preserver.
+
+Currently the core, application internal domain of the Yummy Noodle Bar is made up of the following components:
+
+* Orders
+The collection of all orders currently in the system, regardless of status. In the terminology of [Domain Driven Design](http://en.wikipedia.org/wiki/Domain-driven_design), Orders is an Aggregate Root that ensures consistency across all of the Orders in the system.
+* Order
+An individual order in the system that has an associated status and status history for tracking purposes.
+* OrderStatus
+The current allocated status to an order.
+* OrderStatusHistory
+Associated with an order, this is an ordered collection of the previous status' that the order has transitioned through.
+* PaymentDetails
+* PaymentStatus
+* Menu
+* MenuItem
+* Availability
+
+Focussing primarily on Orders, these can be acted upon by a number of events:
+* OrderCreatedEvent
+Creates a new order for a number of menu-items.
+* OrderUpdatedEvent
+Updates an existing Order with some additional information, possibly payment information.
+* OrderDeletedEvent
+Deletes an existing order if it is not being cooked.
+
+## Modelling the RESTful Service Domain
+
+For the first version of your new Yummy Noodle Bar RESTful service, the ability to create, update and remove Orders is the focus.
+
+It can be tempting to simply expose the core Order domain to the outside world and work from there, but that would ignore the boundary between the Core and the RESTful service domain (TODO highlight this boundary on a focus on the Life Preserver).
+
+The public API of your service that you are going to expose to the aggregators will need to change at a rate that is friendly to those clients, and the core will need to evolve at whatever rate the Yummy Noodle bar system need to internally evolve at. So there is potentially friction between the two domains as they may need to evolve at different rates.
+
+To manage this friction you need to create concepts and components in the RESTful Service domain that are unique to, and can evolve at the rate needed by, the RESTful domain itself. This may result in similar types of components but since their purpose will be very different the similarities are superficial.
+
+## Modelling the Orders and Order Resources
+
+TODO Demonstrate how to model the Order resource including the HTTP actions and verbs that can be applied.
+
+## Step 1: Building Your First RESTful Service
 TBD Modelling your domain as RESTful concepts.
 
 ## Step 2: Deploying your Service
