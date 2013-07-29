@@ -20,6 +20,7 @@ To work through this tutorial you'll need a few things:
 * About an hour of your time to complete the tutorial.
 * An installation of the [Gradle](http://www.gradle.org) build tool, version 1.6 or above.
 * A copy of the code (TODO - downloadable as Zip and/or git clone).
+* An IDE of your choice; we recommend [SpringSource Tool Suite](http://www.springsource.org/sts) which is available as a [free download](http://www.springsource.org/sts).
 
 ## The Home of RESTful Services in your Application's Architecture
 
