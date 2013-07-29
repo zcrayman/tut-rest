@@ -31,7 +31,7 @@ As an integration between your application and the outside world, there are a nu
 That's enough on the design constraints placed on the components that implement your RESTful services, let's now look at how to implement those components using Spring.
 
 ## Yummy Noodle Bar is going Global
-<!-- TODO Drop in real image of front of Yummy Noodle Bar restaurant --!>
+TODO Drop in real image of front of Yummy Noodle Bar restaurant
 
 Yummy Noodle Bar wants to provide a RESTful web service to a set of aggregators that want to submit orders, in particular “Let’s Nosh” who are a massive brand of aggregator that will potentially bring in big business to the small-scale noodle bar.
 
