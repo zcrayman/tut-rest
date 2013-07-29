@@ -128,6 +128,3 @@ TBD Testing for Hypermedia links using REST Template.
 ## Recap and Where to go Next?
 
 
-## References
-[1] Roy Fielding's original thesis on REST
-
