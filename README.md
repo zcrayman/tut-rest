@@ -70,6 +70,8 @@ Creates a new order for a number of menu-items.
 Updates an existing Order with some additional information, possibly payment information.
 * OrderDeletedEvent
 Deletes an existing order if it is not being cooked.
+* RequestAllCurrentOrdersEvent
+Requests the full list of all current orders be returned.
 
 ## Modelling the RESTful Service Domain
 
@@ -121,6 +123,11 @@ HATEOS allows a client to:
 
 HATEOS provides a consistent mechanism for you to describe what resources you have and what can be done with those resources. A client that understands HATEOS and its corresponding links will be able to effectively discover and react to what resources and actions on those resources are supported at a given moment in time *without having to agree this all up front*.
 
+### Simplifying JSON and XML representation generation
+
+### Using Link and LinkDiscoverer to discover Resources
+
+### Simplifying URI Generation using ControllerLinkBuilder
 
 TBD Implementing Hypermedia links to give hints as to how your resources can be interacted with.
 TBD Testing for Hypermedia links using REST Template.
