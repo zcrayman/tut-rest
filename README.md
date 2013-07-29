@@ -15,9 +15,14 @@ Or maybe you're just curious to see what a RESTful web service implemented using
 
 ## What you'll need
 
-TBD links to code, flags to use tools etc.
+To work through this tutorial you'll need a few things:
+
+* About an hour of your time to complete the tutorial.
+* An installation of the [Gradle](http://www.gradle.org) build tool, version 1.6 or above.
+* A copy of the code (TODO - downloadable as Zip and/or git clone).
 
 ## The Home of RESTful Services in your Application's Architecture
+
 TBD Where RESTful services sit in the Life Preserver diagram to be added.
 
 RESTful services are an integration between your application and the myriad of possible clients that need to consume your services. As such, RESTful services can be seen as living in their own integration domain on the periphery of your application's core as shown in the above diagram [1]. 
@@ -37,16 +42,16 @@ Yummy Noodle Bar wants to provide a RESTful web service to a set of aggregators 
 
 You are given the task of helping Yummy Noodle Bar to extend the successful Yummy Noodle Bar internal application to create a new public Web API for submitting, tracking, cancelling and amending orders.
 
-## Exposing CRUD for an Order
+## Step 1: Exposing CRUD for an Order
 TBD Modelling your domain as RESTful concepts.
 
-## Deploying your Service
+## Step 2: Deploying your Service
 
-## Testing your Service using RESTTemplate
+## Step 3: Testing your Service using RESTTemplate
 
-## Securing your Service
+## Step 4: Securing your Service
 
-## Make your Service Discoverable using Spring HATEOAS
+## Step 5: Make your Service Discoverable using Spring HATEOAS
 
 TBD Introduce Hypermedia as the Engine of Application State - Discovery
 TBD Implementing Hypermedia links to give hints as to how your resources can be interacted with.
