@@ -1,15 +1,16 @@
-package com.yummynoodlebar;
+package com.yummynoodlebar.services;
 
 import com.yummynoodlebar.core.Order;
 import com.yummynoodlebar.core.Orders;
 import com.yummynoodlebar.events.orders.*;
-import com.yummynoodlebar.services.OrderEventHandler;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class OrderEventHandlerTest {
 
