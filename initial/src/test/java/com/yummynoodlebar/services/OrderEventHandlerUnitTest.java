@@ -2,6 +2,7 @@ package com.yummynoodlebar.services;
 
 import com.yummynoodlebar.core.Order;
 import com.yummynoodlebar.core.Orders;
+import com.yummynoodlebar.events.CreateEvent;
 import com.yummynoodlebar.events.RequestReadEvent;
 import com.yummynoodlebar.events.orders.*;
 import org.junit.Before;
@@ -56,14 +57,29 @@ public class OrderEventHandlerUnitTest {
         when(mockOrders.processEvent(any(RequestReadEvent.class))).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>())).thenReturn(new AllOrdersEvent(cannedOrders));
 
         AllOrdersEvent allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-
         assertEquals(0, allOrdersEvent.getOrdersDetails().size());
 
         uut.createOrder(new CreateOrderEvent());
         uut.createOrder(new CreateOrderEvent());
 
         allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-
         assertEquals(2, allOrdersEvent.getOrdersDetails().size());
+    }
+
+
+    @Test
+    public void removeAnOrderFromTheSystem() {
+
+        when(mockOrders.processEvent(any(RequestReadEvent.class))).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>())).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>()));
+        when(mockOrders.processEvent(any(CreateEvent.class))).thenReturn(new OrderCreatedEvent(UUID.randomUUID()));
+
+        AllOrdersEvent allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
+        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
+
+        OrderCreatedEvent orderCreatedEvent = uut.createOrder(new CreateOrderEvent());
+        uut.deleteOrder(new DeleteOrderEvent(orderCreatedEvent.getNewOrderKey()));
+
+        allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
+        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
     }
 }
