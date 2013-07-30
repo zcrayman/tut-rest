@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
-public class OrdersTest {
+public class OrdersUnitTest {
 
     private Orders uut;
 

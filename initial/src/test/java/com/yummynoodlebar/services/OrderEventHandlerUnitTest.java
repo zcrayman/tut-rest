@@ -44,4 +44,26 @@ public class OrderEventHandlerUnitTest {
         allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
         assertEquals(1, allOrdersEvent.getOrdersDetails().size());
     }
+
+    @Test
+    public void addTwoNewOrdersToTheSystem() {
+
+        Order cannedOrder1 = new Order(new Date());
+        Order cannedOrder2 = new Order(new Date());
+        Map<UUID, Order> cannedOrders = new HashMap<UUID, Order>();
+        cannedOrders.put(cannedOrder1.getKey(), cannedOrder1);
+        cannedOrders.put(cannedOrder2.getKey(), cannedOrder2);
+        when(mockOrders.processEvent(any(RequestReadEvent.class))).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>())).thenReturn(new AllOrdersEvent(cannedOrders));
+
+        AllOrdersEvent allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
+
+        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
+
+        uut.createOrder(new CreateOrderEvent());
+        uut.createOrder(new CreateOrderEvent());
+
+        allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
+
+        assertEquals(2, allOrdersEvent.getOrdersDetails().size());
+    }
 }
