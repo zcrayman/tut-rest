@@ -1,5 +1,14 @@
 apply plugin: 'java'
 
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    runtime 'org.springframework:spring-core:3.2.3.RELEASE'
+    testCompile 'junit:junit:4.+'
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '1.6'
 }

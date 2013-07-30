@@ -1,20 +1,48 @@
 package com.yummynoodlebar.core;
 
-import java.util.Set;
+import com.yummynoodlebar.events.*;
+import com.yummynoodlebar.events.orders.AllOrdersEvent;
+import com.yummynoodlebar.events.orders.DeleteOrderEvent;
+import com.yummynoodlebar.events.orders.OrderCreatedEvent;
+import com.yummynoodlebar.events.orders.OrderDeletedEvent;
 
-public class Orders {
+import java.util.*;
 
-    private final Set<Order> orders;
+public class Orders implements AggregateRoot {
 
-    public Orders(final Set<Order> orders) {
-        this.orders = orders;
+    private Map<UUID, Order> orders;
+
+    public Orders(final Map<UUID, Order> orders) {
+        this.orders = Collections.unmodifiableMap(orders);
     }
 
-    public void addOrder(final Order order) {
-       orders.add(order);
+    @Override
+    public AllOrdersEvent processEvent(final RequestReadEvent requestReadEvent) {
+        return new AllOrdersEvent(this.orders);
     }
 
-    public void removeOrder(final Order order) {
-        orders.remove(order);
+    @Override
+    public synchronized OrderCreatedEvent processEvent(final CreateEvent createEvent) {
+        Map<UUID, Order> modifiableOrders = new HashMap<UUID, Order>(orders);
+        Order newOrder = new Order(new Date());
+        modifiableOrders.put(newOrder.getKey(), newOrder);
+        this.orders = Collections.unmodifiableMap(modifiableOrders);
+        return new OrderCreatedEvent(newOrder.getKey());
+    }
+
+    @Override
+    public UpdatedEvent processEvent(UpdatedEvent updatedEvent) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public OrderDeletedEvent processEvent(DeleteEvent deleteEvent) {
+        if (deleteEvent instanceof DeleteOrderEvent) {
+            DeleteOrderEvent deleteOrderEvent = (DeleteOrderEvent) deleteEvent;
+            Map<UUID, Order> modifiableOrders = new HashMap<UUID, Order>(orders);
+            modifiableOrders.remove(deleteOrderEvent.getKey());
+            this.orders = Collections.unmodifiableMap(modifiableOrders);
+        }
+        return new OrderDeletedEvent();
     }
 }
