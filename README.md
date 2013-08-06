@@ -77,7 +77,7 @@ Focussing primarily on Orders, these can be acted upon by a number of events:
 
     Deletes an existing order if it is not being cooked.
 
-* RequestAllCurrentOrdersEvent
+* **RequestAllCurrentOrdersEvent**
 
     Requests the full list of all current orders be returned.
 
