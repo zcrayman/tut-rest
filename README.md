@@ -155,7 +155,7 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
 * PaymentStatus
 
-http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentstatus
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentstatus
 
 Each of the above URI's are expressed as *templates*; they contain blocks demarcated with {} in the URI. Since the URI in a RESTful service should completely address the resource, without any additional query parameters, then there will be parts of the URI that are specific to the resource itself. An example would be 
 
