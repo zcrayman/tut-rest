@@ -125,33 +125,35 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
 * All Orders
 
-    http://www.yummynoodlebar.com/aggregators/orders
+        http://www.yummynoodlebar.com/aggregators/orders
 
 * An Order
-    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
+
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
 
 * All MenuItems
 
-    http://www.yummynoodlebar.com/aggregators/menuitems
+        http://www.yummynoodlebar.com/aggregators/menuitems
 
 * A specific MenuItem
 
-    http://www.yummynoodlebar.com/aggregators/menuitems/{MenuItem ID}
+        http://www.yummynoodlebar.com/aggregators/menuitems/{MenuItem ID}
+
 * All MenuItems associated with an Order
 
-    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems
 
 * A specific MenuItem associated with an Order
 
-    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems/{MenuItem ID}
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems/{MenuItem ID}
 
 * The current OrderStatus
 
-    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
 
 * The PaymentDetails for an Order
 
-    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
 
 * PaymentStatus
 
