@@ -65,11 +65,11 @@ Currently the core, application internal domain of the Yummy Noodle Bar is made 
 
     Associated with an order, this is an ordered collection of the previous status' that the order has transitioned through.
 
-* PaymentDetails
-* PaymentStatus
-* Menu
-* MenuItem
-* Availability
+* **PaymentDetails**
+* **PaymentStatus**
+* **Menu**
+* **MenuItem**
+* **MenuItemAvailability**
 
 Focussing primarily on Orders, these can be acted upon by a number of events:
 
@@ -149,19 +149,19 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
 * All MenuItems
 
-        http://www.yummynoodlebar.com/aggregators/menuitems
+        http://www.yummynoodlebar.com/aggregators/menu
 
 * A specific MenuItem
 
-        http://www.yummynoodlebar.com/aggregators/menuitems/{MenuItem ID}
+        http://www.yummynoodlebar.com/aggregators/menu/{MenuItem ID}
 
 * All MenuItems associated with an Order
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/items
 
 * A specific MenuItem associated with an Order
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems/{MenuItem ID}
+        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/items/{MenuItem ID}
 
 * The current OrderStatus
 
