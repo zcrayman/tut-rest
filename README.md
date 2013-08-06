@@ -1,4 +1,3 @@
-
 # Designing and Implementing RESTful Web Services with Spring
 
 ## Why RESTful Services?
@@ -11,7 +10,7 @@ Since you're reading this tutorial, it's likely that you're considering implemen
 * You want to open up your organisations data to consumption by varied clients across the web.
 * You need to integrate your application with other applications inside your own organisation, but you don't have control over the languages, tools or frameworks that those other applications are likely to be written in.
 
-Or maybe you're just curious to see what a RESTful web service implemented using Spring looks like. Whatever your reason, in this tutorial you're going to take a deep dive into building a production-strength RESTful we service and so if that's your goal, you've come to the right place. 
+Or maybe you're just curious to see what a RESTful web service implemented using Spring looks like. Whatever your reason, in this tutorial you're going to take a deep dive into building a production-strength RESTful web service and so if that's your goal, you've come to the right place. 
 
 ## What you'll need
 
