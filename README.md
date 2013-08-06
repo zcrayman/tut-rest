@@ -152,11 +152,11 @@ Each of the above URI's are expressed as *templates*; they contain blocks in the
 
 Here we've used the {} notation to specify where part of the URL will be unique when identifying specific resources. As an example, an Order with Order ID of 1 would have the following specific URL once the URI template is furnished with the Order Number:
 
-    http://www.yummynoodlebar.com/aggregators/orders/*1*
+    http://www.yummynoodlebar.com/aggregators/orders/1
 
 An Order with an Order ID of 37 would have the following specific URI:
 
-    http://www.yummynoodlebar.com/aggregators/orders/*37*
+    http://www.yummynoodlebar.com/aggregators/orders/37
 
 This quality of the URI changing to work with specific resources is what gives a resource the quality of being *addressable*.
 
