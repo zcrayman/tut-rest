@@ -124,8 +124,11 @@ Each resource needs to be addressable using a URI. In addition, the address impl
 For your Yummy Noodle Bar RESTful Service domain, the resources will have the following URIs:
 
 * All Orders
+
     URI Template: 
+
     http://www.yummynoodlebar.com/aggregators/orders
+
 * An Order
     URI Template: 
     http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
