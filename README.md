@@ -29,7 +29,7 @@ RESTful services are an integration between your application and the myriad of p
 
 As an integration between your application and the outside world, there are a number of concerns that need to be addressed in the design and implementation of the components that make up your RESTful services:
 
-* Your RESTful service component's primary purpose implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
+* Your RESTful service component's primary purpose is to implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
 * The components that make up your RESTful services components will need to evolve at a rate that is appropriate for the many consumers that are relying on your services.
 * Your RESTful service components should not contain any of the core logic to your application but will collaborate with other components in the Core domains of your application in order to orchestrate the necessary functionality to provide the service interface.
 
