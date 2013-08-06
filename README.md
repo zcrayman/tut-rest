@@ -85,7 +85,37 @@ To manage this friction you need to create concepts and components in the RESTfu
 
 ## Modelling the Orders and Order Resources
 
-TODO Demonstrate how to model the Order resource including the HTTP actions and verbs that can be applied.
+There are three stages to modelling your RESTful Service domain, they are:
+
+* Designing your Resources
+* Designing your URIs
+* Adding the verbs
+
+### Designing your Resources
+
+When looking for the resources that you are going to support through your RESTful Service the first step is to look for the relevant nouns in your domain. In the case of the Yummy Noodle Bar, the following nouns are candidates from the domain we currently understand it:
+
+* Order
+* OrderStatus
+* OrderStatusHistory
+* PaymentDetails
+* PaymentStatus
+* Menu
+* MenuItem
+* Availability
+
+The purpose of the Yummy Noodle Restful Service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. To do this a subset of the available domain concepts make up your initial cut of the resources you are going to expose:
+
+* Order
+* MenuItem
+* Availability
+* OrderStatus
+* PaymentDetails
+* PaymentStatus
+
+The following diagram shows these resources and the relationships between them.
+
+![RESTful Service Domain Resources](images/restful-service-domain.png)
 
 ## Step 1: Building Your First RESTful Service
 TBD Modelling your domain as RESTful concepts.
