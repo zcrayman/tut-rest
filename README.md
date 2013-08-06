@@ -125,33 +125,39 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
 * All Orders
 
-    URI Template: 
-
     http://www.yummynoodlebar.com/aggregators/orders
 
 * An Order
-    URI Template: 
     http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
+
 * All MenuItems
-URI Template: 
-http://www.yummynoodlebar.com/aggregators/menuitems
+
+    http://www.yummynoodlebar.com/aggregators/menuitems
+
 * A specific MenuItem
-URI Template: 
-http://www.yummynoodlebar.com/aggregators/menuitems/{MenuItem ID}
+
+    http://www.yummynoodlebar.com/aggregators/menuitems/{MenuItem ID}
 * All MenuItems associated with an Order
-** URI Template: 
-http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems
+
+    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems
+
 * A specific MenuItem associated with an Order
-URI Template: 
-http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems/{MenuItem ID}
+
+    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems/{MenuItem ID}
+
 * The current OrderStatus
-http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
+
+    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
+
 * The PaymentDetails for an Order
-http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
+
+    http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
+
 * PaymentStatus
+
 http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentstatus
 
-Each of the above URI's are expressed as *templates*; they contain blocks in the address, demarcated with {}. Since the URI in a RESTful service should completely address the resource, without any additional query parameters, then there will be parts of the URI that are specific to the resource itself. An example would be 
+Each of the above URI's are expressed as *templates*; they contain blocks demarcated with {} in the URI. Since the URI in a RESTful service should completely address the resource, without any additional query parameters, then there will be parts of the URI that are specific to the resource itself. An example would be 
 
 Here we've used the {} notation to specify where part of the URL will be unique when identifying specific resources. As an example, an Order with Order ID of 1 would have the following specific URL once the URI template is furnished with the Order Number:
 
