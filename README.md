@@ -87,9 +87,9 @@ To manage this friction you need to create concepts and components in the RESTfu
 
 There are three stages to modelling your RESTful Service domain, they are:
 
-* Designing your Resources
-* Designing your URIs
-* Adding the verbs
+* Designing your Resources - What resources you need to expose to the outside world
+* Designing your URIs - How your resources will be publicly addressed
+* Adding the verbs - what operations can you perform on your RESTfully exposed resources
 
 ### Designing your Resources
 
@@ -116,6 +116,53 @@ The purpose of the Yummy Noodle Restful Service is to allow aggregators and part
 The following diagram shows these resources and the relationships between them.
 
 ![RESTful Service Domain Resources](images/restful-service-domain.png)
+
+### Designing your URIs
+
+Each resource needs to be addressable using a URI. In addition, the address implies the relationship between each of the resources.
+
+For your Yummy Noodle Bar RESTful Service domain, the resources will have the following URIs:
+
+* All Orders
+URI Template: 
+http://www.yummynoodlebar.com/aggregators/orders
+* An Order
+URI Template: 
+http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
+* All MenuItems
+URI Template: 
+http://www.yummynoodlebar.com/aggregators/menuitems
+* A specific MenuItem
+URI Template: 
+http://www.yummynoodlebar.com/aggregators/menuitems/{MenuItem ID}
+* All MenuItems associated with an Order
+URI Template: 
+http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems
+* A specific MenuItem associated with an Order
+URI Template: 
+http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/menuitems/{MenuItem ID}
+* The current OrderStatus
+http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
+* The PaymentDetails for an Order
+http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
+* PaymentStatus
+http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentstatus
+
+Each of the above URI's are expressed as *templates*; they contain blocks in the address, demarcated with {}. Since the URI in a RESTful service should completely address the resource, without any additional query parameters, then there will be parts of the URI that are specific to the resource itself. An example would be 
+
+Here we've used the {} notation to specify where part of the URL will be unique when identifying specific resources. As an example, an Order with Order ID of 1 would have the following specific URL once the URI template is furnished with the Order Number:
+
+    http://www.yummynoodlebar.com/aggregators/orders/1
+
+An Order with an Order ID of 37 would have the following specific URI:
+
+    http://www.yummynoodlebar.com/aggregators/orders/37
+
+This quality of the URI changing to work with specific resources is what gives a resource the quality of being *addressable*.
+
+### Adding the verbs
+
+To be included.
 
 ## Step 1: Building Your First RESTful Service
 TBD Modelling your domain as RESTful concepts.
