@@ -64,14 +64,15 @@ Associated with an order, this is an ordered collection of the previous status' 
 * Availability
 
 Focussing primarily on Orders, these can be acted upon by a number of events:
+
 * OrderCreatedEvent
-Creates a new order for a number of menu-items.
+    Creates a new order for a number of menu-items.
 * OrderUpdatedEvent
-Updates an existing Order with some additional information, possibly payment information.
+    Updates an existing Order with some additional information, possibly payment information.
 * OrderDeletedEvent
-Deletes an existing order if it is not being cooked.
+    Deletes an existing order if it is not being cooked.
 * RequestAllCurrentOrdersEvent
-Requests the full list of all current orders be returned.
+    Requests the full list of all current orders be returned.
 
 ## Modelling the RESTful Service Domain
 
