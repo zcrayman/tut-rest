@@ -4,12 +4,13 @@ import java.util.Date;
 
 public class OrderDetails {
 
-    private final Date dateTimeOfSubmission;
+    private Date dateTimeOfSubmission;
 
-    public OrderDetails(final Date dateTimeOfSubmission) {
-        this.dateTimeOfSubmission = dateTimeOfSubmission;
-    }
     public Date getDateTimeOfSubmission() {
         return this.dateTimeOfSubmission;
+    }
+
+    void setDateTimeOfSubmission(Date dateTimeOfSubmission) {
+      this.dateTimeOfSubmission = dateTimeOfSubmission;
     }
 }

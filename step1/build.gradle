@@ -8,6 +8,7 @@ dependencies {
     compile 'org.springframework:spring-core:3.2.3.RELEASE'
     compile 'org.springframework:spring-webmvc:3.2.3.RELEASE'
 
+    testCompile 'org.springframework:spring-test-mvc:3.2.3.RELEASE'
     testCompile 'junit:junit:4.+'
     testCompile "org.mockito:mockito-all:1.9.5"
 }

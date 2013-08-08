@@ -281,6 +281,11 @@
         <root url="jar://$USER_HOME$/.gradle/caches/artifacts-24/filestore/org.springframework/spring-webmvc/3.2.3.RELEASE/source/35f1ac5640cac763d74681d16544cb77f40765f5/spring-webmvc-3.2.3.RELEASE-sources.jar!/" />
       </SOURCES>
     </library>
+    <library name="unresolved dependency - org.springframework spring-test-mvc 3.2.3">
+      <CLASSES />
+      <JAVADOC />
+      <SOURCES />
+    </library>
   </component>
 </project>
 
