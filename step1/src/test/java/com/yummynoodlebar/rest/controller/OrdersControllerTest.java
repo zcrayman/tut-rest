@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.springframework.mock.web.
+import org.springframework.test.web.ModelAndViewAssert;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
