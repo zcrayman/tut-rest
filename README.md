@@ -46,11 +46,11 @@ You are given the task of helping Yummy Noodle Bar to extend the successful Yumm
 The rest of this tutorial is spread out over the following pages:
 
 * [Modelling RESTful Service Domain](modelling-the-restful-domain.md)
-* [Building Your First RESTful Service](step1.md)
-* [Deploying your Service](step2.md)
-* [Testing your Service using RESTTemplate](step3.md)
-* [Securing your Service](step4.md)
-* [Make your Service Discoverable using Spring HATEOAS](step5.md)
+* [Step 1: Building Your First RESTful Service](step1.md)
+* [Step 2: Deploying your Service](step2.md)
+* [Step 3: Testing your Service using RESTTemplate](step3.md)
+* [Step 4: Securing your Service](step4.md)
+* [Step 5: Make your Service Discoverable using Spring HATEOAS](step5.md)
 * [Recap and Where to go Next?](recap-and-next.md)
 
 
