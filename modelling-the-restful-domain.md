@@ -1,4 +1,4 @@
-## Modelling RESTful Service Domain
+## Modelling the RESTful Service Domain
 
 TODO Zoomed in on the core components of the system in the Life Preserver.
 

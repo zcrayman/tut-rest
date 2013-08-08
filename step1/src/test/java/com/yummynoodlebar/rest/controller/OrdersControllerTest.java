@@ -17,7 +17,7 @@ public class OrdersControllerTest {
   public void setup() {
     controller = new OrdersController();
     orderService = mock(OrderService.class);
-    controller.setSecurityPriceService(mockSecurityPriceService);
+    controller.setOrderService(orderService);
   }
 
   @Test
