@@ -1,3 +1,4 @@
+
 # Designing and Implementing RESTful Web Services with Spring
 
 ## Why RESTful Services?
@@ -10,7 +11,7 @@ Since you're reading this tutorial, it's likely that you're considering implemen
 * You want to open up your organisations data to consumption by varied clients across the web.
 * You need to integrate your application with other applications inside your own organisation, but you don't have control over the languages, tools or frameworks that those other applications are likely to be written in.
 
-Or maybe you're just curious to see what a RESTful web service implemented using Spring looks like. Whatever your reason, in this tutorial you're going to take a deep dive into building a production-strength RESTful web service and so if that's your goal, you've come to the right place. 
+Or maybe you're just curious to see what a RESTful web service implemented using Spring looks like. Whatever your reason, in this tutorial you're going to take a deep dive into building a production-strength RESTful we service and so if that's your goal, you've come to the right place. 
 
 ## What you'll need
 
@@ -29,7 +30,7 @@ RESTful services are an integration between your application and the myriad of p
 
 As an integration between your application and the outside world, there are a number of concerns that need to be addressed in the design and implementation of the components that make up your RESTful services:
 
-* Your RESTful service component's primary purpose is to implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
+* Your RESTful service component's primary purpose implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
 * The components that make up your RESTful services components will need to evolve at a rate that is appropriate for the many consumers that are relying on your services.
 * Your RESTful service components should not contain any of the core logic to your application but will collaborate with other components in the Core domains of your application in order to orchestrate the necessary functionality to provide the service interface.
 
@@ -144,7 +145,7 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
 * An Order
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
+        http://www.yummynoodlebar.com/aggregators/order/{Order ID}
 
 * All MenuItems
 
@@ -156,42 +157,64 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
 * All MenuItems associated with an Order
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/items
+        http://www.yummynoodlebar.com/aggregators/order/{Order ID}/items
 
 * A specific MenuItem associated with an Order
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/items/{MenuItem ID}
+        http://www.yummynoodlebar.com/aggregators/order/{Order ID}/item/{MenuItem ID}
 
 * The current OrderStatus
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
+        http://www.yummynoodlebar.com/aggregators/order/{Order ID}/status
 
 * The PaymentDetails for an Order
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
+        http://www.yummynoodlebar.com/aggregators/order/{Order ID}/paymentdetails
 
 * PaymentStatus
 
-        http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentstatus
+        http://www.yummynoodlebar.com/aggregators/order/{Order ID}/paymentstatus
 
 Each of the above URI's are expressed as *templates*; they contain blocks demarcated with {} in the URI. Since the URI in a RESTful service should completely address the resource, without any additional query parameters, then there will be parts of the URI that are specific to the resource itself. An example would be 
 
 Here we've used the {} notation to specify where part of the URL will be unique when identifying specific resources. As an example, an Order with Order ID of 1 would have the following specific URL once the URI template is furnished with the Order Number:
 
-    http://www.yummynoodlebar.com/aggregators/orders/1
+    http://www.yummynoodlebar.com/aggregators/order/1
 
 An Order with an Order ID of 37 would have the following specific URI:
 
-    http://www.yummynoodlebar.com/aggregators/orders/37
+    http://www.yummynoodlebar.com/aggregators/order/37
 
 This quality of the URI changing to work with specific resources is what gives a resource the quality of being *addressable*.
 
 ### Adding the verbs
 
-To be included.
+According the HTTP 1.1 Specification [ref]
+
+**POST is defined as**
+
+    The POST method is used to request that the origin server accept the entity enclosed in the request as a new subordinate of the resource identified by the Request-URI in the Request-Line
+
+**PUT is defined as**
+
+    The PUT method requests that the enclosed entity be stored under the supplied Request-URI. 
+    If the Request-URI refers to an already existing resource, the enclosed entity
+    SHOULD be considered as a modified version of the one residing on the origin server. 
+    If the Request-URI does not point to an existing resource, and that URI is capable 
+    of being defined as a new resource by the requesting user agent, the origin server can create 
+    the resource with that URI.
+
+Summarised, POST is used to create new entities without knowing the final URI, and PUT is used to create and update entities in a previously known URI.
+
+We will follow this usage throughout the tutorial.
+
+## Understanding Status Codes
+
+Discussion on correct status code usage, esp the 4XX codes that we will use in managing URI mutation and access control
 
 ## Step 1: Building Your First RESTful Service
 TBD Modelling your domain as RESTful concepts.
+
 
 ## Step 2: Deploying your Service
 

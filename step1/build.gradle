@@ -5,8 +5,8 @@ repositories {
 }
 
 dependencies {
-    runtime 'org.springframework:spring-core:3.2.3.RELEASE'
-    runtime 'org.springframework:spring-webmvc:3.2.3.RELEASE'
+    compile 'org.springframework:spring-core:3.2.3.RELEASE'
+    compile 'org.springframework:spring-webmvc:3.2.3.RELEASE'
 
     testCompile 'junit:junit:4.+'
     testCompile "org.mockito:mockito-all:1.9.5"
