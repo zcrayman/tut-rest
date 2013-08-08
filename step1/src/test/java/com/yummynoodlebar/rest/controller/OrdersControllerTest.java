@@ -16,7 +16,7 @@ public class OrdersControllerTest {
   @Before
   public void setup() {
     controller = new OrdersController();
-    orderService = mock(PriceHistoryServiceImpl.class);
+    orderService = mock(OrderService.class);
     controller.setSecurityPriceService(mockSecurityPriceService);
   }
 
