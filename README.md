@@ -1,4 +1,3 @@
-
 # Designing and Implementing RESTful Web Services with Spring
 
 ## Why RESTful Services?
@@ -11,7 +10,7 @@ Since you're reading this tutorial, it's likely that you're considering implemen
 * You want to open up your organisations data to consumption by varied clients across the web.
 * You need to integrate your application with other applications inside your own organisation, but you don't have control over the languages, tools or frameworks that those other applications are likely to be written in.
 
-Or maybe you're just curious to see what a RESTful web service implemented using Spring looks like. Whatever your reason, in this tutorial you're going to take a deep dive into building a production-strength RESTful we service and so if that's your goal, you've come to the right place. 
+Or maybe you're just curious to see what a RESTful web service implemented using Spring looks like. Whatever your reason, in this tutorial you're going to take a deep dive into building a production-strength RESTful web service and so if that's your goal, you've come to the right place. 
 
 ## What you'll need
 
@@ -30,7 +29,7 @@ RESTful services are an integration between your application and the myriad of p
 
 As an integration between your application and the outside world, there are a number of concerns that need to be addressed in the design and implementation of the components that make up your RESTful services:
 
-* Your RESTful service component's primary purpose implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
+* Your RESTful service component's primary purpose is to implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
 * The components that make up your RESTful services components will need to evolve at a rate that is appropriate for the many consumers that are relying on your services.
 * Your RESTful service components should not contain any of the core logic to your application but will collaborate with other components in the Core domains of your application in order to orchestrate the necessary functionality to provide the service interface.
 
