@@ -4,3 +4,5 @@ build
 *.iml
 classes
 .directory
+*.iws
+*.ipr
