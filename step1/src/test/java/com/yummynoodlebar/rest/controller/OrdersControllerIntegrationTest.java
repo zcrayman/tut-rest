@@ -29,7 +29,6 @@ public class OrdersControllerIntegrationTest {
   @Mock
   private OrderService orderService;
 
-
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
