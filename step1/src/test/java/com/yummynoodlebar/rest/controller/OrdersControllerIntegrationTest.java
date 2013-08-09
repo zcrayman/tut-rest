@@ -10,7 +10,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+import org.springframework.web.context.WebApplicationContext;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -19,13 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class OrdersControllerIntegrationTest {
   @Autowired
-  private org.springframework.web.context.WebApplicationContext wac;
+  private WebApplicationContext wac;
 
   private MockMvc mockMvc;
 
   @Before
   public void setup() {
-    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+    this.mockMvc = webAppContextSetup(this.wac).build();
 
   }
 
@@ -36,6 +38,6 @@ public class OrdersControllerIntegrationTest {
     this.mockMvc.perform(get("/aggregators/orders")
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$..key").value("Test"));
+        .andExpect(jsonPath("$.[0].items['yumm1']").value("1234"));
   }
 }

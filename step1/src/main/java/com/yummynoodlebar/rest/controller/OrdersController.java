@@ -23,8 +23,7 @@ class OrdersController {
   @RequestMapping(method = RequestMethod.GET)
   @ResponseStatus( HttpStatus.OK )
   @ResponseBody public List<Order> getAllOrders() {
-    System.out.println("WIBBLE ARSE");
-    return Arrays.asList(new Order(new Date()));
+    return Arrays.asList(new Order());
   }
 
 }
