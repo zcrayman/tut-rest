@@ -20,7 +20,7 @@ To work through this tutorial you'll need a few things:
 * About an hour of your time to complete the tutorial.
 * An installation of the [Gradle](http://www.gradle.org) build tool, version 1.6 or above.
 * A copy of the code (TODO - downloadable as Zip and/or git clone).
-* An IDE of your choice; we recommend [SpringSource Tool Suite](http://www.springsource.org/sts) which is available as a [free download](http://www.springsource.org/sts).
+* An IDE of your choice; we recommend [Spring Tool Suite](http://www.springsource.org/sts) which is available as a [free download](http://www.springsource.org/sts).
 
 ## The Home of RESTful Services in your Application's Architecture
 
@@ -51,6 +51,6 @@ The rest of this tutorial is spread out over the following pages:
 * [Step 4: Testing your Service using RESTTemplate](page4/README.md)
 * [Step 5: Securing your Service](page5/README.md)
 * [Step 6: Make your Service Discoverable using Spring HATEOAS](page6/README.md)
-* [Step 7: Recap and Where to go Next?](page7/README.md)
+* [Recap and Where to go Next?](page7/README.md)
 
 

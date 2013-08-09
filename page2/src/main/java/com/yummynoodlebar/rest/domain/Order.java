@@ -12,8 +12,6 @@ public class Order {
 
   private final UUID key;
 
-
-
   public Order() {
     this.key = UUID.randomUUID();
     this.dateTimeOfSubmission = new Date();

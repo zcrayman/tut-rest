@@ -1,1 +1,1 @@
-## Step 2: Deploying your Service
+## Step 3: Deploying your Service

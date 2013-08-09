@@ -1,4 +1,4 @@
-## Step 5: Make your Service Discoverable using Spring HATEOAS
+## Step 6: Make your Service Discoverable using Spring HATEOAS
 
 HATEOS, Hypermedia As The Engine of Application State, may be one of the worst acronyms but it is also a crucial technology and approach to building flexible RESTful services.
 
