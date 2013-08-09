@@ -1,17 +1,19 @@
 package com.yummynoodlebar.rest.domain;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 public class Order {
 
-  private final Date dateTimeOfSubmission;
+  private Date dateTimeOfSubmission;
+  private Map<String, Integer> items;
 
   private final UUID key;
 
-  public Order(final Date dateTimeOfSubmission) {
+  public Order() {
     this.key = UUID.randomUUID();
-    this.dateTimeOfSubmission = dateTimeOfSubmission;
+    this.dateTimeOfSubmission = new Date();
   }
 
   public Date getDateTimeOfSubmission() {
@@ -20,5 +22,13 @@ public class Order {
 
   public UUID getKey() {
     return key;
+  }
+
+  public Map<String, Integer> getItems() {
+    return items;
+  }
+
+  public void setItems(Map<String, Integer> items) {
+    this.items = items;
   }
 }
