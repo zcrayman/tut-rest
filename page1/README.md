@@ -86,7 +86,7 @@ The purpose of the Yummy Noodle Restful Service is to allow aggregators and part
 
 The following diagram shows these resources and the relationships between them.
 
-![RESTful Service Domain Resources](images/restful-service-domain.png)
+![RESTful Service Domain Resources](../images/restful-service-domain.png)
 
 ### Designing your URIs
 
