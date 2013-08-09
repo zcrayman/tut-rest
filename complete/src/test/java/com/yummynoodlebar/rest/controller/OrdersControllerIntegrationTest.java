@@ -1,39 +1,38 @@
 package com.yummynoodlebar.rest.controller;
 
-import com.yummynoodlebar.core.SpringConfig;
+import com.yummynoodlebar.core.events.orders.RequestAllOrdersEvent;
 import com.yummynoodlebar.core.services.OrderService;
-import com.yummynoodlebar.rest.MVCConfig;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.*;
+import static com.yummynoodlebar.rest.controller.fixture.OrdersFixture.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {MVCConfig.class, SpringConfig.class})
-@WebAppConfiguration
 public class OrdersControllerIntegrationTest {
-  @Autowired
-  private WebApplicationContext wac;
-
-  @Autowired
-  private OrderService orderService;
 
   private MockMvc mockMvc;
 
+  @InjectMocks
+  private OrdersController controller;
+
+  @Mock
+  private OrderService orderService;
+
   @Before
   public void setup() {
-    this.mockMvc = webAppContextSetup(this.wac).build();
+    MockitoAnnotations.initMocks(this);
 
+    this.mockMvc = standaloneSetup(controller).build();
+
+    when(orderService.requestAllOrders(any(RequestAllOrdersEvent.class))).thenReturn(allOrders());
   }
 
   @Test
@@ -45,4 +44,8 @@ public class OrdersControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].items['yumm1']").value(12));
   }
+
+
+
+
 }

@@ -1,5 +1,7 @@
 package com.yummynoodlebar.rest.domain;
 
+import com.yummynoodlebar.core.events.orders.OrderDetails;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +14,6 @@ public class Order {
 
   private final UUID key;
 
-
-
   public Order() {
     this.key = UUID.randomUUID();
     this.dateTimeOfSubmission = new Date();
@@ -21,6 +21,14 @@ public class Order {
     items = new HashMap<String, Integer>();
     items.put("yumm1", 12);
     items.put("yibble", 13);
+  }
+
+  public OrderDetails orderDetails(OrderDetails orderDetails) {
+
+  }
+
+  public static void orderDetails(OrderDetails orderDetails) {
+
   }
 
   public Date getDateTimeOfSubmission() {
