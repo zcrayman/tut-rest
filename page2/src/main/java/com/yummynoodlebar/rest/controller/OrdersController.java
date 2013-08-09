@@ -32,10 +32,8 @@ class OrdersController {
   @ResponseBody public List<Order> getAllOrders() {
     List<Order> orders = new ArrayList<Order>();
     for (OrderDetails detail : orderService.requestAllOrders(new RequestAllOrdersEvent()).getOrdersDetails()) {
-
       orders.add(new Order());
     }
-    LOG.warn("converting ... RETURNIN NOW");
     return orders;
   }
 
