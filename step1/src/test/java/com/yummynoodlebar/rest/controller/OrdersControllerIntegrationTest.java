@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -26,7 +25,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MVCConfig.class})
+//@WebAppConfiguration
 public class OrdersControllerIntegrationTest {
+
 
   @Mock
   private OrderService orderService;
@@ -38,7 +39,6 @@ public class OrdersControllerIntegrationTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
 
     this.mockMvc = standaloneSetup(controller).build();
 
