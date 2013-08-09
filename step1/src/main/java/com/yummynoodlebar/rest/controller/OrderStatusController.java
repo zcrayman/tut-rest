@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/aggregators/order/{id}/status")
-public class OrderStatusController {
+class OrderStatusController {
 
   private OrderService orderService;
 

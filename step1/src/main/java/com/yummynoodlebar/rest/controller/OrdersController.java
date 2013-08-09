@@ -2,14 +2,17 @@ package com.yummynoodlebar.rest.controller;
 
 import com.yummynoodlebar.core.services.OrderService;
 import com.yummynoodlebar.rest.domain.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 @RequestMapping("/aggregators/orders")
-public class OrdersController {
+class OrdersController {
 
   private OrderService orderService;
 
@@ -18,8 +21,10 @@ public class OrdersController {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public @ResponseBody List<Order> getAllOrders() {
-    return null;
+  @ResponseStatus( HttpStatus.OK )
+  @ResponseBody public List<Order> getAllOrders() {
+    System.out.println("WIBBLE ARSE");
+    return Arrays.asList(new Order(new Date()));
   }
 
 }
