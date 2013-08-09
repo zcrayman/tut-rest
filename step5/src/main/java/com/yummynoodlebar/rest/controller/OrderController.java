@@ -1,19 +1,25 @@
 package com.yummynoodlebar.rest.controller;
 
+import com.yummynoodlebar.core.services.OrderService;
 import com.yummynoodlebar.rest.domain.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/aggregators/order")
-public class OrderController {
+class OrderController {
+
+  private OrderService orderService;
+
+  public void setOrderService(OrderService orderService) {
+    this.orderService = orderService;
+  }
 
   @RequestMapping(method = RequestMethod.POST)
+  @ResponseStatus( HttpStatus.CREATED )
   public @ResponseBody Order createOrder() {
     //TODO use a command object?
     //TODO generate the new order
@@ -31,6 +37,7 @@ public class OrderController {
   }
 
   @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+  @ResponseStatus( HttpStatus.OK )
   public @ResponseBody Order cancelOrder(@PathVariable String id) {
     //TODO, obtain the order
     //TODO, check if it can be cancelled.  if so, instruct to cancel.

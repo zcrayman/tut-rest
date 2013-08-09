@@ -1,15 +1,19 @@
 package com.yummynoodlebar.rest.controller;
 
+import com.yummynoodlebar.core.services.OrderService;
 import com.yummynoodlebar.rest.domain.PaymentDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/aggregators/order/{id}/paymentdetails")
-public class OrderPaymentDetailsController {
+class OrderPaymentDetailsController {
+
+  private OrderService orderService;
+
+  public void setOrderService(OrderService orderService) {
+    this.orderService = orderService;
+  }
 
   @RequestMapping(method = RequestMethod.GET)
   public @ResponseBody PaymentDetails getPaymentDetails(@PathVariable String id) {

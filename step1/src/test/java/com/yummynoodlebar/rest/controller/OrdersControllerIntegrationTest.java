@@ -1,9 +1,16 @@
 package com.yummynoodlebar.rest.controller;
 
+import com.yummynoodlebar.core.CoreConfig;
+import com.yummynoodlebar.core.events.orders.AllOrdersEvent;
+import com.yummynoodlebar.core.events.orders.RequestAllOrdersEvent;
+import com.yummynoodlebar.core.services.OrderService;
 import com.yummynoodlebar.rest.MVCConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,20 +22,27 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {MVCConfig.class})
-@WebAppConfiguration
 public class OrdersControllerIntegrationTest {
-  @Autowired
-  private WebApplicationContext wac;
+
+  @Mock
+  private OrderService orderService;
+
+  @InjectMocks
+  OrdersController controller;
 
   private MockMvc mockMvc;
 
   @Before
   public void setup() {
-    this.mockMvc = webAppContextSetup(this.wac).build();
+    MockitoAnnotations.initMocks(this);
 
+    this.mockMvc = standaloneSetup(controller).build();
+
+    when(orderService.requestAllOrders(any(RequestAllOrdersEvent.class))).thenReturn(new AllOrdersEvent(null));
   }
 
   @Test
@@ -38,6 +52,6 @@ public class OrdersControllerIntegrationTest {
     this.mockMvc.perform(get("/aggregators/orders")
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.[0].items['yumm1']").value("1234"));
+        .andExpect(jsonPath("$[0].items['yumm1']").value(12));
   }
 }
