@@ -1,20 +1,30 @@
 package com.yummynoodlebar.rest.controller.fixture;
 
-import com.yummynoodlebar.core.domain.Order;
 import com.yummynoodlebar.core.events.orders.AllOrdersEvent;
+import com.yummynoodlebar.core.events.orders.OrderDetails;
+import com.yummynoodlebar.rest.domain.Order;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class OrdersFixture {
   public static AllOrdersEvent allOrders() {
-    //TODO, exposing the core domain in the tests is nasty. AllOrdersEvent needs to remove coupling directly.
-    Map<UUID, Order> orders = new HashMap<UUID, Order>();
-
-    orders.put(UUID.randomUUID(), new Order(new Date()));
+    List<OrderDetails> orders = new ArrayList<OrderDetails>();
 
     return new AllOrdersEvent(orders);
+  }
+
+  public static Order standardOrder() {
+    Order order = new Order();
+
+    order.setItems(Collections.singletonMap("yummy1", 12));
+
+    return order;
+  }
+  public static OrderDetails standardOrderDetails() {
+    OrderDetails orderdetails = new OrderDetails();
+
+    orderdetails.setOrderItems(Collections.singletonMap("yummy1", 12));
+
+    return orderdetails;
   }
 }

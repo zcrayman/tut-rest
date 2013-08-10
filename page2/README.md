@@ -8,3 +8,6 @@ NB.  Java Config, as set up in MVCConfig, will detect the existence of Jackson a
 <mvc:annotation-driven />
 
 This is a shortcut, and though it may be useful in many situations, it’s not perfect. When more complex configuration is needed, remove the annotation and extend WebMvcConfigurationSupport directly.
+
+^^^^^^^
+The above has been moved to page3, leaving this page purely in the MockMVC tests

@@ -1,13 +1,12 @@
 package com.yummynoodlebar.core.domain;
 
-import com.yummynoodlebar.core.domain.Order;
-import com.yummynoodlebar.core.domain.Orders;
-import com.yummynoodlebar.core.events.orders.AllOrdersEvent;
-import com.yummynoodlebar.core.events.orders.CreateOrderEvent;
-import com.yummynoodlebar.core.events.orders.RequestAllOrdersEvent;
+import com.yummynoodlebar.core.domain.fixtures.OrdersFixtures;
+import com.yummynoodlebar.core.events.orders.*;
+import com.yummynoodlebar.core.repository.OrdersMemoryRepository;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -16,25 +15,35 @@ import static org.junit.Assert.assertEquals;
 
 public class OrdersUnitTest {
 
-    private Orders uut;
+  OrdersMemoryRepository uut;
 
-    @Before
-    public void setupUnitUnderTest() {
-        Map<UUID, Order> emptyOrderList = new HashMap<UUID, Order>();
-        uut = new Orders(emptyOrderList);
-    }
+  @Before
+  public void setupUnitUnderTest() {
+    Map<UUID, Order> emptyOrderList = new HashMap<UUID, Order>();
+    uut = new OrdersMemoryRepository(emptyOrderList);
+  }
 
-    @Test
-    public void addASingleOrderToTheOrders() {
+  @Test
+  public void addASingleOrderToTheOrders() {
 
-        AllOrdersEvent allOrdersEvent = uut.processEvent(new RequestAllOrdersEvent());
+    assertEquals(0, uut.findAll().size());
 
-        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
+    uut.save(OrdersFixtures.standardOrder());
 
-        uut.processEvent(new CreateOrderEvent());
+    assertEquals(1, uut.findAll().size());
+  }
 
-        allOrdersEvent = uut.processEvent(new RequestAllOrdersEvent());
+  @Test
+  public void removeASingleOrder() {
 
-        assertEquals(1, allOrdersEvent.getOrdersDetails().size());
-    }
+    UUID key = UUID.randomUUID();
+
+    uut = new OrdersMemoryRepository(Collections.singletonMap(key, OrdersFixtures.standardOrder()));
+
+    assertEquals(1, uut.findAll().size());
+
+    uut.delete(key);
+
+    assertEquals(0, uut.findAll().size());
+  }
 }

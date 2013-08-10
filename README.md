@@ -47,7 +47,7 @@ The rest of this tutorial is spread out over the following pages:
 
 * [Step 1: Modelling RESTful Service Domain](page1/README.md)
 * [Step 2: Building Your First RESTful Service](page2/README.md)
-* [Step 3: Deploying your Service](page3/README.md)
+* [Step 3: Wiring Up and Deploying your Service](page3/README.md)
 * [Step 4: Testing your Service using RESTTemplate](page4/README.md)
 * [Step 5: Securing your Service](page5/README.md)
 * [Step 6: Make your Service Discoverable using Spring HATEOAS](page6/README.md)

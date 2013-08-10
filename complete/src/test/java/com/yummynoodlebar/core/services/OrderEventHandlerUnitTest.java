@@ -1,86 +1,105 @@
 package com.yummynoodlebar.core.services;
 
 import com.yummynoodlebar.core.domain.Order;
-import com.yummynoodlebar.core.domain.Orders;
-import com.yummynoodlebar.core.domain.Order;
-import com.yummynoodlebar.core.domain.Orders;
+import com.yummynoodlebar.core.repository.OrdersMemoryRepository;
 import com.yummynoodlebar.core.events.orders.*;
-import com.yummynoodlebar.core.events.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import static junit.framework.TestCase.*;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class OrderEventHandlerUnitTest {
 
-    private OrderEventHandler uut;
-    private Orders mockOrders;
+  OrderEventHandler uut;
+  OrdersMemoryRepository mockOrdersMemoryRepository;
 
-    @Before
-    public void setupUnitUnderTest() {
-        mockOrders = mock(Orders.class);
-        uut = new OrderEventHandler(mockOrders);
-    }
+  @Before
+  public void setupUnitUnderTest() {
+    mockOrdersMemoryRepository = mock(OrdersMemoryRepository.class);
+    uut = new OrderEventHandler(mockOrdersMemoryRepository);
+  }
 
-    @Test
-    public void addANewOrderToTheSystem() {
+  @Test
+  public void addANewOrderToTheSystem() {
 
-        Order cannedOrder = new Order(new Date());
-        Map<UUID, Order> cannedOrders = new HashMap<UUID, Order>();
-        cannedOrders.put(cannedOrder.getKey(), cannedOrder);
-        when(mockOrders.processEvent(any(RequestReadEvent.class))).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>())).thenReturn(new AllOrdersEvent(cannedOrders));
+    when(mockOrdersMemoryRepository.save(any(Order.class))).thenReturn(new Order(new Date()));
 
-        AllOrdersEvent allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
+    CreateOrderEvent ev = new CreateOrderEvent(new OrderDetails());
 
-        uut.createOrder(new CreateOrderEvent());
+    uut.createOrder(ev);
 
-        allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-        assertEquals(1, allOrdersEvent.getOrdersDetails().size());
-    }
+    verify(mockOrdersMemoryRepository).save(any(Order.class));
+    verifyNoMoreInteractions(mockOrdersMemoryRepository);
+  }
 
-    @Test
-    public void addTwoNewOrdersToTheSystem() {
+  @Test
+  public void addTwoNewOrdersToTheSystem() {
 
-        Order cannedOrder1 = new Order(new Date());
-        Order cannedOrder2 = new Order(new Date());
-        Map<UUID, Order> cannedOrders = new HashMap<UUID, Order>();
-        cannedOrders.put(cannedOrder1.getKey(), cannedOrder1);
-        cannedOrders.put(cannedOrder2.getKey(), cannedOrder2);
-        when(mockOrders.processEvent(any(RequestReadEvent.class))).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>())).thenReturn(new AllOrdersEvent(cannedOrders));
+    when(mockOrdersMemoryRepository.save(any(Order.class))).thenReturn(new Order(new Date()));
 
-        AllOrdersEvent allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
+    CreateOrderEvent ev = new CreateOrderEvent(new OrderDetails());
 
-        uut.createOrder(new CreateOrderEvent());
-        uut.createOrder(new CreateOrderEvent());
+    uut.createOrder(ev);
+    uut.createOrder(ev);
 
-        allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-        assertEquals(2, allOrdersEvent.getOrdersDetails().size());
-    }
+    verify(mockOrdersMemoryRepository, times(2)).save(any(Order.class));
+    verifyNoMoreInteractions(mockOrdersMemoryRepository);
+  }
+
+  @Test
+  public void removeAnOrderFromTheSystemFailsIfNotPresent() {
+    UUID key = UUID.randomUUID();
+
+    when(mockOrdersMemoryRepository.findById(key)).thenReturn(null);
 
 
-    @Test
-    public void removeAnOrderFromTheSystem() {
+  }
 
-        when(mockOrders.processEvent(any(RequestReadEvent.class))).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>())).thenReturn(new AllOrdersEvent(new HashMap<UUID, Order>()));
-        when(mockOrders.processEvent(any(CreateEvent.class))).thenReturn(new OrderCreatedEvent(UUID.randomUUID()));
+  @Test
+  public void removeAnOrderFromTheSystemFailsIfNotPermitted() {
+    UUID key = UUID.randomUUID();
 
-        AllOrdersEvent allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
+    Order order = new Order(new Date()) {
+      @Override
+      public boolean canBeDeleted() {
+        return false;
+      }
+    };
 
-        OrderCreatedEvent orderCreatedEvent = uut.createOrder(new CreateOrderEvent());
-        uut.deleteOrder(new DeleteOrderEvent(orderCreatedEvent.getNewOrderKey()));
+    when(mockOrdersMemoryRepository.findById(key)).thenReturn(order);
 
-        allOrdersEvent = uut.requestAllOrders(new RequestAllOrdersEvent());
-        assertEquals(0, allOrdersEvent.getOrdersDetails().size());
-    }
+    DeleteOrderEvent ev = new DeleteOrderEvent(key);
+
+    OrderDeletedEvent orderDeletedEvent = uut.deleteOrder(ev);
+
+    verify(mockOrdersMemoryRepository, never()).delete(ev.getKey());
+
+    assertTrue(orderDeletedEvent.isEntityFound());
+    assertFalse(orderDeletedEvent.isDeletionCompleted());
+    assertEquals(order.getDateTimeOfSubmission(), orderDeletedEvent.getDetails().getDateTimeOfSubmission());
+  }
+
+  @Test
+  public void removeAnOrderFromTheSystemWorksIfExists() {
+
+    UUID key = UUID.randomUUID();
+    Order order = new Order(new Date());
+
+    when(mockOrdersMemoryRepository.findById(key)).thenReturn(order);
+
+    DeleteOrderEvent ev = new DeleteOrderEvent(key);
+
+    OrderDeletedEvent orderDeletedEvent = uut.deleteOrder(ev);
+
+    verify(mockOrdersMemoryRepository).delete(ev.getKey());
+
+    assertTrue(orderDeletedEvent.isEntityFound());
+    assertTrue(orderDeletedEvent.isDeletionCompleted());
+    assertEquals(order.getDateTimeOfSubmission(), orderDeletedEvent.getDetails().getDateTimeOfSubmission());
+  }
 }

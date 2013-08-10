@@ -1,26 +1,20 @@
 package com.yummynoodlebar.core.events.orders;
 
-import com.yummynoodlebar.core.domain.Order;
 import com.yummynoodlebar.core.events.ReadEvent;
-import org.springframework.beans.BeanUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class AllOrdersEvent extends ReadEvent {
 
-    private final List<OrderDetails> ordersDetails;
+  private final List<OrderDetails> ordersDetails;
 
-    public AllOrdersEvent(Map<UUID, Order> orders) {
-        List<OrderDetails> currentOrdersDetails = new ArrayList<OrderDetails>();
-        for (Order order : orders.values()) {
-            OrderDetails details = new OrderDetails();
-            BeanUtils.copyProperties(order, details);
-            currentOrdersDetails.add(details);
-        }
-        this.ordersDetails = Collections.unmodifiableList(currentOrdersDetails);
-    }
+  public AllOrdersEvent(List<OrderDetails> orders) {
+    this.ordersDetails = Collections.unmodifiableList(orders);
+  }
 
-    public List<OrderDetails> getOrdersDetails() {
-        return this.ordersDetails;
-    }
+  public Collection<OrderDetails> getOrdersDetails() {
+    return this.ordersDetails;
+  }
 }
