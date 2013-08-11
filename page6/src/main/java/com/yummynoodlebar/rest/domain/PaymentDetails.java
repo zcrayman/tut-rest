@@ -1,4 +1,6 @@
 package com.yummynoodlebar.rest.domain;
 
-public class PaymentDetails {
+import org.springframework.hateoas.ResourceSupport;
+
+public class PaymentDetails extends ResourceSupport {
 }
