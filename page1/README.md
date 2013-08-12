@@ -161,6 +161,19 @@ This quality of the URI changing to work with specific resources is what gives a
 
 ### Adding the verbs
 
+Along with the URLs you're going to expose for the RESTful service for each of the resources, you also need to specify what can be done to each of those resources.
+
+RESTful services rely on the HTTP methods passed as part of an HTTP request header to inform the service what needs to be done with the addressed resource. The full set of HTTP methods allowed comprise the [uniform interface](http://en.wikipedia.org/wiki/Representational_state_transfer) to RESTful services.
+
+There are a number of methods supported as shown in the following table:
+
+<table>
+    <tr>
+        <td>GET</td>
+			  <td>HTTP Method passed to retrieve a representation of the addressed resource.
+    </tr>
+</table>
+
 According the HTTP 1.1 Specification [ref]
 
 **POST is defined as**

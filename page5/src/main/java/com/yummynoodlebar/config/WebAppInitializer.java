@@ -20,8 +20,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
   @Override
   public void onStartup(ServletContext servletContext) {
     AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-    rootContext.register(CoreConfig.class);
-    rootContext.setConfigLocation("classpath*:com/yummynoodlebar/config/security-context.xml");
+    rootContext.register(CoreConfig.class, SecurityConfig.class);
     rootContext.refresh();
 
     AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
