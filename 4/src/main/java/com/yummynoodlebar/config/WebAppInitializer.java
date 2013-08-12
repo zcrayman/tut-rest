@@ -6,7 +6,6 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.FilterRegistration;
@@ -23,13 +22,11 @@ public class WebAppInitializer implements WebApplicationInitializer {
     WebApplicationContext rootContext = createRootContext(servletContext);
 
     configureSpringMvc(servletContext, rootContext);
-
-    configureSpringSecurity(servletContext, rootContext);
-  }
+}
 
   private WebApplicationContext createRootContext(ServletContext servletContext) {
     AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-    rootContext.register(CoreConfig.class, SecurityConfig.class);
+    rootContext.register(CoreConfig.class);
     rootContext.refresh();
 
     servletContext.addListener(new ContextLoaderListener(rootContext));
@@ -56,11 +53,5 @@ public class WebAppInitializer implements WebApplicationInitializer {
       throw new IllegalStateException(
           "'webservice' cannot be mapped to '/'");
     }
-  }
-
-  private void configureSpringSecurity(ServletContext servletContext, WebApplicationContext rootContext) {
-    FilterRegistration.Dynamic springSecurity = servletContext.addFilter("springSecurityFilterChain",
-        new DelegatingFilterProxy("springSecurityFilterChain", rootContext));
-    springSecurity.addMappingForUrlPatterns(null, true, "/*");
   }
 }
