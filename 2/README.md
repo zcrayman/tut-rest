@@ -12,4 +12,6 @@ This is a shortcut, and though it may be useful in many situations, it’s not p
 ^^^^^^^
 The above has been moved to page3, leaving this page purely in the MockMVC tests
 
+Mention the split of Commands from Queries across two controllers, for mutating requests and non-mutating ones.
+
 [Next… Wiring Up and Deploying your Service](../3/)
