@@ -50,7 +50,7 @@ public class CreateNewOrderIntegrationTest {
   public void thatCreateOrderUsesHttpCreated() throws Exception {
 
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
@@ -64,7 +64,7 @@ public class CreateNewOrderIntegrationTest {
   public void thatCreateOrderRendersAsJson() throws Exception {
 
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
@@ -76,7 +76,7 @@ public class CreateNewOrderIntegrationTest {
   public void thatCreateOrderPassesLocationHeader() throws Exception {
 
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))

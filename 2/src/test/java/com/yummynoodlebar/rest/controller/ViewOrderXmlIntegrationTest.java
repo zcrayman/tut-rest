@@ -70,7 +70,7 @@ public class ViewOrderXmlIntegrationTest {
     //TODOCUMENT XPath in use here
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}", key.toString())
+            get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.TEXT_XML))
             .andDo(print())
             .andExpect(content().contentType(MediaType.TEXT_XML))
@@ -86,7 +86,7 @@ public class ViewOrderXmlIntegrationTest {
     //TODOCUMENT JSON Path in use here (really like this)
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}", key.toString())
+            get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

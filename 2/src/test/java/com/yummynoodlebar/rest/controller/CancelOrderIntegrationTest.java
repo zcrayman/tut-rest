@@ -51,7 +51,7 @@ public class CancelOrderIntegrationTest {
                     orderDeleted(key));
 
     this.mockMvc.perform(
-            delete("/aggregators/order/{id}", key.toString())
+            delete("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk());
@@ -69,7 +69,7 @@ public class CancelOrderIntegrationTest {
                     orderDeletedNotFound(key));
 
     this.mockMvc.perform(
-            delete("/aggregators/order/{id}", key.toString())
+            delete("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound());
@@ -84,7 +84,7 @@ public class CancelOrderIntegrationTest {
                     orderDeletedFailed(key));
 
     this.mockMvc.perform(
-            delete("/aggregators/order/{id}", key.toString())
+            delete("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isForbidden());

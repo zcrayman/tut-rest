@@ -17,13 +17,13 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-public class OrdersControllerTest {
+public class OrderControllerTest {
 
   @Mock
   OrderService orderService;
 
   @InjectMocks
-  OrdersController controller;
+  OrderController controller;
 
   @Before
   public void setup() {

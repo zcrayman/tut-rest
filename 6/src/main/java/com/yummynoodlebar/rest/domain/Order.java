@@ -75,8 +75,7 @@ public class Order extends ResourceSupport implements Serializable {
     //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
     //this section is all that is actually needed in our model to add hateoas support.
 
-    //Much of the rest of the framework is working around the blending of domains that happens in many spring apps due to
-    //
+    //Much of the rest of the framework is working around the blending of domains that happens in many spring apps
     order.add(linkTo(OrderController.class).slash(order.key).withSelfRel());
     order.add(linkTo(OrderController.class).slash(order.key).slash("status").withRel("Order Status"));
     order.add(linkTo(OrderController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
