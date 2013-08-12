@@ -154,6 +154,10 @@ RESTful services rely on the HTTP methods passed as part of an HTTP request head
 There are a number of methods supported as shown in the following table:
 
 <table>
+<tr>
+    <th>HTTP Method</th>
+    <th>Description</th>
+</tr>
     <tr>
         <td>GET</td>
 			  <td>Retrieves a representation of the resource addressed by the URI used to submit the HTTP request upon.</td>
