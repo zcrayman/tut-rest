@@ -171,12 +171,20 @@ There are a number of methods supported as shown in the following table:
     <tr>
         <td>GET</td>
 			  <td>Retrieves a representation of the resource addressed by the URI used to submit the HTTP request upon.</td>
+	  </tr>
+<tr>
 				<td>POST</td>
 			  <td>Creates a new resource under the URI used to submit the POST HTTP Request upon.</td>
+</tr>
+<tr>
 				<td>PUT</td>
 			  <td>Updates the resource indicated by the URI used to submit the HTTP request upon. If a resource did not already exist at the specified URI, then a new resource at the specified address will be created.</td>
+</tr>
+<tr>
         <td>DELETE</td>
 			  <td>Removes the resource from the system where it is addressed by the URI used to submit the HTTP request upon.</td>
+</tr>
+<tr>
         <td>HEAD and OPTIONS</td>
 			  <td>Retrieved various meta-data about the resource addressed by the URI used to submit the HTTP request upon.</td>
     </tr>
