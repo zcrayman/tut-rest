@@ -250,7 +250,7 @@ The following table describes the HTTP Status Codes that each of your URIs and H
     <tr>
         <td>/aggregators/orders</td>
 			  <td>POST</td>
-        <td>201 (Created)</td>
+        <td>201 (Created) if the Order resource is successfully created; 406 (Not Acceptable) if the format of the incoming data for the new resource is not valid</td>
 	  </tr>
 	  <tr>
         <td>/aggregators/orders/{id}</td>
@@ -275,7 +275,7 @@ The following table describes the HTTP Status Codes that each of your URIs and H
 <tr>
         <td>/aggregators/order/{id}/paymentdetails</td>
 			  <td>PUT</td>
-        <td>201 (OK); 403 (Forbidden); 404 (Not Found) if Order Resource not found</td>
+        <td>201 (OK); 406 (Not Acceptable) if there is a problem with the format of the incoming data on the new payment details; 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 </table>
 
