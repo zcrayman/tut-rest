@@ -105,7 +105,7 @@ As mentioned before, although these concepts existing in the Core domain and the
 
 In the Core Domain the concepts are captured as part of the internal ubiquitous language of the application's domain. In the REST domain the concepts are captured as they are used purely for the purpose of exposing the public RESTful interface. 
 
-### Designing your URIs
+### Designing your Resources - URIs
 
 Each resource needs to be addressable using a URI. In addition, the address implies the relationship between each of the resources.
 
@@ -159,7 +159,7 @@ An Order with an Order ID of 37 would have the following specific URI:
 
 This quality of the URI changing to work with specific resources is what gives a resource the quality of being *addressable*.
 
-### Adding the verbs
+### Adding the verbs - HTTP Methods
 
 Along with the URLs you're going to expose for the RESTful service for each of the resources, you also need to specify what can be done to each of those resources.
 
@@ -170,29 +170,28 @@ There are a number of methods supported as shown in the following table:
 <table>
     <tr>
         <td>GET</td>
-			  <td>HTTP Method passed to retrieve a representation of the addressed resource.
+			  <td>Retrieves a representation of the resource addressed by the URI used to submit the HTTP request upon.</td>
+				<td>POST</td>
+			  <td>Creates a new resource under the URI used to submit the POST HTTP Request upon.</td>
+				<td>PUT</td>
+			  <td>Updates the resource indicated by the URI used to submit the HTTP request upon. If a resource did not already exist at the specified URI, then a new resource at the specified address will be created.</td>
+        <td>DELETE</td>
+			  <td>Removes the resource from the system where it is addressed by the URI used to submit the HTTP request upon.</td>
+        <td>HEAD and OPTIONS</td>
+			  <td>Retrieved various meta-data about the resource addressed by the URI used to submit the HTTP request upon.</td>
     </tr>
 </table>
 
-According the HTTP 1.1 Specification [ref]
+A full land detailed description of all of the HTTP Methods is provided by the HTTP 1.1 Specification.
 
-**POST is defined as**
+There can be some confusion when you take a closer look at POST and PUT, on initial reflection they look to do something very similar, which they do but they both have their own individual place and valuable role to perform. 
 
-    The POST method is used to request that the origin server accept the entity enclosed in the request as a new subordinate of the resource identified by the Request-URI in the Request-Line
+POST is used to create new entities without knowing the final URI, and PUT is used to create and update entities in a previously known URI.
 
-**PUT is defined as**
-
-    The PUT method requests that the enclosed entity be stored under the supplied Request-URI. 
-    If the Request-URI refers to an already existing resource, the enclosed entity
-    SHOULD be considered as a modified version of the one residing on the origin server. 
-    If the Request-URI does not point to an existing resource, and that URI is capable 
-    of being defined as a new resource by the requesting user agent, the origin server can create 
-    the resource with that URI.
-
-Summarised, POST is used to create new entities without knowing the final URI, and PUT is used to create and update entities in a previously known URI.
-
-We will follow this usage throughout the tutorial.
+TODO add a table to define the request methods supported for each of the exposed resources.
 
 ## Understanding Status Codes
 
-Discussion on correct status code usage, esp the 4XX codes that we will use in managing URI mutation and access control
+Finally no REST design would be complete without considering the responses to the HTTP requests as designed up to this point.
+
+TODO the Discussion on correct status code usage, esp the 4XX codes that we will use in managing URI mutation and access control

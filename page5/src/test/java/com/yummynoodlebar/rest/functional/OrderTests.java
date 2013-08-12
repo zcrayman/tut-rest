@@ -19,15 +19,15 @@ public class OrderTests {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    headers.set();
 
     HttpEntity<String> requestEntity = new HttpEntity<String>(
         RestDataFixture.standardOrderJSON(),headers);
 
     RestTemplate template = new RestTemplate();
-
     ResponseEntity<Order> entity = template.postForEntity(
-        "http://localhost:8080/aggregators/order",
-        requestEntity, Order.class);
+    "http://localhost:8080/aggregators/order",
+    requestEntity, Order.class);
 
     String path = entity.getHeaders().getLocation().getPath();
 
@@ -43,3 +43,5 @@ public class OrderTests {
 
 
 }
+
+
