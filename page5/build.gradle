@@ -24,10 +24,11 @@ buildscript {
 
 repositories {
     mavenCentral()
+    maven { url 'http://repo.springsource.org/snapshot'}
 }
 
 dependencies {
-    def tomcatVersion = '7.0.11'
+    def tomcatVersion = '7.0.42'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
     tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
@@ -47,7 +48,7 @@ dependencies {
     runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
     runtime 'javax.xml.bind:jaxb-api:2.2.9'
 
-    provided 'javax:javaee-web-api:6.0'
+    provided 'javax.servlet:javax.servlet-api:3.0.1'
 
     testCompile 'com.jayway.jsonpath:json-path-assert:0.8.1'
     testCompile 'org.springframework:spring-test:3.2.3.RELEASE'

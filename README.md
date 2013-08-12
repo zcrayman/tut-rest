@@ -23,6 +23,7 @@ To work through this tutorial you'll need a few things:
 * An IDE of your choice; we recommend [Spring Tool Suite](http://www.springsource.org/sts) which is available as a [free download](http://www.springsource.org/sts).
 
 ## Yummy Noodle Bar is going Global
+
 TODO Drop in real image of front of Yummy Noodle Bar restaurant
 
 Yummy Noodle Bar wants to provide a RESTful web service to a set of aggregators that want to submit orders, in particular “Let’s Nosh” who are a massive brand of aggregator that will potentially bring in big business to the small-scale noodle bar.
@@ -48,8 +49,6 @@ Take a moment to familiarise yourself with the components in each of these packa
 ## The Home of RESTful Services in your Application's Architecture
 
 RESTful services are an integration between your application and the myriad of possible clients that need to consume your services. As such, RESTful services can be seen as living in their own integration domain on the periphery of your application's core as shown in the following update to your "Life Preserver".
-
-TODO Life Preserver zoom of RESTful bits and pieces.
 
 ![Life Preserver showing Core and REST domain](../images/life-preserver-rest-domain-intro.png)
 

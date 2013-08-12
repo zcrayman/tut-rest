@@ -1,12 +1,8 @@
 ## Step 1: Modelling the RESTful Service Domain
 
-TODO Zoomed in on the core components of the system in the Life Preserver.
+![Life Preserver showing Core Domain](../images/life-preserver-core-domain-focus.png)
 
-Currently the core, application internal domain of the Yummy Noodle Bar is made up of the following components:
-
-* **Orders**
-
-    The collection of all orders currently in the system, regardless of status. In the terminology of [Domain Driven Design](http://en.wikipedia.org/wiki/Domain-driven_design), Orders is an Aggregate Root that ensures consistency across all of the Orders in the system.
+Opening up the 'initial' project you'll be able to see that under src/main/java/com/yummynoodlebar the core, application-internal domain of the Yummy Noodle Bar is made up of the following components:
 
 * **Order**
 
@@ -16,33 +12,53 @@ Currently the core, application internal domain of the Yummy Noodle Bar is made 
 
     The current allocated status to an order.
 
-* **OrderStatusHistory**
+* **Payment**
 
-    Associated with an order, this is an ordered collection of the previous status' that the order has transitioned through.
+    The Payment that a customer wants to make for a given Order.
 
 * **PaymentDetails**
+
+    The Details of the Payment that a customer wants to make for a given Order.
+
 * **PaymentStatus**
-* **Menu**
-* **MenuItem**
-* **MenuItemAvailability**
 
-Focussing primarily on Orders, these can be acted upon by a number of events:
+    The current status of a Payment that a customer wants to make for a given Order.
 
-* **OrderCreatedEvent**
+Focussing for this tutorial on the Order domain classes, these can be acted upon by a number of events under the com.yummynoodlebar/events/orders package as shown on the following diagram:
 
-    Creates a new order for a number of menu-items.
+![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
 
-* **OrderUpdatedEvent**
+Events in this case decouple out the domain concepts in the core  of the Yummy Noodle Bar application from the various integrations that may need to access and work upon the core. 
 
-    Updates an existing Order with some additional information, possibly payment information.
+The event components associated with Orders include:
 
-* **OrderDeletedEvent**
+* **RequestAllOrdersEvent** and **AllOrdersEvent** 
 
-    Deletes an existing order if it is not being cooked.
+    Corresponding events to request the associated OrderDetails about all Orders and the response to that request.
 
-* **RequestAllCurrentOrdersEvent**
+* **CreateOrderEvent** and **OrderCreatedEvent**
 
-    Requests the full list of all current orders be returned.
+    Corresponding events to request the creation of a new Order, and a confirmation that the new Order has been created.
+
+* **DeleteOrderEvent** and **OrderDeletedEvent**
+
+    Corresponding events to delete an existing Order and then to confirm that the Order has been deleted.
+
+* **RequestOrderDetailsEvent** and **OrderDetailsEvent**
+
+    Corresponding events to request the current details of an Order, and then to receive those details.
+
+* **RequestOrderStatusEvent** and **OrderStatusEvent**
+
+    Corresponding events to request the current status of an Order, and then to receive the current status.
+
+* **SetOrderPaymentEvent**
+
+    Event is triggered when Payment is to be set on an existing Order.
+
+* **OrderUpdatedEvent** 
+
+    Event is triggered when an Order is updated.
 
 ## Modelling the RESTful Service Domain
 
@@ -64,29 +80,30 @@ There are three stages to modelling your RESTful Service domain, they are:
 
 ### Designing your Resources
 
-When looking for the resources that you are going to support through your RESTful Service the first step is to look for the relevant nouns in your domain. In the case of the Yummy Noodle Bar, the following nouns are candidates from the domain we currently understand it:
+When looking for the resources that you are going to support through your RESTful Service the first step is to look for the relevant nouns in your domain. In the case of the Yummy Noodle Bar, the following nouns are candidates for exposure to the outside world from the core domain:
 
+* Customer
 * Order
 * OrderStatus
 * OrderStatusHistory
+* Payment
 * PaymentDetails
 * PaymentStatus
-* Menu
-* MenuItem
-* Availability
 
 The purpose of the Yummy Noodle Restful Service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. To do this a subset of the available domain concepts make up your initial cut of the resources you are going to expose:
 
 * Order
-* MenuItem
-* Availability
 * OrderStatus
 * PaymentDetails
 * PaymentStatus
 
-The following diagram shows these resources and the relationships between them.
+The following updated Life Preserver shows these domain components and where they live in the design.
 
-![RESTful Service Domain Resources](../images/restful-service-domain.png)
+![Life Preserver RESTful Domain Focus](../images/life-preserver-rest-domain-concepts-focus.png)
+
+Although these concepts existing in the Core domain and the REST Domain, this is not exactly repetition as the purpose of the implementations are very different from Core to REST.
+
+In the Core Domain the concepts are captured as part of the internal ubiquitous language of the application's domain. In the REST domain the concepts are captured as they are used purely for the purpose of exposing the public RESTful interface. 
 
 ### Designing your URIs
 
