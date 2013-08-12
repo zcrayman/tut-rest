@@ -9,18 +9,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.xml.Jaxb2CollectionHttpMessageConverter;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
-import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collection;
 import java.util.UUID;
 
-import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.YUMMY_ITEM;
-import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardOrderJSON;
 import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.orderDetailsEvent;
-import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.orderDetailsNotFound;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -43,7 +37,7 @@ public class ViewOrderXmlIntegrationTest {
   MockMvc mockMvc;
 
   @InjectMocks
-  OrderController controller;
+  OrderQueriesController controller;
 
   @Mock
   OrderService orderService;

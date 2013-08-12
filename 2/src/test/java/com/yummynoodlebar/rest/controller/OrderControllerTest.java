@@ -23,7 +23,7 @@ public class OrderControllerTest {
   OrderService orderService;
 
   @InjectMocks
-  OrderController controller;
+  OrderQueriesController controller;
 
   @Before
   public void setup() {

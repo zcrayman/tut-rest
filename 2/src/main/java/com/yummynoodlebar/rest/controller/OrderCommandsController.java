@@ -1,6 +1,9 @@
 package com.yummynoodlebar.rest.controller;
 
-import com.yummynoodlebar.core.events.orders.*;
+import com.yummynoodlebar.core.events.orders.CreateOrderEvent;
+import com.yummynoodlebar.core.events.orders.DeleteOrderEvent;
+import com.yummynoodlebar.core.events.orders.OrderCreatedEvent;
+import com.yummynoodlebar.core.events.orders.OrderDeletedEvent;
 import com.yummynoodlebar.core.services.OrderService;
 import com.yummynoodlebar.rest.domain.Order;
 import org.slf4j.Logger;
@@ -10,32 +13,22 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/aggregators/orders")
-class OrderController {
+public class OrderCommandsController {
 
-    private static Logger LOG = LoggerFactory.getLogger(OrderController.class);
+    private static Logger LOG = LoggerFactory.getLogger(OrderCommandsController.class);
 
     @Autowired
     private OrderService orderService;
-
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public List<Order> getAllOrders() {
-        List<Order> orders = new ArrayList<Order>();
-        for (OrderDetails detail : orderService.requestAllOrders(new RequestAllOrdersEvent()).getOrdersDetails()) {
-            orders.add(Order.fromOrderDetails(detail));
-        }
-        return orders;
-    }
 
     @RequestMapping(method = RequestMethod.POST)
     //TODOCUMENT using a response entity allows control of both the http status code and the headers.
@@ -54,20 +47,6 @@ class OrderController {
                         .buildAndExpand(orderCreated.getNewOrderKey().toString()).toUri());
 
         return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public ResponseEntity<Order> viewOrder(@PathVariable String id) {
-
-        OrderDetailsEvent details = orderService.requestOrderDetails(new RequestOrderDetailsEvent(UUID.fromString(id)));
-
-        if (!details.isEntityFound()) {
-            return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
-        }
-
-        Order order = Order.fromOrderDetails(details.getOrderDetails());
-
-        return new ResponseEntity<Order>(order, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")

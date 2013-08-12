@@ -28,7 +28,7 @@ public class CreateNewOrderIntegrationTest {
   MockMvc mockMvc;
 
   @InjectMocks
-  OrderController controller;
+  OrderCommandsController controller;
 
   @Mock
   OrderService orderService;
