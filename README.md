@@ -30,7 +30,7 @@ Yummy Noodle Bar wants to provide a RESTful web service to a set of aggregators 
 
 The current architecture of the application is shown in the following "Life Preserver" diagram:
 
-![Life Preserver showing Core packages](../images/life-preserver-initial.png)
+![Life Preserver showing Core packages](images/life-preserver-initial.png)
 
 Open up the project "Initial" at this point and you'll see that the "Life Preserver" diagram maps to the different packages under src/main/java. 
 
@@ -50,7 +50,7 @@ Take a moment to familiarise yourself with the components in each of these packa
 
 RESTful services are an integration between your application and the myriad of possible clients that need to consume your services. As such, RESTful services can be seen as living in their own integration domain on the periphery of your application's core as shown in the following update to your "Life Preserver".
 
-![Life Preserver showing Core and REST domain](../images/life-preserver-rest-domain-intro.png)
+![Life Preserver showing Core and REST domain](images/life-preserver-rest-domain-intro.png)
 
 As an integration between your application and the outside world, there are a number of concerns that need to be addressed in the design and implementation of the components that make up your RESTful services:
 
