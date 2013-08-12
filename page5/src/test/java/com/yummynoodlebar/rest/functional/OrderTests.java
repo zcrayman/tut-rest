@@ -5,6 +5,7 @@ import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
 import com.yummynoodlebar.rest.domain.Order;
 import org.junit.Test;
 import org.springframework.http.*;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -16,13 +17,9 @@ public class OrderTests {
 
   @Test
   public void thatOrdersCanBeAddedAndQueried() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    headers.set();
 
     HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),headers);
+        RestDataFixture.standardOrderJSON(),getHeaders());
 
     RestTemplate template = new RestTemplate();
     ResponseEntity<Order> entity = template.postForEntity(
@@ -41,6 +38,17 @@ public class OrderTests {
     assertEquals(2, order.getItems().size());
   }
 
+  static HttpHeaders getHeaders() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+    String authorisation = "letsnosh" + ":" + "noshing";
+    byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+    headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
+
+    return headers;
+  }
 
 }
 
