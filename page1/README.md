@@ -64,7 +64,7 @@ The event components associated with Orders include:
 
 For the first version of your new Yummy Noodle Bar RESTful service, the ability to create, update and remove Orders is the focus.
 
-It can be tempting to simply expose the core Order domain to the outside world and work from there, but that would ignore the boundary between the Core and the RESTful service domain (TODO highlight this boundary on a focus on the Life Preserver).
+It can be tempting to simply expose the core Order domain to the outside world and work from there, but that would ignore the boundary between the Core and the RESTful service domain.
 
 The public API of your service that you are going to expose to the aggregators will need to change at a rate that is friendly to those clients, and the core will need to evolve at whatever rate the Yummy Noodle bar system need to internally evolve at. So there is potentially friction between the two domains as they may need to evolve at different rates.
 
@@ -101,7 +101,7 @@ The following updated Life Preserver shows these domain components and where the
 
 ![Life Preserver RESTful Domain Focus](../images/life-preserver-rest-domain-concepts-focus.png)
 
-Although these concepts existing in the Core domain and the REST Domain, this is not exactly repetition as the purpose of the implementations are very different from Core to REST.
+As mentioned before, although these concepts existing in the Core domain and the REST Domain, this is not exactly repetition as the purpose of the implementations are very different from Core to REST.
 
 In the Core Domain the concepts are captured as part of the internal ubiquitous language of the application's domain. In the REST domain the concepts are captured as they are used purely for the purpose of exposing the public RESTful interface. 
 
