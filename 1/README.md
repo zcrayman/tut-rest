@@ -119,14 +119,6 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
         http://www.yummynoodlebar.com/aggregators/order/{Order ID}
 
-* All MenuItems
-
-        http://www.yummynoodlebar.com/aggregators/menu
-
-* A specific MenuItem
-
-        http://www.yummynoodlebar.com/aggregators/menu/{MenuItem ID}
-
 * All MenuItems associated with an Order
 
         http://www.yummynoodlebar.com/aggregators/order/{Order ID}/items
@@ -196,10 +188,65 @@ There can be some confusion when you take a closer look at POST and PUT, on init
 
 POST is used to create new entities without knowing the final URI, and PUT is used to create and update entities in a previously known URI.
 
-TODO add a table to define the request methods supported for each of the exposed resources.
+The following table describes what HTTP Methods will be supported for each of the resources addresses supported:
+
+<table>
+    <tr>
+    <th>Resource URI</th>
+    <th>Supported HTTP Methods</th>
+    <th>Description</th>
+</tr>
+    <tr>
+        <td>/aggregators/orders</td>
+			  <td>GET</td>
+        <td>Asks for a representation of all of the orders.</td>
+	  </tr>
+    <tr>
+        <td>/aggregators/orders</td>
+			  <td>POST</td>
+        <td>Attempt to create a new order, returning the location (in the Location HTTP Header) of the newly created resource.</td>
+	  </tr>
+	  <tr>
+        <td>/aggregators/orders/{id}</td>
+			  <td>GET</td>
+        <td>Asks for a representation of a specific Order resource.</td>
+	  </tr>
+<tr>
+        <td>/aggregators/orders/{id}</td>
+			  <td>DELETE</td>
+        <td>Requests the deletion of a specified Order resource.</td>
+	  </tr>
+<tr>
+        <td>/aggregators/order/{id}/status</td>
+			  <td>GET</td>
+        <td>Asks for a representation of a specific Order's current status.</td>
+	  </tr>
+<tr>
+        <td>/aggregators/order/{id}/paymentdetails</td>
+			  <td>GET</td>
+        <td>Asks for a representation of a specific Order's payment details resource.</td>
+	  </tr>
+<tr>
+        <td>/aggregators/order/{id}/paymentdetails</td>
+			  <td>PUT</td>
+        <td>Updates a specific Order's payment details resource.</td>
+	  </tr>
+<tr>
+
 
 ## Understanding Status Codes
 
-Finally no REST design would be complete without considering the responses to the HTTP requests as designed up to this point.
+No RESTful design would be complete without considering the responses to the HTTP requests as designed up to this point. 
 
-TODO the Discussion on correct status code usage, esp the 4XX codes that we will use in managing URI mutation and access control
+So far you've designed what resources you are going to expose, the URI addresses of those resources and the HTTP methods that are supported on each of those URIs. The final piece of the puzzle is capturing what [HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) your service will respond with for a given combination of URI and HTTP Method on a request.
+
+The following table describes the HTTP Status Codes that each of your URIs and HTTP Method combinations will respond with.
+
+
+## Summary
+
+So now you have a design for the resources you're going to expose, the URI addresses of those resources, the HTTP Methods that will be supported for requests to those URIs and finally the sorts of HTTP Status Codes that you intend to return for those requests.
+
+Now it's time to get your hands dirty with implementing your RESTful service using Spring!
+
+[Next… Building Your First RESTful Service](../2/) 
