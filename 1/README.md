@@ -250,7 +250,7 @@ The following table describes the HTTP Status Codes that each of your URIs and H
     <tr>
         <td>/aggregators/orders</td>
 			  <td>POST</td>
-        <td>Attempt to create a new order, returning the location (in the Location HTTP Header) of the newly created resource.</td>
+        <td>201 (Created)</td>
 	  </tr>
 	  <tr>
         <td>/aggregators/orders/{id}</td>
@@ -260,22 +260,22 @@ The following table describes the HTTP Status Codes that each of your URIs and H
 <tr>
         <td>/aggregators/orders/{id}</td>
 			  <td>DELETE</td>
-        <td>Requests the deletion of a specified Order resource.</td>
+        <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 <tr>
         <td>/aggregators/order/{id}/status</td>
 			  <td>GET</td>
-        <td>Asks for a representation of a specific Order's current status.</td>
+        <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 <tr>
         <td>/aggregators/order/{id}/paymentdetails</td>
 			  <td>GET</td>
-        <td>Asks for a representation of a specific Order's payment details resource.</td>
+        <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 <tr>
         <td>/aggregators/order/{id}/paymentdetails</td>
 			  <td>PUT</td>
-        <td>Updates a specific Order's payment details resource.</td>
+        <td>201 (OK); 403 (Forbidden); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 </table>
 
