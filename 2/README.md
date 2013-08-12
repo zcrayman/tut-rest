@@ -1,6 +1,6 @@
 ## Step 2: Building Your First RESTful Service
 
-TBD Modelling your domain as RESTful concepts.
+It's time to implement your Yummy Noodle Bar RESTful service. To do that, open
 
 (the below is copy and paste, rewrite)
 NB.  Java Config, as set up in MVCConfig, will detect the existence of Jackson and JAXB 2 on the classpath and automatically creates and registers default JSON and XML converters. The functionality of the annotation is equivalent to the XML version:
