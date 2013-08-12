@@ -38,3 +38,5 @@ Then visit http://localhost:8080/aggregators/orders
 You will get a response JSON that is an empty list 
 
 We need to check that this is all set up validly, taking us on to the next subject, functional testing using RestTemplate
+
+[Next… Testing your Service using RESTTemplate](../4/)

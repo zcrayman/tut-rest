@@ -66,7 +66,7 @@ The rest of this tutorial is spread out over the following pages:
 * [Step 2: Building Your First RESTful Service](2/)
 * [Step 3: Wiring Up and Deploying your Service](3/)
 * [Step 4: Testing your Service using RESTTemplate](4/)
-* [Step 5: Securing your Service](5/)
+* [Step 5: Securing your Service with Spring Security](5/)
 * [Step 6: Make your Service Discoverable using Spring HATEOAS](6/)
 * [Recap and Where to go Next?](7/)
 

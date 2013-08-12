@@ -3,3 +3,5 @@
 Motivation? Prove that the servlet configuration will work? Bringing it all together and running for real.
 
 ie, functional testing. - rest.functional.OrderTests
+
+[Next… Securing your Service with Spring Security](../4/)

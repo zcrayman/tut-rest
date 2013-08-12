@@ -33,3 +33,5 @@ HATEOS provides a consistent mechanism for you to describe what resources you ha
 
 TBD Implementing Hypermedia links to give hints as to how your resources can be interacted with.
 TBD Testing for Hypermedia links using REST Template.
+
+[Next… Recap and Where to go Next](../7/)

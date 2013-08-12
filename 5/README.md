@@ -1,4 +1,4 @@
-## Step 5: Securing your Service
+## Step 5: Securing your Service with Spring Security
 
 
 Add spring security to the build.gradle.  This includes adding the spring milestone repository.
@@ -33,3 +33,4 @@ static HttpHeaders getHeaders() {
     return headers;
   }
 
+[Next… Make your Service Discoverable using Spring HATEOAS](../6/)
