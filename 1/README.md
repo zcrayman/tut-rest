@@ -245,7 +245,7 @@ The following table describes the HTTP Status Codes that each of your URIs and H
     <tr>
         <td>/aggregators/orders</td>
 			  <td>GET</td>
-        <td>Asks for a representation of all of the orders.</td>
+        <td>200 (OK, Success)</td>
 	  </tr>
     <tr>
         <td>/aggregators/orders</td>
