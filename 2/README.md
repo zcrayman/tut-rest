@@ -29,7 +29,51 @@ It's possible to implement these two categories of interactions using one contro
 
 We won't implement all of the tests needed for your RESTful service here, the full source is available for download separately. Instead we'll look at two unit tests that look for an example of each of the categories of interaction through the RESTful service, commands and queries.
 
-The first test 
+The first test is going to target ensuring that a request to view an order's details is possible, so let's call the class ViewOrderIntegrationTest.
+
+	public class ViewOrderIntegrationTest {
+
+Why an 'integration' test? Because we're going to be testing the controller within the constraints of a mock Spring MVC environment. This way we can test the mappings of our incoming requests to the appropriate handler methods while still getting all the speed benefits of testing out of a real container.
+
+The next step will be to add an instance of MockMvc to our test class and to set up a mock controller and OrderService.
+
+public class ViewOrderIntegrationTest {
+
+  	MockMvc mockMvc;
+
+  	@InjectMocks
+  	OrderQueriesController controller;
+
+  	@Mock
+  	OrderService orderService;
+
+  	UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+
+  	@Before
+  	public void setup() {
+    	MockitoAnnotations.initMocks(this);
+
+    	this.mockMvc = standaloneSetup(controller)
+            .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+  	}
+
+In the @Before annotated setup() method, we're setting up Mockito as well as generating a mock Spring MVC environment, including adding JSON message conversion as we'll be expecting JSON back when we ask for the current state of an Order.
+
+Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
+
+	  @Test
+  	public void thatViewOrderRendersCorrectly() throws Exception {
+
+	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+            orderDetailsEvent(key));
+
+    	this.mockMvc.perform(
+            get("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
+            .andExpect(jsonPath("$.key").value(key.toString()));
+  }
+
 
 Pseudo: Explore two tests, view Order and Cancel Order.
 
@@ -94,6 +138,9 @@ To encapsulate all the requests that change the state of your Orders, we're goin
 
 Next we need to field a request for all the Orders available in the system. To 
 
+## Where did the response content get generated from?
+
+### Using JAXB to marshall Objects into Content
 
 Mention the split of Commands from Queries across two controllers, for mutating requests and non-mutating ones.
 
