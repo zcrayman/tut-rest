@@ -2,14 +2,38 @@
 
 It's time to implement your Yummy Noodle Bar RESTful service. The first step in building a service with Spring MVC is to construct and test one or more Controllers that will be responsible for handling each of the incoming HTTP Requests that you defined for your service in the previous step.
 
-## Constructing a Controller for Orders
+## Starting with a (failing) test
 
-The first controller you're going to create will handle the incoming requests associated with manipulating Orders. These requests can be split into two categories:
+[Test Driven Development (TDD)]() teaches us that if you haven't got a failing test then there's no code to write! So before we dive into implementing our service, let's create a couple of tests that justifies and encourages us to write some code to make the test pass.
+
+### Splitting Commands from Queries
+
+Before you start creating tests, you need to think a little more about the categories of requests that our service is going to have to respond to. You are going to be writing tests that look for all the HTTP Restful interactions we designed in the previous section.
+
+These interactions can be split into X categories:
 
 * Requests that read, or query, the current state of an Order
 * Requests that change the state of a new or existing Order
+* Requests that read an Order's status
+* Requests that query Payment Details
+* Requests that change the state of an Order's Payment Details
 
-It's possible to implement these two categories of interactions using one controller but the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises us to split these responsibilities into different routes through our application, and so in this tutorial we'll implement these controllers separately.
+This can for our purposes be simplified into two further categories of interactions:
+
+* Requests that change a resource's state (a Command)
+* Requests that query a resource's state (a Query)
+
+It's possible to implement these two categories of interactions using one controller for each resource but the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises us to split these responsibilities into different routes through our application, and so in this tutorial we'll implement these concerns separately.
+
+### Implementing failing test(s) for a Controller with MockMVC
+
+We won't implement all of the tests needed for your RESTful service here, the full source is available for download separately. Instead we'll look at two unit tests that look for an example of each of the categories of interaction through the RESTful service, commands and queries.
+
+The first test 
+
+Pseudo: Explore two tests, view Order and Cancel Order.
+
+## Making the tests pass: implementing the Controllers
 
 ### Implementing the OrderQueriesController
 
@@ -70,15 +94,6 @@ To encapsulate all the requests that change the state of your Orders, we're goin
 
 Next we need to field a request for all the Orders available in the system. To 
 
-(the below is copy and paste, rewrite)
-NB.  Java Config, as set up in MVCConfig, will detect the existence of Jackson and JAXB 2 on the classpath and automatically creates and registers default JSON and XML converters. The functionality of the annotation is equivalent to the XML version:
-
-<mvc:annotation-driven />
-
-This is a shortcut, and though it may be useful in many situations, it’s not perfect. When more complex configuration is needed, remove the annotation and extend WebMvcConfigurationSupport directly.
-
-^^^^^^^
-The above has been moved to page3, leaving this page purely in the MockMVC tests
 
 Mention the split of Commands from Queries across two controllers, for mutating requests and non-mutating ones.
 
