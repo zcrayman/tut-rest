@@ -29,6 +29,8 @@ It's possible to implement these two categories of interactions using one contro
 
 We won't implement all of the tests needed for your RESTful service here, the full source is available for download separately. Instead we'll look at two unit tests that look for an example of each of the categories of interaction through the RESTful service, commands and queries.
 
+#### Testing GET HTTP Method HTTP Requests
+
 The first test is going to target ensuring that a request to view an order's details is possible, so let's call the class `ViewOrderIntegrationTest`.
 
 	public class ViewOrderIntegrationTest {
@@ -170,7 +172,9 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
   	}
 	}
 
-Now let's take a look at a test implemented in exactly the same fashion, but performing the job of cancelling an Order by sending a HTTP Request with a DELETE HTTP Method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
+#### Testing DELETE HTTP Method HTTP Requests
+
+Next let's take a look at a test implemented in exactly the same fashion, but performing the job of cancelling an Order by sending a HTTP Request with a DELETE HTTP Method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
 
   	@Test
   	public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
@@ -286,9 +290,27 @@ The full implementation of all the command-oriented (i.e. changes a resource's s
   	  }
 	}
 
+#### Testing POST HTTP Method HTTP Requests for Creating Resources
+
+Finally it's worth taking a look at how to test HTTP Requests that contain POST as the HTTP Method. Specifically, a POST creates a new resource and *generates a new URI for that new resource* and so this URI generation will also need to be part of our test.
+
+Open the `CreateNewOrderIntegrationTest` class and you should see the following method:
+
+	@Test
+  	public void thatCreateOrderPassesLocationHeader() throws Exception {
+
+    	this.mockMvc.perform(
+            post("/aggregators/orders")
+                    .content(standardOrderJSON())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(header().string("Location", Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
+  	}
+ 
+The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI that is of the form expected given the posted new Order content.
 
 At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point the tests will all fail as we haven't created any corresponding controllers…
- 
+
 ## Making the Tests Pass: Implementing the Controllers
 
 You now have a collection of test classes that will fail given that no controller's actually exist yet to respond to the mocked HTTP requests.
@@ -362,6 +384,27 @@ Next you need to implement a method that handles an HTTP Request that carried a 
 The `cancelOrder` method needs to deal with additional conditions than an simple call to see a representation of an Order. Here there's the possibility that there is no Order with the indicated ID.
 
 To vary the response code to a handler method, you need to use the `ResponseEntity` class. In the example above, the `ResponseEntity` objects afford you the opportunity to return an HTTP Status code of 403 (Forbidden) if an attempt is made to cancel an Order that does not exist.
+
+The `OrderCommandsControler` also needs to deal with the case where a new Order resource is being created using an HTTP Request that contains an HTTP Post Method.
+
+The following code demonstrates how the POST case can be handled:
+
+	@RequestMapping(method = RequestMethod.POST)
+    	public ResponseEntity<Order> createOrder(@RequestBody Order order, UriComponentsBuilder builder) {
+
+        	OrderCreatedEvent orderCreated = orderService.createOrder(new CreateOrderEvent(order.toOrderDetails()));
+
+        	Order newOrder = Order.fromOrderDetails(orderCreated.getDetails());
+
+        	HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+                builder.path("/aggregators/order/{id}")
+                        .buildAndExpand(orderCreated.getNewOrderKey().toString()).toUri());
+
+        	return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
+    	}
+
+The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP Headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
 
 ## Where did the JSON representations come from?
 
