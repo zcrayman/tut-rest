@@ -441,17 +441,17 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
 
   	UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
 
-  	@Before
-  	public void setup() {
+  	  @Before
+  	  public void setup() {
     	MockitoAnnotations.initMocks(this);
 
     	this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter(),
                                   new Jaxb2RootElementHttpMessageConverter()).build();
-  	}
+  	  }
 
-  	@Test
-  	public void thatViewOrderRendersXMLCorrectly() throws Exception {
+  	  @Test
+  	  public void thatViewOrderRendersXMLCorrectly() throws Exception {
     	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
 
@@ -463,10 +463,10 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
             .andDo(print())
             .andExpect(content().contentType(MediaType.TEXT_XML))
             .andExpect(xpath("/order/key").string(key.toString()));
-  	}
+  	  }
 
-  	@Test
-  	public void thatViewOrderRendersJsonCorrectly() throws Exception {
+  	  @Test
+  	  public void thatViewOrderRendersJsonCorrectly() throws Exception {
 
     	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
@@ -479,7 +479,7 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
             .andDo(print())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.key").value(key.toString()));
-  	}
+  	  }
 	}
 
 This test exercises your web service in two ways: it requests Order representations as JSON and also as XML.
