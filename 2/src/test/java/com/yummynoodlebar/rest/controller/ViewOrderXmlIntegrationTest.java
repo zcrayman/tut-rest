@@ -22,16 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-/*
- TODOCUMENT THis show content type negotiation in action.
 
- without the burden of an app context in the way, we can see all of the pieces of the puzzle and how they fit
- together.
-
- Note that rest.Order has been annotated with a JAXB @XmlRootElement to make this work.
- Helpfully, this is documented within Jaxb2RootElementHttpMessageConverter
-
-*/
 public class ViewOrderXmlIntegrationTest {
 
   MockMvc mockMvc;

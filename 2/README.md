@@ -395,6 +395,74 @@ In our test environment, JSON is being requested. But what about when another co
 
 ### Using JAXB to marshall Objects into Content
 
-Mention the split of Commands from Queries across two controllers, for mutating requests and non-mutating ones.
+Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
+
+	public class ViewOrderXmlIntegrationTest {
+
+  	MockMvc mockMvc;
+
+  	@InjectMocks
+  	OrderQueriesController controller;
+
+  	@Mock
+  	OrderService orderService;
+
+  	UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+
+  	@Before
+  	public void setup() {
+    	MockitoAnnotations.initMocks(this);
+
+    	//TODOCUMENT Add in both the XML and JSON converters.  This are both added in automatically to the application context
+    	//at runtime, if the appropriate jars are on the classpath.
+    	this.mockMvc = standaloneSetup(controller)
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(),
+                                  new Jaxb2RootElementHttpMessageConverter()).build();
+  	}
+
+  	@Test
+  	public void thatViewOrderRendersXMLCorrectly() throws Exception {
+
+    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+            orderDetailsEvent(key));
+
+    	//TODOCUMENT XPath in use here
+
+    	this.mockMvc.perform(
+            get("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.TEXT_XML))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.TEXT_XML))
+            .andExpect(xpath("/order/key").string(key.toString()));
+  	}
+
+  	@Test
+  	public void thatViewOrderRendersJsonCorrectly() throws Exception {
+
+    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+            orderDetailsEvent(key));
+
+    //TODOCUMENT JSON Path in use here (really like this)
+
+    	this.mockMvc.perform(
+            get("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.key").value(key.toString()));
+  	}
+	}
+
+Remove:
+/*
+ TODOCUMENT THis show content type negotiation in action.
+
+ without the burden of an app context in the way, we can see all of the pieces of the puzzle and how they fit
+ together.
+
+ Note that rest.Order has been annotated with a JAXB @XmlRootElement to make this work.
+ Helpfully, this is documented within Jaxb2RootElementHttpMessageConverter
+
+*/
 
 [Next… Wiring Up and Deploying your Service](../3/)
