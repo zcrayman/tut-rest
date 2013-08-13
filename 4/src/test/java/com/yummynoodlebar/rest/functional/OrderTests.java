@@ -1,6 +1,5 @@
 package com.yummynoodlebar.rest.functional;
 
-
 import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
 import com.yummynoodlebar.rest.domain.Order;
 import org.junit.Test;
