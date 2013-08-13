@@ -8,7 +8,7 @@ Functional tests provide the last check-in-the-box that your service's functiona
 
 In order to show how simple it is to create functional tests you're going to be using Spring's `RESTTemplate`.
 
-## Implementing a Functional Test using RESTTemplate
+## Implementing a Functional Test using RestTemplate
 
 Open the `OrderTests` test class in the `com.yummynoodlebar.functional` package and you should see one method that begins according to the following code snippet:
 
@@ -21,7 +21,7 @@ Open the `OrderTests` test class in the `com.yummynoodlebar.functional` package 
 
     	RestTemplate template = new RestTemplate();
 
-Here you're setting up an initial Spring `RESTTemplate`. You've created some initial HTTP Headers that set the content type to JSON and set the accept header also to JSON in anticipation of receiving JSON in the response.
+Here you're setting up an initial Spring `RestTemplate`. You've created some initial HTTP Headers that set the content type to JSON and set the accept header also to JSON in anticipation of receiving JSON in the response.
 
 Next you prepare an `HTTPEntity` to contain the request that you'll submit to your service:
 
@@ -85,7 +85,7 @@ With your `ResponseEntity` to hand, you can now inspect the response to ensure t
 
 ## Summary
 
-The Spring `RESTTEmplate` provides a powerful means of functionally interacting with your RESTful services, regardless of your choice of testing framework.
+The Spring `RestTEmplate` provides a powerful means of functionally interacting with your RESTful services, regardless of your choice of testing framework.
 
 Here you've implemented a minimal set of functional tests, looking specifically at ensuring that new Order resources can be created. Your REST service is moving closer and closer to production and opening the doors to usage by all those high-profile aggregators.
 
