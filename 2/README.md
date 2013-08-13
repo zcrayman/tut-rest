@@ -62,9 +62,9 @@ In the @Before annotated setup() method, we're setting up Mockito as well as gen
 Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
 
 	  @Test
-  	public void thatViewOrderRendersCorrectly() throws Exception {
+  	  public void thatViewOrderRendersCorrectly() throws Exception {
 
-	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+	  when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
 
     	this.mockMvc.perform(
