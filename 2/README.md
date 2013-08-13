@@ -29,13 +29,13 @@ It's possible to implement these two categories of interactions using one contro
 
 We won't implement all of the tests needed for your RESTful service here, the full source is available for download separately. Instead we'll look at two unit tests that look for an example of each of the categories of interaction through the RESTful service, commands and queries.
 
-The first test is going to target ensuring that a request to view an order's details is possible, so let's call the class ViewOrderIntegrationTest.
+The first test is going to target ensuring that a request to view an order's details is possible, so let's call the class `ViewOrderIntegrationTest`.
 
 	public class ViewOrderIntegrationTest {
 
 Why an 'integration' test? Because we're going to be testing the controller within the constraints of a mock Spring MVC environment. This way we can test the mappings of our incoming requests to the appropriate handler methods while still getting all the speed benefits of testing out of a real container.
 
-The next step will be to add an instance of MockMvc to our test class and to set up a mock controller and OrderService.
+The next step will be to add an instance of `MockMvc` to our test class and to set up a mock controller and `OrderService`.
 
 public class ViewOrderIntegrationTest {
 
@@ -57,7 +57,7 @@ public class ViewOrderIntegrationTest {
             .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
   	}
 
-In the @Before annotated setup() method, we're setting up Mockito as well as generating a mock Spring MVC environment, including adding JSON message conversion as we'll be expecting JSON back when we ask for the current state of an Order.
+In the `@Before` annotated `setup()` method, we're setting up Mockito as well as generating a mock Spring MVC environment, including adding JSON message conversion as we'll be expecting JSON back when we ask for the current state of an Order.
 
 Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
 
@@ -74,9 +74,9 @@ Finally we can implement a test method that performs an HTTP Request on our cont
             .andExpect(jsonPath("$.key").value(key.toString()));
   	}
 
-It's worth at this point looking at the final call in the above method, the usage of MockMVC, in a little more detail.
+It's worth at this point looking at the final call in the above method, the usage of `MockMVC`, in a little more detail.
 
-In order, the mockMvc object is performing the following:
+In order, the `mockMvc` object is performing the following:
 
 * Performing a mock HTTP Request with a GET HTTP Method on the URI /aggregators/orders/{id}.
 * Replacing the {id} marker in the URI template with the contents of the response to the key.toString() call.
@@ -104,11 +104,111 @@ Finally let's take a look at a test implemented in exactly the same fashion, but
                     Matchers.equalTo(key))));
   	}
 
-The main differences with this test is that there is no content returned from the mock HTTP Request performed using MockMvc. Instead you are using Mockito's verify behaviour to ensure that your controller is making the appropriate `deleteOrder` call to the mock `orderService` in order for the test to pass.
+The main differences with this test is that there is no content returned from the mock HTTP Request performed using `mockMvc`. Instead you are using Mockito's verify behaviour to ensure that your controller is making the appropriate `deleteOrder` call to the mock `orderService` in order for the test to pass.
 
-At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course, at this point the tests will all fail as we haven't created any corresponding controllers…
+The full implementation of all the command-oriented (i.e. changes a resource's state) tests captured in `CancelOrderIntegrationTest` is shown below:
+
+	package com.yummynoodlebar.rest.controller;
+
+	import com.yummynoodlebar.core.events.orders.DeleteOrderEvent;
+	import com.yummynoodlebar.core.services.OrderService;
+	import org.hamcrest.Matchers;
+	import org.junit.Before;
+	import org.junit.Test;
+	import org.mockito.InjectMocks;
+	import org.mockito.Mock;
+	import org.mockito.MockitoAnnotations;
+	import org.springframework.http.MediaType;
+	import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+	import org.springframework.test.web.servlet.MockMvc;
+
+	import java.util.UUID;
+
+	import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.*;
+	import static org.mockito.Mockito.*;
+	import static org.mockito.Mockito.when;
+	import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+	import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+	import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+	import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
+	public class CancelOrderIntegrationTest {
+
+  	MockMvc mockMvc;
+
+  	@InjectMocks
+  	OrderCommandsController controller;
+
+  	@Mock
+  	OrderService orderService;
+
+  	UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+
+  	@Before
+  	public void setup() {
+    MockitoAnnotations.initMocks(this);
+
+    	this.mockMvc = standaloneSetup(controller)
+            .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+
+  	}
+
+  	@Test
+  	public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
+
+    	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
+            .thenReturn(
+                    orderDeleted(key));
+
+    	this.mockMvc.perform(
+            delete("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+    	verify(orderService).deleteOrder(argThat(
+            Matchers.<DeleteOrderEvent>hasProperty("key",
+                    Matchers.equalTo(key))));
+  	}
+
+  	@Test
+  	public void thatDeleteOrderUsesHttpNotFoundOnEntityLookupFailure() throws Exception {
+
+    	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
+            .thenReturn(
+                    orderDeletedNotFound(key));
+
+    	this.mockMvc.perform(
+            delete("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+
+  	}
+
+  	@Test
+  	public void thatDeleteOrderUsesHttpForbiddenOnEntityDeletionFailure() throws Exception {
+
+    	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
+            .thenReturn(
+                    orderDeletedFailed(key));
+
+   	 this.mockMvc.perform(
+            delete("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+  	}
+	}
+
+
+At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point the tests will all fail as we haven't created any corresponding controllers…
  
 ## Making the Tests Pass: Implementing the Controllers
+
+You now have a collection of test classes that will fail given that no controller's actually exist yet to respond to the mocked HTTP requests.
+
+Now it's time to focus on making the `ViewOrderIntegrationTest` and the `CancelOrderIntegrationTest`  tests pass. 
 
 ### Implementing the OrderQueriesController
 
