@@ -34,5 +34,4 @@ public class OrderTests {
     assertTrue(order.getItems().containsKey(RestDataFixture.YUMMY_ITEM));
     assertEquals(details.getOrderItems().get(RestDataFixture.YUMMY_ITEM), order.getItems().get(RestDataFixture.YUMMY_ITEM));
   }
-
 }

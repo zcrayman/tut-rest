@@ -455,8 +455,6 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
     	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
 
-    	//TODOCUMENT XPath in use here
-
     	this.mockMvc.perform(
             get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.TEXT_XML))
@@ -470,8 +468,6 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
 
     	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
-
-    //TODOCUMENT JSON Path in use here (really like this)
 
     	this.mockMvc.perform(
             get("/aggregators/orders/{id}", key.toString())

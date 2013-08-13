@@ -39,8 +39,6 @@ public class ViewOrderXmlIntegrationTest {
   public void setup() {
     MockitoAnnotations.initMocks(this);
 
-    //TODOCUMENT Add in both the XML and JSON converters.  This are both added in automatically to the application context
-    //at runtime, if the appropriate jars are on the classpath.
     this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter(),
                                   new Jaxb2RootElementHttpMessageConverter()).build();
@@ -51,8 +49,6 @@ public class ViewOrderXmlIntegrationTest {
 
     when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
-
-    //TODOCUMENT XPath in use here
 
     this.mockMvc.perform(
             get("/aggregators/orders/{id}", key.toString())
