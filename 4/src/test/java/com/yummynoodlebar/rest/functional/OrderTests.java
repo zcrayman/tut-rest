@@ -20,10 +20,10 @@ public class OrderTests {
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
+    RestTemplate template = new RestTemplate();
+
     HttpEntity<String> requestEntity = new HttpEntity<String>(
         RestDataFixture.standardOrderJSON(),headers);
-
-    RestTemplate template = new RestTemplate();
 
     ResponseEntity<Order> entity = template.postForEntity(
         "http://localhost:8080/aggregators/order",
