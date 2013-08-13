@@ -56,7 +56,7 @@ With your `ResponseEntity` to hand, you can now inspect the response to ensure t
 	public class OrderTests {
 
   	@Test
-  public void thatOrdersCanBeAddedAndQueried() {
+  	public void thatOrdersCanBeAddedAndQueried() {
     	HttpHeaders headers = new HttpHeaders();
     	headers.setContentType(MediaType.APPLICATION_JSON);
     	headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -80,11 +80,15 @@ With your `ResponseEntity` to hand, you can now inspect the response to ensure t
     	System.out.println ("The Location is " + entity.getHeaders().getLocation());
 
     	assertEquals(2, order.getItems().size());
-  	}
+  	  }
 	}
 
 ## Summary
 
-TBD
+The Spring `RESTTEmplate` provides a powerful means of functionally interacting with your RESTful services, regardless of your choice of testing framework.
+
+Here you've implemented a minimal set of functional tests, looking specifically at ensuring that new Order resources can be created. Your REST service is moving closer and closer to production and opening the doors to usage by all those high-profile aggregators.
+
+There's just one hitch, how do you ensure that only legitimate aggregators can submit Orders to your system? It's time to secure your RESTful service.
 
 [Next… Securing your Service with Spring Security](../5/)
