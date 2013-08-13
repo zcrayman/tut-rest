@@ -63,7 +63,7 @@ Finally you have one test method that asserts that an `orderService` dependency 
 
 Next stop, creating the Core domain configuration.
 
-### Implementing your Core Configuration
+### Implementing your Core Domain Configuration
 
 The Core Domain configuration for the Yummy Noodle Bar application only contains one service and one dependency that needs to be configured for that service.
 
@@ -104,7 +104,94 @@ Running the `CoreDomainIntegrationTest` in the `com.yummynoodlebar.config` test 
 
 ## Creating a configuration for the your REST components
 
-To be continued…
+Configuring your new set of controller's is very straightforward as you have used `@Controller` on each of the controller classes. To initialise your RESTful Domain's components, all you need to do is turn on component scanning so that Spring can find and initialise these Spring Beans.
+
+## Implementing your RESTful Domain Configuration
+
+You can create the following Spring JavaConfig to execute component scanning for the components in your application's RESTful domain:
+
+	package com.yummynoodlebar.config;
+
+	import org.springframework.context.annotation.ComponentScan;
+	import org.springframework.context.annotation.Configuration;
+	import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+	@Configuration
+	@EnableWebMvc
+	@ComponentScan(basePackages = {"com.yummynoodlebar.rest.controller"})
+	public class MVCConfig {}
+
+The `@ComponentScan` attribute in JavaConfig specifies that your components should be found underneath the base Java package of `com.yummynoodlebar.rest.controllers`. It's always a good idea to be as specific as possible when defining the place where component scanning should occur so that you don't accidentally end up initialising components you didn't expect!
+
+## Testing your RESTful Domain Configuration
+
+No configuration should be trusted without an accompanying test. The following test is the full implementation that asserts that the output of the RESTful configuration is as it should be:
+
+	package com.yummynoodlebar.config;
+
+	import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
+	import org.junit.Before;
+	import org.junit.Test;
+	import org.junit.runner.RunWith;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.http.MediaType;
+	import org.springframework.test.context.ContextConfiguration;
+	import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+	import org.springframework.test.context.web.WebAppConfiguration;
+	import org.springframework.test.web.servlet.MockMvc;
+	import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+	import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardOrderJSON;
+	import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+	import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+	import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+	import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+	import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+	@RunWith(SpringJUnit4ClassRunner.class)
+	@WebAppConfiguration
+	@ContextConfiguration(classes = {CoreConfig.class, MVCConfig.class})
+	public class RestDomainIntegrationTest {
+
+  	@Autowired
+  	WebApplicationContext wac;
+
+  	private MockMvc mockMvc;
+
+  	@Before
+  	public void setup() {
+    	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+  	}
+
+  	@Test
+  	public void addANewOrderToTheSystem() throws Exception  {
+    	this.mockMvc.perform(
+            post("/aggregators/order")
+                    .content(standardOrderJSON())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isCreated());
+
+    	this.mockMvc.perform(
+            get("/aggregators/orders")
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].items['" + RestDataFixture.YUMMY_ITEM + "']").value(12));
+
+  	}
+	}
+ 
+
+To be continued… include:
+//TODOCUMENT We have already asserted the correctness of the collaboration.
+//This is to check that the wiring in MVCConfig works.
+//We do this by inference, via hitting URLs in the system and checking they work as expected
+//given a well known infrastructure and system state.
+//this is a minimal set, as we've checked the actual behaviour of rendering, http status handling
+//and URL mapping separately.
 
 Create a Config covering the rest components. - MVCConfig
 Create an integration that runs up both configurations together and exercises the MVC stack fully integrated with the core - RestDomainIntegrationTest.  
