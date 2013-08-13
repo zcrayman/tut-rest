@@ -4,20 +4,21 @@ Your RESTful service is now happily running in Tomcat and life is good, right? E
 
 It's time to prove it.
 
-Functional tests provide the last check-in-the-box that your service's functionality is all in place.
+Full stack Functional tests provide the last check-in-the-box that your service's functionality is all in place and works fully integrated together.
 
-In order to show how simple it is to create functional tests you're going to be using Spring's `RESTTemplate`.
+The rule for these is that there should be as few as possible to prove that the full stack works.  Ideally you would have just one, testing your '*happy path*', or the code path that ***must work*** for you to make money.
+
+In order to show how simple it is to create functional tests you're going to be using Spring's `RESTTemplate`.   Following the above rule, we have one code path tested, placing orders, which is the core part of the rest interface, if this doesn't work then the Yummy Noodle Bar will go out of business.
 
 ## Implementing a Functional Test using RestTemplate
 
 Open the `OrderTests` test class in the `com.yummynoodlebar.functional` package and you should see one method that begins according to the following code snippet:
 
-	@Test
-  	public void thatOrdersCanBeAddedAndQueried() {
-    	HttpHeaders headers = new HttpHeaders();
+    @Test
+    public void thatOrdersCanBeAddedAndQueried() {
+        HttpHeaders headers = new HttpHeaders();
     	headers.setContentType(MediaType.APPLICATION_JSON);
-   
-	headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
     	RestTemplate template = new RestTemplate();
 
@@ -85,7 +86,7 @@ With your `ResponseEntity` to hand, you can now inspect the response to ensure t
 
 ## Summary
 
-The Spring `RestTEmplate` provides a powerful means of functionally interacting with your RESTful services, regardless of your choice of testing framework.
+The Spring `RestTemplate` provides a powerful means of functionally interacting with your RESTful services, regardless of your choice of testing framework.
 
 Here you've implemented a minimal set of functional tests, looking specifically at ensuring that new Order resources can be created. Your REST service is moving closer and closer to production and opening the doors to usage by all those high-profile aggregators.
 
