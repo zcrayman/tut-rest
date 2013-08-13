@@ -42,7 +42,7 @@ You're using @RequestMapping to specify that this handler method responds only t
 
 Finally we can implement the last query method for Orders on our service that will respond to a request for a specific Order.
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     	public ResponseEntity<Order> viewOrder(@PathVariable String id) {
 
         	OrderDetailsEvent details = orderService.requestOrderDetails(new RequestOrderDetailsEvent(UUID.fromString(id)));
