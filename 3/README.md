@@ -5,7 +5,7 @@ Now you have written and tested your controllers, it's time to bring the whole a
 * Creating configuration for the core of your application
 * Creating a configuration for the your REST components
 * Initialising your RESTful Service's Web Infrastructure
-* Running up your complete RESTful service
+* Running your RESTful service in a Web Container
 
 ## Creating a Configuration for your Application's Core Domain using Spring JavaConfig
 
@@ -106,7 +106,7 @@ Running the `CoreDomainIntegrationTest` in the `com.yummynoodlebar.config` test 
 
 Configuring your new set of controller's is very straightforward as you have used `@Controller` on each of the controller classes. To initialise your RESTful Domain's components, all you need to do is turn on component scanning so that Spring can find and initialise these Spring Beans.
 
-## Implementing your RESTful Domain Configuration
+### Implementing your RESTful Domain Configuration
 
 You can create the following Spring JavaConfig to execute component scanning for the components in your application's RESTful domain:
 
@@ -123,7 +123,7 @@ You can create the following Spring JavaConfig to execute component scanning for
 
 The `@ComponentScan` attribute in JavaConfig specifies that your components should be found underneath the base Java package of `com.yummynoodlebar.rest.controllers`. It's always a good idea to be as specific as possible when defining the place where component scanning should occur so that you don't accidentally end up initialising components you didn't expect!
 
-## Testing your RESTful Domain Configuration
+### Testing your RESTful Domain Configuration
 
 No configuration should be trusted without an accompanying test. The following test is the full implementation that asserts that the output of the RESTful configuration is as it should be:
 
@@ -193,6 +193,8 @@ The test validates the `MVCConfig` by mocking requests that exercise the handler
 ## Initialising your RESTful Service's Web Infrastructure
 
 To be continued…
+
+## Running your RESTful service in a Web Container
 
 Setting up a web.xml - we use JavaCOnfig, so use AnnotationConfigWebApplicationContext as contextClass init param
  - we have created a configuration domain, com.yummynoodlebar.core.config
