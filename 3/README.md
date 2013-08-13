@@ -155,13 +155,13 @@ import org.springframework.web.context.WebApplicationContext;
 	public class RestDomainIntegrationTest {
 
   	@Autowired
-  	WebApplicationContext wac;
+  	WebApplicationContext webApplicationContext;
 
   	private MockMvc mockMvc;
 
   	@Before
   	public void setup() {
-    	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+    	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
   	}
 
   	@Test
