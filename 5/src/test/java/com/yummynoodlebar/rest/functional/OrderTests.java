@@ -19,7 +19,8 @@ public class OrderTests {
   public void thatOrdersCanBeAddedAndQueried() {
 
     HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),getHeaders());
+        RestDataFixture.standardOrderJSON(),
+        getHeaders("letsnosh" + ":" + "noshing"));
 
     RestTemplate template = new RestTemplate();
     ResponseEntity<Order> entity = template.postForEntity(
@@ -37,14 +38,28 @@ public class OrderTests {
 
     assertEquals(2, order.getItems().size());
   }
+  
+  @Test
+  public void thatOrdersCannotBeAddedAndQueriedWithBadUser() {
 
-  static HttpHeaders getHeaders() {
+    HttpEntity<String> requestEntity = new HttpEntity<String>(
+        RestDataFixture.standardOrderJSON(),
+        getHeaders("letsnosh" + ":" + "BADPASSWORD"));
+
+    RestTemplate template = new RestTemplate();
+    ResponseEntity<Order> entity = template.postForEntity(
+    "http://localhost:8080/aggregators/order",
+    requestEntity, Order.class);
+
+    assertEquals(HttpStatus.FORBIDDEN, entity.getStatusCode());
+  }
+
+  static HttpHeaders getHeaders(String auth) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-    String authorisation = "letsnosh" + ":" + "noshing";
-    byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+    byte[] encodedAuthorisation = Base64.encode(auth.getBytes());
     headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
 
     return headers;
