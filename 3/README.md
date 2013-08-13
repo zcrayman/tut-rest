@@ -192,7 +192,128 @@ The test validates the `MVCConfig` by mocking requests that exercise the handler
 
 ## Initialising your RESTful Service's Web Infrastructure
 
-To be continued…
+As of Spring 3.2 it's now possible, if you're using a web container that supports the Servlet 3 specification, to initialise the underlying web infrastructure for your application without writing a line of XML.
+
+Here you're going to use the `WebApplicationInitializer` to setup your application's web application context parameters to bootstrap your application's web infrastructure as shown in the following code:
+
+First you create a new piece of configuration as a class inside `com.yummynoodlebar.config` called `WebAppInitializer` that extends the `WebApplicationInitializer` from Spring as shown below:
+
+	package com.yummynoodlebar.config;
+
+	import org.slf4j.Logger;
+	import org.slf4j.LoggerFactory;
+	import org.springframework.web.WebApplicationInitializer;
+	import org.springframework.web.context.ContextLoaderListener;
+	import org.springframework.web.context.WebApplicationContext;
+	import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+	import org.springframework.web.filter.DelegatingFilterProxy;
+	import org.springframework.web.servlet.DispatcherServlet;
+
+	import javax.servlet.FilterRegistration;
+	import javax.servlet.ServletContext;
+	import javax.servlet.ServletRegistration;
+	import java.util.Set;
+
+	public class WebAppInitializer implements WebApplicationInitializer {
+
+  	private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
+ 
+The `LOG` attribute is included to show that, since you're not using XML but rather plain Java, you can even log messages as your web infrastructure is initialised.
+
+Next you override the `onStartup` method which in turn sets up your root Spring Application Context by calling `createRootContext` and then finally request the configuration of SpringMvc by calling `configureSpringMvc`.
+
+	@Override
+  	public void onStartup(ServletContext servletContext) {
+    	WebApplicationContext rootContext = createRootContext(servletContext);
+
+    	configureSpringMvc(servletContext, rootContext);
+  	}
+
+The root Spring Application Context will contain the majority of your components including your Core Domain. In the `createRootContext` method an instance of the `AnnotationConfigWebApplicationContext` class is constructed and then configured by calling `register` indicating the JavaConfig classes to be applied. In your case the root context can be initialised simply with the `CoreConfig` class.
+
+ 	private WebApplicationContext createRootContext(ServletContext servletContext) {
+    	AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+    	rootContext.register(CoreConfig.class);
+    	rootContext.refresh();
+
+    	servletContext.addListener(new ContextLoaderListener(rootContext));
+    	servletContext.setInitParameter("defaultHtmlEscape", "true");
+
+    	return rootContext;
+  	}
+
+Now with a root Application Context already to hand, in the `configureSpringMvc` method you can configure the REST Domain components in a new `AnnotationConfigWebApplicationContext` application context, connecting this new context to the root application context so that your REST Domain components can see and be dependency injected with components from the root application context.
+
+  	private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
+    	AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
+    	mvcContext.register(MVCConfig.class);
+
+    	mvcContext.setParent(rootContext);
+
+Finally, using the `servletContext` you can dynamically initialise the Spring MVC `DispatcherServlet`, in this case mapping the `DispatcherServlet` to the root of the newly registered application.
+
+The `DispatcherServlet` is a 'front controller' servlet that receives all incoming requests that should be considered for the various controllers registered. The DispatcherServlet then is the overall orchestrator of how each incoming request is channelled to the appropriate handler method on the available controllers.
+
+The full `WebAppInitializer` source code is shown below:
+
+	package com.yummynoodlebar.config;
+
+	import org.slf4j.Logger;
+	import org.slf4j.LoggerFactory;
+	import org.springframework.web.WebApplicationInitializer;
+	import org.springframework.web.context.ContextLoaderListener;
+	import org.springframework.web.context.WebApplicationContext;
+	import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+	import org.springframework.web.filter.DelegatingFilterProxy;
+	import org.springframework.web.servlet.DispatcherServlet;
+
+	import javax.servlet.FilterRegistration;
+	import javax.servlet.ServletContext;
+	import javax.servlet.ServletRegistration;
+	import java.util.Set;
+
+	public class WebAppInitializer implements WebApplicationInitializer {
+
+  	private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
+
+  	@Override
+  	public void onStartup(ServletContext servletContext) {
+    	WebApplicationContext rootContext = createRootContext(servletContext);
+
+    	configureSpringMvc(servletContext, rootContext);
+  	}
+
+  	private WebApplicationContext createRootContext(ServletContext servletContext) {
+    	AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+    	rootContext.register(CoreConfig.class);
+    	rootContext.refresh();
+
+    	servletContext.addListener(new ContextLoaderListener(rootContext));
+    	servletContext.setInitParameter("defaultHtmlEscape", "true");
+
+    	return rootContext;
+  	}
+
+  	private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
+    	AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
+    	mvcContext.register(MVCConfig.class);
+
+    	mvcContext.setParent(rootContext);
+
+    	ServletRegistration.Dynamic appServlet = servletContext.addServlet(
+        "webservice", new DispatcherServlet(mvcContext));
+    	appServlet.setLoadOnStartup(1);
+    	Set<String> mappingConflicts = appServlet.addMapping("/");
+
+    	if (!mappingConflicts.isEmpty()) {
+      	for (String s : mappingConflicts) {
+        	LOG.error("Mapping conflict: " + s);
+      	}
+      	throw new IllegalStateException(
+          "'webservice' cannot be mapped to '/'");
+    	}
+  	}
+	}
 
 ## Running your RESTful service in a Web Container
 
