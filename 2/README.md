@@ -61,6 +61,8 @@ public class ViewOrderIntegrationTest {
 
 In the `@Before` annotated `setup()` method, we're setting up Mockito as well as generating a mock Spring MVC environment, including adding JSON message conversion as we'll be expecting JSON back when we ask for the current state of an Order.
 
+MockMVC is a relatively new part of Spring MVC and gives a method to fully test a Controller, including all of its annotations, routing and URI templates.  It does this by initialising the MVC Controller classes in a full MVC environment, including the DispatcherServlet and then running assertions against that.  The only piece missing from this testing puzzle is the web context itself, which we will cover in section 4.
+
 Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
 
 	@Test
@@ -415,7 +417,7 @@ In traditional Spring MVC there would be a `ViewResolver` and a specific View to
 The secret for how things are working here is in looking at the dependencies that the project itself has. If you look in the `build.gradle` file in the project's root directory you should see the following entries in the project dependencies:
 
 	runtime 'com.fasterxml.jackson.core:jackson-core:2.2.2'
-    	runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
+    runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
 
 These two dependencies are enough for Spring MVC to be able to take classes defined in your RESTful domain that capture the representations that need to be rendered, see the `com.yummynoodlebar.rest.domain` package, and render those objects as JSON according to the content type requested by the client.
 
@@ -557,7 +559,7 @@ All good so far, but XML marshalling from Java objects is a little more involved
 
 ## Summary
 
-So far you've seen how to create controllers that can implement your RESTful service's API, and hjow to test those controllers using 'MockMVC' outside of a container to build your confidence that the handler mappings work and your controller will react to the right forms of HTTP Requests with the right types of content.
+So far you've seen how to create controllers that can implement your RESTful service's API, and how to test those controllers using 'MockMVC' outside of a container to build your confidence that the handler mappings work and your controller will react to the right forms of HTTP Requests with the right types of content.
 
 It's now time to complete the plumbing so that your RESTful service can be run up for real.
 
