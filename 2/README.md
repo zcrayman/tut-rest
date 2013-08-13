@@ -349,7 +349,7 @@ As you can see from the `@RequestMapping` annotation, the `viewOrder` handler me
 
 The `{id}` parameter is then mapped as a String into the `viewOrder` method. Finally, since this is a read-only query request, then `@RequestMapping` also specifies that this method should only be called for HTTP requests with a GET HTTP Method.
  
-This handler method is, by default, listening for requests that arrive targeting the root URI as specified at the controller class level, in this case that is /aggregator/orders.
+Finally the handler method needs to return the content that the client requests. Rather than add this concern into your controller handler method directly, but using `@ResponseBody` you can indicate that the objects returned from the method should be marshalled directly into the content that is expected in the response.
 
 That's all the handler methods that we need for directly requesting information about the current state of your service's Orders as specified by the `ViewOrderIntegrationTest`. The next step is to support that state being manipulated by requests that instigate commands.
 
