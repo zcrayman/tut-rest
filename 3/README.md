@@ -39,9 +39,6 @@ First, construct an integration test that contains the following:
   	@Autowired
   	OrderService orderService;
 
-  	//TODOCUMENT We have already asserted the correctness of the collaboration.
-  	//This is to check that the wiring in CoreConfig works.
-  	//We do this by inference.
   	@Test
   	public void addANewOrderToTheSystem() {
 
@@ -52,8 +49,8 @@ First, construct an integration test that contains the following:
     	AllOrdersEvent allOrders = orderService.requestAllOrders(new RequestAllOrdersEvent());
 
     	assertEquals(1, allOrders.getOrdersDetails().size());
-  }
-}
+  	}
+	}
 
 This integration test simply constructs an `ApplicationContext` using JavaConfig as specified on the `@ContextConfiguration` annotation. The Core domain's configuration will be created using Spring JavaConfig in a class called `CoreConfig`.
 
@@ -85,15 +82,15 @@ The following code shows the complete configuration class:
 	@Configuration
 	public class CoreConfig {
 
-  	@Bean
-  	public OrderService createService(OrdersRepository repo) {
-    	return new OrderEventHandler(repo);
-  	}
+  	  @Bean
+  	  public OrderService createService(OrdersRepository repo) {
+    	  return new OrderEventHandler(repo);
+  	  }
 
-  	@Bean
-  	public OrdersRepository createRepo() {
-    	return new OrdersMemoryRepository(new HashMap<UUID, Order>());
-  	}
+  	  @Bean
+  	  public OrdersRepository createRepo() {
+    	  return new OrdersMemoryRepository(new HashMap<UUID, Order>());
+  	  }
 	}
 
 Spring JavaConfig will detect each of the `@Bean` annotated methods as methods that generate configured Spring Beans.
@@ -252,6 +249,19 @@ Now with a root Application Context already to hand, in the `configureSpringMvc`
 
 Finally, using the `servletContext` you can dynamically initialise the Spring MVC `DispatcherServlet`, in this case mapping the `DispatcherServlet` to the root of the newly registered application.
 
+ 	ServletRegistration.Dynamic appServlet = servletContext.addServlet(
+        "webservice", new DispatcherServlet(mvcContext));
+    	appServlet.setLoadOnStartup(1);
+    	Set<String> mappingConflicts = appServlet.addMapping("/");
+
+    	if (!mappingConflicts.isEmpty()) {
+      	for (String s : mappingConflicts) {
+        	LOG.error("Mapping conflict: " + s);
+      	}
+      	throw new IllegalStateException(
+          "'webservice' cannot be mapped to '/'");
+    	}
+
 The `DispatcherServlet` is a 'front controller' servlet that receives all incoming requests that should be considered for the various controllers registered. The DispatcherServlet then is the overall orchestrator of how each incoming request is channelled to the appropriate handler method on the available controllers.
 
 The full `WebAppInitializer` source code is shown below:
@@ -312,7 +322,7 @@ The full `WebAppInitializer` source code is shown below:
       	throw new IllegalStateException(
           "'webservice' cannot be mapped to '/'");
     	}
-  	}
+  	  }
 	}
 
 ## Running your RESTful service in a Web Container
