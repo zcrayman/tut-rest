@@ -327,49 +327,28 @@ The full `WebAppInitializer` source code is shown below:
 
 ## Running your RESTful service in a Web Container
 
-Setting up a web.xml - we use JavaCOnfig, so use AnnotationConfigWebApplicationContext as contextClass init param
- - we have created a configuration domain, com.yummynoodlebar.core.config
+Finally it's the moment of truth, can we execute your new RESTful service? 
 
-to be able to build a war 
+To find out, first we need to tell Gradle that we'd like to use Tomcat. This is done by adding the following line to our `build.gradle` file:
 
-build.gradle
-apply plugin: 'war'
+	apply plugin: 'tomcat'
 
-to be able to run up in dev mode
+Now we can run the following from the command line to execute our new service on port 8080 by default:
 
-build.gradle
-apply plugin: 'tomcat'
+	> ./gradlew tomcatRunWar
 
-Change context path otherwise the default is the directory name */
-build.gradle
-tomcatRunWar.contextPath = ''
+Then, if you visit `http://localhost:8080/aggregators/orders` in your browser you should get the following JSON response, which indicates that you've not yet got any Orders in the application:
 
-We can now make a working war file 
+If you need to set your web application to run on a different port or configure other settings, that information is available on the [Gradle Tomcat Plugin](https://github.com/bmuschko/gradle-tomcat-plugin/) project page.
 
-./gradlew war
+If you plan on executing your service in another container and want to generate a WAR file instead, simply run the following command:
 
+	> ./gradlew war
 
-We can start the app in dev mode using gradle
+## Summary
 
-./gradlew tomcatRunWar
+You've come a long way! You've now got a fully configured RESTful web service that is running in Tomcat and can be packaged for distribution in a WAR file.
 
-Then visit http://localhost:8080/aggregators/orders
-
-You will get a response JSON that is an empty list 
-
-We need to check that this is all set up validly, taking us on to the next subject, functional testing using RestTemplate
-
-Notes from prior step:
-
-(the below is copy and paste, rewrite)
-NB.  Java Config, as set up in MVCConfig, will detect the existence of Jackson and JAXB 2 on the classpath and automatically creates and registers default JSON and XML converters. The functionality of the annotation is equivalent to the XML version:
-
-<mvc:annotation-driven />
-
-This is a shortcut, and though it may be useful in many situations, it’s not perfect. When more complex configuration is needed, remove the annotation and extend WebMvcConfigurationSupport directly.
-
-^^^^^^^
-The above has been moved to page3, leaving this page purely in the MockMVC tests
-
+But how do you really know that when you've deployed your service it really works? That's the job of functional testing, and that's your task in the next section of this tutorial.
 
 [Next… Testing your Service using RESTTemplate](../4/)
