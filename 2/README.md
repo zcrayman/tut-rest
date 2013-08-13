@@ -2,7 +2,7 @@
 
 It's time to implement your Yummy Noodle Bar RESTful service. The first step in building a service with Spring MVC is to construct and test one or more Controllers that will be responsible for handling each of the incoming HTTP Requests that you defined for your service in the previous step.
 
-## Starting with a (failing) test
+## Starting with a (Failing) Test
 
 [Test Driven Development (TDD)]() teaches us that if you haven't got a failing test then there's no code to write! So before we dive into implementing our service, let's create a couple of tests that justifies and encourages us to write some code to make the test pass.
 
@@ -352,7 +352,7 @@ To implement a handler method for the `CancelOrderIntegrationTest` tests, you're
 
 Next you need to implement a method that handles an HTTP Request that carried a DELETE HTTP Method, targeting a specific Order resource. The following code snippet shows that handler method:
 
-  	  @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+  	    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     	public ResponseEntity<Order> cancelOrder(@PathVariable String id) {
 
         	OrderDeletedEvent orderDeleted = orderService.deleteOrder(new DeleteOrderEvent(UUID.fromString(id)));
@@ -374,7 +374,7 @@ The `cancelOrder` method needs to deal with additional conditions than an simple
 
 To vary the response code to a handler method, you need to use the `ResponseEntity` class. In the example above, the `ResponseEntity` objects afford you the opportunity to return an HTTP Status code of 403 (Forbidden) if an attempt is made to cancel an Order that does not exist.
 
-## Where did the response content get generated from?
+## Where did the JSON representations come from?
 
 Now when you run the tests in the example project you'll find that they all pass. But wait a second, how did those tests pass when they look for JSON content and we haven't specified how that is being rendered?
 
@@ -413,8 +413,6 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
   	public void setup() {
     	MockitoAnnotations.initMocks(this);
 
-    	//TODOCUMENT Add in both the XML and JSON converters.  This are both added in automatically to the application context
-    	//at runtime, if the appropriate jars are on the classpath.
     	this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter(),
                                   new Jaxb2RootElementHttpMessageConverter()).build();
@@ -422,7 +420,6 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
 
   	@Test
   	public void thatViewOrderRendersXMLCorrectly() throws Exception {
-
     	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
 
@@ -453,16 +450,87 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
   	}
 	}
 
-Remove:
-/*
- TODOCUMENT THis show content type negotiation in action.
+This test exercises your web service in two ways: it requests Order representations as JSON and also as XML.
 
- without the burden of an app context in the way, we can see all of the pieces of the puzzle and how they fit
- together.
+The first thing to notice in the tests is that the `mockMvc` object is being set up to support both XML and JSON. This will only work if the appropriate jar files are on the classpath, and so a quick glance in `build.gradle` will show the following dependencies to support JAXB2 rendering of XML representations:
 
- Note that rest.Order has been annotated with a JAXB @XmlRootElement to make this work.
- Helpfully, this is documented within Jaxb2RootElementHttpMessageConverter
+	  runtime 'javax.xml.bind:jaxb-api:2.2.9'
 
-*/
+All good so far, but XML marshalling from Java objects is a little more involved that JSON. Here you're using JAXB2, and so in addition you'll need to annotate your REST domain classes so that the additional meta-data to marshall the right XML is supplied. Take a look inside the `Order` class in `com.yummynoodlebar.rest.domain` for the following example:
+
+	package com.yummynoodlebar.rest.domain;
+
+	import com.yummynoodlebar.core.events.orders.OrderDetails;
+
+	import javax.xml.bind.annotation.XmlRootElement;
+	import java.io.Serializable;
+	import java.util.Collections;
+	import java.util.Date;
+	import java.util.Map;
+	import java.util.UUID;
+
+	@XmlRootElement
+	public class Order implements Serializable {
+
+  	private Date dateTimeOfSubmission;
+
+  	private Map<String, Integer> items;
+
+  	private UUID key;
+
+  	public Date getDateTimeOfSubmission() {
+    	return dateTimeOfSubmission;
+  	}
+
+  	public UUID getKey() {
+    	return key;
+  	}
+
+  	public Map<String, Integer> getItems() {
+    	return items;
+  	}
+
+  	public void setItems(Map<String, Integer> items) {
+    	if (items == null) {
+      	this.items = Collections.emptyMap();
+    	} else {
+      	this.items = Collections.unmodifiableMap(items);
+    	}
+  	}
+
+  	public void setDateTimeOfSubmission(Date dateTimeOfSubmission) {
+    	this.dateTimeOfSubmission = dateTimeOfSubmission;
+  	}
+
+  	public void setKey(UUID key) {
+    	this.key = key;
+  	}
+
+  	public OrderDetails toOrderDetails() {
+    	OrderDetails details = new OrderDetails();
+
+    	details.setOrderItems(items);
+    	details.setKey(key);
+    	details.setDateTimeOfSubmission(dateTimeOfSubmission);
+
+    	return details;
+  	}
+
+  	public static Order fromOrderDetails(OrderDetails orderDetails) {
+    	Order order = new Order();
+
+    	order.dateTimeOfSubmission = orderDetails.getDateTimeOfSubmission();
+	   order.key = orderDetails.getKey();
+	    order.setItems(orderDetails.getOrderItems());
+
+	    return order;
+	  }
+	}
+
+## Summary
+
+So far you've seen how to create controllers that can implement your RESTful service's API, and hjow to test those controllers using 'MockMVC' outside of a container to build your confidence that the handler mappings work and your controller will react to the right forms of HTTP Requests with the right types of content.
+
+It's now time to complete the plumbing so that your RESTful service can be run up for real.
 
 [Next… Wiring Up and Deploying your Service](../3/)
