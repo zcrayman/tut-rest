@@ -4,7 +4,7 @@ Now you have written and tested your controllers, it's time to bring the whole a
 
 * Creating configuration for the core of your application
 * Creating a configuration for the your REST components
-* Initialising your Web Application itself
+* Initialising your RESTful Service's Web Infrastructure
 * Running up your complete RESTful service
 
 ## Creating a Configuration for your Application's Core Domain using Spring JavaConfig
@@ -184,18 +184,15 @@ import org.springframework.web.context.WebApplicationContext;
   	}
 	}
  
+You've already asserted the correctness of the collaboration between your controllers and the underlying service components in the Core Domain. 
 
-To be continued… include:
-//TODOCUMENT We have already asserted the correctness of the collaboration.
-//This is to check that the wiring in MVCConfig works.
-//We do this by inference, via hitting URLs in the system and checking they work as expected
-//given a well known infrastructure and system state.
-//this is a minimal set, as we've checked the actual behaviour of rendering, http status handling
-//and URL mapping separately.
+This test just needs to ensure that once everything is wired together, that the wiring in the MVCConfig is correct and the appropriate controllers are in attendance.
 
-Create a Config covering the rest components. - MVCConfig
-Create an integration that runs up both configurations together and exercises the MVC stack fully integrated with the core - RestDomainIntegrationTest.  
-THis is outside of a web container, but includes the DispatcherServlet (as did the controller integration tests written on page 2)
+The test validates the `MVCConfig` by mocking requests that exercise the handler mappings that should be present and asserting that the full responses expected are correct also. More testing could be done, but you've already asserted that your controllers should work appropriately in the previous steps, this test is simply there to give you confidence that now you are configuring those components using Spring JavaConfig, they continue to perform as expected.
+
+## Initialising your RESTful Service's Web Infrastructure
+
+To be continued…
 
 Setting up a web.xml - we use JavaCOnfig, so use AnnotationConfigWebApplicationContext as contextClass init param
  - we have created a configuration domain, com.yummynoodlebar.core.config
