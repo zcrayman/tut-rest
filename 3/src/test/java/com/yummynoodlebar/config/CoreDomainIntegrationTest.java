@@ -1,6 +1,5 @@
 package com.yummynoodlebar.config;
 
-import com.yummynoodlebar.config.CoreConfig;
 import com.yummynoodlebar.core.events.orders.AllOrdersEvent;
 import com.yummynoodlebar.core.events.orders.CreateOrderEvent;
 import com.yummynoodlebar.core.events.orders.OrderDetails;

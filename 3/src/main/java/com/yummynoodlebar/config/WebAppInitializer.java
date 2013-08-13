@@ -55,5 +55,4 @@ public class WebAppInitializer implements WebApplicationInitializer {
           "'webservice' cannot be mapped to '/'");
     }
   }
-
 }
