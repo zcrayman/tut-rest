@@ -308,7 +308,7 @@ Now it's time to focus on making the `ViewOrderIntegrationTest` and the `CancelO
 
 ### Implementing the OrderQueriesController
 
-Let's start by implementing the controller that is responsible for handling requests that simply read the current state of the Order resources.
+Let's start by implementing the controller that is responsible for handling requests that simply read the current state of the Order resources. This will be the controller that will make the `ViewOrderIntegrationTest` tests pass.
 
 The first step is to map the root URI to the controller as shown in the following code snippet:
 
@@ -316,54 +316,59 @@ The first step is to map the root URI to the controller as shown in the followin
 	@RequestMapping("/aggregators/orders")
 	class OrderQueriesController {
 
-Next we need to implement two handler methods that response to a request with a GET HTTP Method on the root URI of /aggregators/orders:
+The `ViewOrdersIntegrationTest` is specifically looking to test requests that are sent to /aggregators/orders/{id} and so you need to implement a controller handler method that will service those requests as shown below:
 
-	    @RequestMapping(method = RequestMethod.GET)
-    	@ResponseStatus(HttpStatus.OK)
-    	@ResponseBody
-    	public List<Order> getAllOrders() {
-        	List<Order> orders = new ArrayList<Order>();
-        	for (OrderDetails detail : orderService.requestAllOrders(new RequestAllOrdersEvent()).getOrdersDetails()) {
-            	orders.add(Order.fromOrderDetails(detail));
-        	}
-        	return orders;
-    	}
-
-Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. You should always avoid having business logic in your controllers and delegate that responsibility to a collaborating component.
-
-This handler method is, by default, listening for requests that arrive targeting the root URI as specified at the controller class level, in this case that is /aggregator/orders.
-
-You're using @RequestMapping to specify that this handler method responds only to those HTTP requests that contain the GET HTTP Method. We're also using the @ResponseStatus annotation for the first time here to set the default, successful execution Http Status code for the HTTP response that is returned to the client.
-
-Finally we can implement the last query method for Orders on our service that will respond to a request for a specific Order.
-
-	    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
     	public ResponseEntity<Order> viewOrder(@PathVariable String id) {
 
         	OrderDetailsEvent details = orderService.requestOrderDetails(new RequestOrderDetailsEvent(UUID.fromString(id)));
 
-	        if (!details.isEntityFound()) {
-	            return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
-	        }
+        	if (!details.isEntityFound()) {
+            	return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
+        	}
 
-	        Order order = Order.fromOrderDetails(details.getOrderDetails());
+        	Order order = Order.fromOrderDetails(details.getOrderDetails());
 
-	        return new ResponseEntity<Order>(order, HttpStatus.OK);
- 	   }
+        	return new ResponseEntity<Order>(order, HttpStatus.OK);
+    	}
 
-To be concluded…
+Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. It is a reasonable design goal to avoid having business logic in your controllers and delegate that responsibility to a collaborating component.
 
-That's all the handler methods that we need for directly requesting information about the current state of your service's Orders. The next step is to support that state being manipulated by requests that instigate commands.
+As you can see from the `@RequestMapping` annotation, the `viewOrder` handler method is mapped a URI that is constructed from a combination of the controller's default URI, /aggregator/orders, combined with the template parameter of `{id}` to make the complete mapping for this method /aggregator/orders/{id}.
+
+The `{id}` parameter is then mapped as a String into the `viewOrder` method. Finally, since this is a read-only query request, then `@RequestMapping` also specifies that this method should only be called for HTTP requests with a GET HTTP Method.
+ 
+This handler method is, by default, listening for requests that arrive targeting the root URI as specified at the controller class level, in this case that is /aggregator/orders.
+
+That's all the handler methods that we need for directly requesting information about the current state of your service's Orders as specified by the `ViewOrderIntegrationTest`. The next step is to support that state being manipulated by requests that instigate commands.
 
 ### Implementing the OrderCommandsController
 
-To encapsulate all the requests that change the state of your Orders, we're going to create a class called `OrderCommandsController` and map it to the root URL for Order resources /aggregators/orders as shown below.
+To implement a handler method for the `CancelOrderIntegrationTest` tests, you're going to create a class called `OrderCommandsController` and map it to the root URL for Order resources /aggregators/orders as shown below.
 
 	@Controller
 	@RequestMapping("/aggregators/orders")
 	public class OrderCommandsController {
 
-Next we need to field a request for all the Orders available in the system. To 
+Next you need to implement a method that handles an HTTP Request that carried a DELETE HTTP Method, targeting a specific Order resource. The following code snippet shows that handler method:
+
+  	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    	public ResponseEntity<Order> cancelOrder(@PathVariable String id) {
+
+        	OrderDeletedEvent orderDeleted = orderService.deleteOrder(new DeleteOrderEvent(UUID.fromString(id)));
+
+        	if (!orderDeleted.isEntityFound()) {
+            return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
+        	}
+
+        	Order order = Order.fromOrderDetails(orderDeleted.getDetails());
+
+        	if (orderDeleted.isDeletionCompleted()) {
+            return new ResponseEntity<Order>(order, HttpStatus.OK);
+        	}
+
+        	return new ResponseEntity<Order>(order, HttpStatus.FORBIDDEN);
+    	}
 
 ## Where did the response content get generated from?
 
