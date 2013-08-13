@@ -1,4 +1,4 @@
-## Step 5: Securing your Service with Spring Security
+# Step 5: Securing your Service with Spring Security
 
 
 Add spring security to the build.gradle.  This includes adding the spring milestone repository.
