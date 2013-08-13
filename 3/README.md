@@ -137,7 +137,7 @@ No configuration should be trusted without an accompanying test. The following t
 	import org.springframework.test.context.web.WebAppConfiguration;
 	import org.springframework.test.web.servlet.MockMvc;
 	import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+    import org.springframework.web.context.WebApplicationContext;
 
 	import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.standardOrderJSON;
 	import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -151,34 +151,34 @@ import org.springframework.web.context.WebApplicationContext;
 	@ContextConfiguration(classes = {CoreConfig.class, MVCConfig.class})
 	public class RestDomainIntegrationTest {
 
-  	@Autowired
-  	WebApplicationContext webApplicationContext;
-
-  	private MockMvc mockMvc;
-
-  	@Before
-  	public void setup() {
-    	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-  	}
-
-  	@Test
-  	public void addANewOrderToTheSystem() throws Exception  {
-    	this.mockMvc.perform(
-            post("/aggregators/order")
-                    .content(standardOrderJSON())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isCreated());
-
-    	this.mockMvc.perform(
-            get("/aggregators/orders")
-                    .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].items['" + RestDataFixture.YUMMY_ITEM + "']").value(12));
-
-  	}
+      	@Autowired
+      	WebApplicationContext webApplicationContext;
+    
+      	private MockMvc mockMvc;
+    
+      	@Before
+      	public void setup() {
+        	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+      	}
+    
+      	@Test
+      	public void addANewOrderToTheSystem() throws Exception  {
+        	this.mockMvc.perform(
+                post("/aggregators/order")
+                        .content(standardOrderJSON())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    
+        	this.mockMvc.perform(
+                get("/aggregators/orders")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].items['" + RestDataFixture.YUMMY_ITEM + "']").value(12));
+    
+      	}
 	}
  
 You've already asserted the correctness of the collaboration between your controllers and the underlying service components in the Core Domain. 
@@ -189,7 +189,7 @@ The test validates the `MVCConfig` by mocking requests that exercise the handler
 
 ## Initialising your RESTful Service's Web Infrastructure
 
-As of Spring 3.2 it's now possible, if you're using a web container that supports the Servlet 3 specification, to initialise the underlying web infrastructure for your application without writing a line of XML.
+As of Spring 3.2 it's now possible, if you're using a web container that supports the Servlet 3 specification such as Tomcat 7+, to initialise the underlying web infrastructure for your application without writing a line of XML.
 
 Here you're going to use the `WebApplicationInitializer` to setup your application's web application context parameters to bootstrap your application's web infrastructure as shown in the following code:
 
@@ -329,9 +329,24 @@ The full `WebAppInitializer` source code is shown below:
 
 Finally it's the moment of truth, can we execute your new RESTful service? 
 
-To find out, first we need to tell Gradle that we'd like to use Tomcat. This is done by adding the following line to our `build.gradle` file:
+To find out, first we need to tell Gradle that we'd like to use Tomcat. This is done by adding the following to our `build.gradle` file:
 
 	apply plugin: 'tomcat'
+	
+	buildscript {
+      repositories {
+        mavenCentral()
+        maven { url 'http://repo.springsource.org/plugins-release' }
+      }
+      dependencies {
+        classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.8'
+      }
+    }
+    
+
+Adding the following property to the end of the `build.gradle` ensures that our application runs at the root context, instead of the project name (which defaults to the name of the parent directory)
+    
+     tomcatRunWar.contextPath = ''   
 
 Now we can run the following from the command line to execute our new service on port 8080 by default:
 
@@ -352,3 +367,4 @@ You've come a long way! You've now got a fully configured RESTful web service th
 But how do you really know that when you've deployed your service it really works? That's the job of functional testing, and that's your task in the next section of this tutorial.
 
 [Next… Testing your Service using RESTTemplate](../4/)
+
