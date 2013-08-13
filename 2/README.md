@@ -352,7 +352,7 @@ To implement a handler method for the `CancelOrderIntegrationTest` tests, you're
 
 Next you need to implement a method that handles an HTTP Request that carried a DELETE HTTP Method, targeting a specific Order resource. The following code snippet shows that handler method:
 
-  	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+  	  @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     	public ResponseEntity<Order> cancelOrder(@PathVariable String id) {
 
         	OrderDeletedEvent orderDeleted = orderService.deleteOrder(new DeleteOrderEvent(UUID.fromString(id)));
@@ -370,7 +370,28 @@ Next you need to implement a method that handles an HTTP Request that carried a 
         	return new ResponseEntity<Order>(order, HttpStatus.FORBIDDEN);
     	}
 
+The `cancelOrder` method needs to deal with additional conditions than an simple call to see a representation of an Order. Here there's the possibility that there is no Order with the indicated ID.
+
+To vary the response code to a handler method, you need to use the `ResponseEntity` class. In the example above, the `ResponseEntity` objects afford you the opportunity to return an HTTP Status code of 403 (Forbidden) if an attempt is made to cancel an Order that does not exist.
+
 ## Where did the response content get generated from?
+
+Now when you run the tests in the example project you'll find that they all pass. But wait a second, how did those tests pass when they look for JSON content and we haven't specified how that is being rendered?
+
+In traditional Spring MVC there would be a `ViewResolver` and a specific View to render content for an HTTP Response. With a RESTful service, it is much more common to render the returned object from a handler method *as the content itself* and so a view is rarely needed.
+
+The secret for how things are working here is in looking at the dependencies that the project itself has. If you look in the `build.gradle` file in the project's root directory you should see the following entries in the project dependencies:
+
+	runtime 'com.fasterxml.jackson.core:jackson-core:2.2.2'
+    	runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
+
+These two dependencies are enough for Spring MVC to be able to take classes defined in your RESTful domain that capture the representations that need to be rendered, see the `com.yummynoodlebar.rest.domain` package, and render those objects as JSON according to the content type requested by the client.
+
+This might be a little new to anyone coming from traditional web application development. It is normal in traditional web application development for a browser to send a whole plethora of possible options as part of the content type negotiation on a given HTTP request. The server will then decide what content to return from that large set of possibilities.
+
+With a RESTful service it is much more typical for a client to ask for exactly what it requires as a content type for a returned representation, and so rather than your controller declaring a specific view to render, the Spring MVC content negotiation is invoked according to what content type is requested by the client.
+
+In our test environment, JSON is being requested. But what about when another content type is requested? For example, perhaps the client would prefer XML?
 
 ### Using JAXB to marshall Objects into Content
 
