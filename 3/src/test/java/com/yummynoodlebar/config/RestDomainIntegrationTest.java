@@ -18,14 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-//TODOCUMENT We have already asserted the correctness of the collaboration.
-//This is to check that the wiring in MVCConfig works.
-//We do this by inference, via hitting URLs in the system and checking they work as expected
-//given a well known infrastructure and system state.
-//this is a minimal set, as we've checked the actual behaviour of rendering, http status handling
-//and URL mapping separately.
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;ß
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
