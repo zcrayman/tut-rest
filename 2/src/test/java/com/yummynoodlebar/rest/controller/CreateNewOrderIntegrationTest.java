@@ -54,8 +54,6 @@ public class CreateNewOrderIntegrationTest {
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
-            //print() can be somewhat chatty, but is useful for understanding the routing and mapping behaviour of the MVC framework,
-            //especially when running in a non app context environment as this test is.
             .andDo(print())
             .andExpect(status().isCreated());
   }

@@ -25,7 +25,7 @@ This can for our purposes be simplified into two further categories of interacti
 
 It's possible to implement these two categories of interactions using one controller for each resource but the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises us to split these responsibilities into different routes through our application, and so in this tutorial we'll implement these concerns separately.
 
-### Implementing failing test(s) for a Controller with MockMVC
+### Implementing Failing Test(s) for a Controller with MockMVC
 
 We won't implement all of the tests needed for your RESTful service here, the full source is available for download separately. Instead we'll look at two unit tests that look for an example of each of the categories of interaction through the RESTful service, commands and queries.
 
@@ -89,9 +89,8 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 
 	package com.yummynoodlebar.rest.controller;
 
-	import com.yummynoodlebar.core.events.orders.DeleteOrderEvent;
+	import com.yummynoodlebar.core.events.orders.RequestOrderDetailsEvent;
 	import com.yummynoodlebar.core.services.OrderService;
-	import org.hamcrest.Matchers;
 	import org.junit.Before;
 	import org.junit.Test;
 	import org.mockito.InjectMocks;
@@ -103,20 +102,21 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 
 	import java.util.UUID;
 
-	import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.*;
-	import static org.mockito.Mockito.*;
+	import static org.mockito.Mockito.any;
 	import static org.mockito.Mockito.when;
-	import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+	import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 	import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 	import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 	import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+	import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.*;
+	import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.*;
 
-	public class CancelOrderIntegrationTest {
+	public class ViewOrderIntegrationTest {
 
   	MockMvc mockMvc;
 
   	@InjectMocks
-  	OrderCommandsController controller;
+  	OrderQueriesController controller;
 
   	@Mock
   	OrderService orderService;
@@ -125,61 +125,50 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 
   	@Before
   	public void setup() {
-    MockitoAnnotations.initMocks(this);
+    	MockitoAnnotations.initMocks(this);
 
     	this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
-
   	}
 
   	@Test
-  	public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
+  	public void thatViewOrderUsesHttpNotFound() throws Exception 	{
 
-    	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
-            .thenReturn(
-                    orderDeleted(key));
+    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+            orderDetailsNotFound(key));
 
     	this.mockMvc.perform(
-            delete("/aggregators/orders/{id}", key.toString())
-                    .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isOk());
-
-    	verify(orderService).deleteOrder(argThat(
-            Matchers.<DeleteOrderEvent>hasProperty("key",
-                    Matchers.equalTo(key))));
-  	}
-
-  @Test
-  public void thatDeleteOrderUsesHttpNotFoundOnEntityLookupFailure() throws Exception {
-
-    when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
-            .thenReturn(
-                    orderDeletedNotFound(key));
-
-    this.mockMvc.perform(
-            delete("/aggregators/orders/{id}", key.toString())
+            get("/aggregators/orders/{id}",  key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound());
-
-  }
+  	}
 
   	@Test
-  	public void thatDeleteOrderUsesHttpForbiddenOnEntityDeletionFailure() throws Exception {
+  	public void thatViewOrderUsesHttpOK() throws Exception {
 
-    	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
-            .thenReturn(
-                    orderDeletedFailed(key));
+    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+            orderDetailsEvent(key));
 
     	this.mockMvc.perform(
-            delete("/aggregators/orders/{id}", key.toString())
+            get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            .andExpect(status().isForbidden());
+            .andExpect(status().isOk());
+  	}
+
+  	@Test
+  	public void thatViewOrderRendersCorrectly() throws Exception {
+
+    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+            orderDetailsEvent(key));
+
+    	this.mockMvc.perform(
+            get("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
+            .andExpect(jsonPath("$.key").value(key.toString()));
   	}
 	}
-
 
 Now let's take a look at a test implemented in exactly the same fashion, but performing the job of cancelling an Order by sending a HTTP Request with a DELETE HTTP Method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
 
