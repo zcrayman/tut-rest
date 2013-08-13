@@ -61,8 +61,8 @@ In the @Before annotated setup() method, we're setting up Mockito as well as gen
 
 Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
 
-	  @Test
-  	  public void thatViewOrderRendersCorrectly() throws Exception {
+	@Test
+  	public void thatViewOrderRendersCorrectly() throws Exception {
 
 	  when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
@@ -72,7 +72,7 @@ Finally we can implement a test method that performs an HTTP Request on our cont
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
             .andExpect(jsonPath("$.key").value(key.toString()));
-  }
+  	}
 
 
 Pseudo: Explore two tests, view Order and Cancel Order.
