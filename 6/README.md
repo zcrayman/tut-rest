@@ -165,6 +165,7 @@ The full test class will now look something like (we've extracted the order gene
 This test will now not compile.
 
 To rectify this, but still leave a failing test, update `rest.domain.Order` to read 
+    
     ..
     import org.springframework.hateoas.ResourceSupport;
 
@@ -186,11 +187,11 @@ So, to add some links.  Adding a link in Spring Hateoas looks like this :-
 
     order.add(linkTo(OrderQueriesController.class).slash(key).withSelfRel());
     
-This is quite terse and readable.  
+This is quite succinct and readable.  
 
 Firstly, it defines where the link is going.  Namely, to the OrderQueriesController, followed by an ID (UUID in our case).  This will work with the template URI that we defined on OrderQueriesController earlier to map the URI to OrderQueriesController.viewOrder().  Although at this point, we aren't that concerned.
 
-The .withSelfRel() indicates that this is the definitive URI for this Resource, a self reference.   This is most useful if you store a Resource without its url, and want to reference it again later, or if you have just created a new Resource, and want to navigate to its location.  In the second case, the Location header should also be available.
+The .withSelfRel() indicates that this is the definitive URI for this Resource, a self reference.   This is most useful if you store a Resource without its url, and want to reference it again later, or if you have just created a new Resource, and want to navigate to its location.  In the second case, the Location header should also be available (and is in the service we are contructing in this tutorial)
 
 To add links that are not self references, the syntax is :-
 
