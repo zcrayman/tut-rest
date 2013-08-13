@@ -23,7 +23,7 @@ The first step is to map the root URI to the controller as shown in the followin
 
 Next we need to implement two handler methods that response to a request with a GET HTTP Method on the root URI of /aggregators/orders:
 
-	@RequestMapping(method = RequestMethod.GET)
+	    @RequestMapping(method = RequestMethod.GET)
     	@ResponseStatus(HttpStatus.OK)
     	@ResponseBody
     	public List<Order> getAllOrders() {
