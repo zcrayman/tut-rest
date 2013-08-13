@@ -108,7 +108,7 @@ The main differences with this test is that there is no content returned from th
 
 At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course, at this point the tests will all fail as we haven't created any corresponding controllers…
  
-## Making the tests pass: implementing the Controllers
+## Making the Tests Pass: Implementing the Controllers
 
 ### Implementing the OrderQueriesController
 
