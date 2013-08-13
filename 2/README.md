@@ -74,8 +74,38 @@ Finally we can implement a test method that performs an HTTP Request on our cont
             .andExpect(jsonPath("$.key").value(key.toString()));
   	}
 
+It's worth at this point looking at the final call in the above method, the usage of MockMVC, in a little more detail.
 
-Pseudo: Explore two tests, view Order and Cancel Order.
+In order, the mockMvc object is performing the following:
+
+* Performing a mock HTTP Request with a GET HTTP Method on the URI /aggregators/orders/{id}.
+* Specifying in the 'accept' HTTP Header that the service should respond with JSON.
+* Analysing the content of the returned JSON to ensure that some mocked data is present, as provided by the mock collaborators that were set up at the start of the test method.
+
+The Spring MockMVC component makes it possible to do this testing where you can be sure that for a given URI a given rendered content in the response will be returned, all executed in a unit test from within your IDE or Continuous Integration environments.
+
+Finally let's take a look at a test implemented in exactly the same fashion, but performing the job of cancelling an Order by sending a HTTP Request with a DELETE HTTP Method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
+
+  	@Test
+  	public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
+
+    	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
+            .thenReturn(
+                    orderDeleted(key));
+
+    	this.mockMvc.perform(
+            delete("/aggregators/orders/{id}", key.toString())
+                    .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+    	verify(orderService).deleteOrder(argThat(
+            Matchers.<DeleteOrderEvent>hasProperty("key",
+                    Matchers.equalTo(key))));
+  	}
+
+  	}
+
 
 ## Making the tests pass: implementing the Controllers
 
