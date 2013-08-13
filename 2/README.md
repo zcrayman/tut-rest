@@ -79,6 +79,7 @@ It's worth at this point looking at the final call in the above method, the usag
 In order, the mockMvc object is performing the following:
 
 * Performing a mock HTTP Request with a GET HTTP Method on the URI /aggregators/orders/{id}.
+* Replacing the {id} marker in the URI template with the contents of the response to the key.toString() call.
 * Specifying in the 'accept' HTTP Header that the service should respond with JSON.
 * Analysing the content of the returned JSON to ensure that some mocked data is present, as provided by the mock collaborators that were set up at the start of the test method.
 
@@ -90,8 +91,7 @@ Finally let's take a look at a test implemented in exactly the same fashion, but
   	public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
 
     	when(orderService.deleteOrder(any(DeleteOrderEvent.class)))
-            .thenReturn(
-                    orderDeleted(key));
+            .thenReturn(orderDeleted(key));
 
     	this.mockMvc.perform(
             delete("/aggregators/orders/{id}", key.toString())
@@ -104,9 +104,10 @@ Finally let's take a look at a test implemented in exactly the same fashion, but
                     Matchers.equalTo(key))));
   	}
 
-  	}
+The main differences with this test is that there is no content returned from the mock HTTP Request performed using MockMvc. Instead you are using Mockito's verify behaviour to ensure that your controller is making the appropriate `deleteOrder` call to the mock `orderService` in order for the test to pass.
 
-
+At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course, at this point the tests will all fail as we haven't created any corresponding controllers…
+ 
 ## Making the tests pass: implementing the Controllers
 
 ### Implementing the OrderQueriesController
