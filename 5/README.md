@@ -92,7 +92,7 @@ public class OrderTests {
         assertEquals(2, order.getItems().size());
     }
 }
-
+```
 As HTTP Basic authentication requires you to add some new headers, and so creating those headers is going to become more involved, you'll first extract the creation of those headers for the HTTP request into a separate method called `getHeaders`:
 
 ```java   
@@ -121,7 +121,7 @@ static HttpHeaders getHeaders(String auth) {
 
 Finally you can update the original test to use the new `getHeaders` helper method to add security headers to your outgoing HTTP Request:
 
-```
+```java
 @Test
 public void thatOrdersCanBeAddedAndQueried() {
     HttpEntity<String> requestEntity = new HttpEntity<String>(
@@ -358,7 +358,7 @@ rootContext.register(CoreConfig.class, SecurityConfig.class);
 ```
 
 Now you can add the Spring Security Filter:
-```
+```java
 private void configureSpringSecurity(ServletContext servletContext, WebApplicationContext rootContext) {
     FilterRegistration.Dynamic springSecurity = 
             servletContext.addFilter("springSecurityFilterChain", 

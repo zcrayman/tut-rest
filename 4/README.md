@@ -87,6 +87,7 @@ public class OrderTests {
         assertEquals(2, order.getItems().size());
     }
 }
+```
 
 ## Summary
 
