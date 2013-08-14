@@ -45,7 +45,7 @@ public class RestDomainIntegrationTest {
   @Test
   public void addANewOrderToTheSystem() throws Exception  {
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
