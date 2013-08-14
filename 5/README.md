@@ -45,11 +45,52 @@ Instead of diving straight into adding your security configuration, let's instea
 
 ## Testing for Security
 
-TBD. 
+You already have a functional test from the previous section that attempts to access your running RESTful service as shown in the code below:
 
-You already have a test that
+	package com.yummynoodlebar.rest.functional;
 
-First extract the header creation into a seperate method.
+	import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
+	import com.yummynoodlebar.rest.domain.Order;
+	import org.junit.Test;
+	import org.springframework.http.*;
+	import org.springframework.web.client.RestTemplate;
+
+	import java.util.Arrays;
+
+	import static junit.framework.TestCase.assertEquals;
+	import static junit.framework.TestCase.assertTrue;
+
+	public class OrderTests {
+
+  	@Test
+  	public void thatOrdersCanBeAddedAndQueried() {
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+    	headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+    	RestTemplate template = new RestTemplate();
+
+    	HttpEntity<String> requestEntity = new HttpEntity<String>(
+        RestDataFixture.standardOrderJSON(),headers);
+
+    	ResponseEntity<Order> entity = template.postForEntity(
+        "http://localhost:8080/aggregators/order",
+        requestEntity, Order.class);
+
+    	String path = entity.getHeaders().getLocation().getPath();
+
+    	assertEquals(HttpStatus.CREATED, entity.getStatusCode());
+    	assertTrue(path.startsWith("/aggregators/order/"));
+    	Order order = entity.getBody();
+
+    	System.out.println ("The Order ID is " + order.getKey());
+    	System.out.println ("The Location is " + entity.getHeaders().getLocation());
+
+    	assertEquals(2, order.getItems().size());
+  }
+}
+
+As HTTP Basic authentication requires you to add some new headers, and so creating those headers is going to become more involved, you'll first extract the creation of those headers for the HTTP request into a separate method called `getHeaders`:
     
     static HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -59,7 +100,7 @@ First extract the header creation into a seperate method.
         return headers;
     }
 
-Add an authorization header, and supply the value as an argument, to allow us to pass in parameters from different tests
+Now you can add an authorization header and capture the value as an argument to the `getHeaders` method to allow you to pass in different security parameters from different test methods:
 
     static HttpHeaders getHeaders(String auth) {
         HttpHeaders headers = new HttpHeaders();
@@ -72,7 +113,7 @@ Add an authorization header, and supply the value as an argument, to allow us to
         return headers;
     }
 
-Update the original test to use this new helper method.
+Finally you can update the original test to use the new `getHeaders` helper method to add security headers to your outgoing HTTP Request:
 
     @Test
     public void thatOrdersCanBeAddedAndQueried() {
@@ -97,9 +138,11 @@ Update the original test to use this new helper method.
         assertEquals(2, order.getItems().size());
     }
 
-This test will still pass, the Authorization header will simply be ignored by our application as it stands.  We need to make a *failing* test.
+At the moment this test will still pass as the Authorization header will simply be ignored by our application. But following our own rules, ideally you really need to make a *failing* test.
 
-We do this by creating a request that we know should fail if security is enabled, and check that it does.  Add in the following, noting that we have corrupted the password to something different to the above, one that we expect to fail.
+You can do this by creating a request that you know should fail if security is enabled, and check that it does. 
+
+Add in the following test method where you will deliberately corrupt the password to something different to the previous `thatOrdersCanBeAddedAndQueried ` test method so that we can expect this request to fail:
 
     @Test
     public void thatOrdersCannotBeAddedAndQueriedWithBadUser() {
@@ -115,9 +158,9 @@ We do this by creating a request that we know should fail if security is enabled
         assertEquals(HttpStatus.FORBIDDEN, entity.getStatusCode());
     }
 
-This test will fail unless Spring Security is enabled and restricting access.
+In this test we're explicitly expecting an HTTP Response that contains an HTTP Status Code of 403 (Forbidden). However if you run this test against your service as it currently stands it will fail as the security credentials are still being ignored.
 
-The full test class is now 
+The full code for your functional test, including security, will now look like the following:
 
     package com.yummynoodlebar.rest.functional;
     
@@ -188,9 +231,9 @@ The full test class is now
     }
 
 
-Start the system using `./gradlew tomcatRunwar` and then run the tests.  You'll notice that one passes and one fails, as we expect.
+You now have your failing test! You now have a justifying failing test to change the code in your application. Now it's time to dive into adding security to your RESTful service.
 
-Now that we have a failing test, we can set up Spring Security.
+## Securing Your Resources 
 
 As we have imported Spring Security 3.2, we can use Java Config to set it all up. Create a new Spring configuration in com.yummynoodlebar.config named `SecurityConfig`.
 
