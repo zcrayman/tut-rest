@@ -36,5 +36,4 @@ class OrdersController {
     }
     return orders;
   }
-
 }

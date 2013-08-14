@@ -25,10 +25,6 @@ class OrderController {
   private OrderService orderService;
 
   @RequestMapping(method = RequestMethod.POST)
-  //TODOCUMENT using a response entity allows control of both the http status code and the headers.
-  //we could use an annotation to control the status code, but we require ResponseEntity for the header control
-  //we are returning the Location header back to the client, so thy know where the new order has been created.
-  //we also embed the order as the body, so they can read the key UUID in the returned json.
   public ResponseEntity<Order> createOrder(@RequestBody Order order, UriComponentsBuilder builder) {
 
     OrderCreatedEvent orderCreated = orderService.createOrder(new CreateOrderEvent(order.toOrderDetails()));

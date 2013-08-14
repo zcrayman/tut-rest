@@ -1,13 +1,28 @@
 # Step 5: Securing your Service with Spring Security
 
-... some spiel on HTTP Security. ...
+You've now got the Yummy Noodle Bar RESTful service all set in terms of functionality, the only problem is that it's perhaps a little *too* functional. 
 
-* using http basic.
-* every request must pre-emptively supply an Authorization Header.
-* if not authorized, supply http 403.
+You only want the right clients, the aggregators, to be able to submit and manage orders using the service, and so now you need to limit who can access the service to just those parties.
 
+Once again, all of our changes here will be limited to the Configuration Domain on the Life Preserver whose current state is shown below:
 
-Add spring security to the build.gradle.  This includes adding the spring milestone repository.
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-initial-config-domain-focus.png)
+
+## RESTful Security Basics
+
+In order to limit access to the Yummy Noodle Bar RESTful service, you need to extend the initial RESTful design a little with the following rules:
+
+* Use HTTP Basic for security credentials.
+* Every HTTP Request must supply an Authorization Header with the client's credentials as those won't be stored between requests on the server.
+* If a client is not authorized then the service should respond with an HTTP Response that contains a 403 HTTP Status Code http 403.
+
+Spring Security will help you perform all of the above steps, without you having to change so much as a single controller!
+
+## Adding Spring Security to your Project
+
+The first step to using Spring Security is to add its dependencies to the project.
+
+To do this you add the following entries to your `build.gradle` script:
 
     repositories {
         mavenCentral()
@@ -22,8 +37,17 @@ Add spring security to the build.gradle.  This includes adding the spring milest
         ...
     }    
 
+First you've added the Pivotal milestone repository so that you can use Spring Security 3.2.0.M2. This gives you the capability of using some of the dynamic configuration features of Spring Security, including setting up the web security through JavaConfig.
 
-Following our method of creating a test first. We will update the functional test we created in the last section to check the use of HTTP BASIC security
+Now you just need to secure your controllers by adding a little configuration… Hang On! Up until now we've been writing tests first before we need to make any code changes, including configuration! 
+
+Instead of diving straight into adding your security configuration, let's instead create a test so that you'll know when your security is being applied correctly.
+
+## Testing for Security
+
+TBD. 
+
+You already have a test that
 
 First extract the header creation into a seperate method.
     
