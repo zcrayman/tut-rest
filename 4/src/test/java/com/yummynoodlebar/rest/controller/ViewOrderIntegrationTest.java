@@ -27,7 +27,7 @@ public class ViewOrderIntegrationTest {
   MockMvc mockMvc;
 
   @InjectMocks
-  OrderController controller;
+  OrderQueriesController controller;
 
   @Mock
   OrderService orderService;
@@ -49,10 +49,8 @@ public class ViewOrderIntegrationTest {
             orderDetailsNotFound(key));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}",  key.toString())
+            get("/aggregators/orders/{id}",  key.toString())
                     .accept(MediaType.APPLICATION_JSON))
-            //TODOCUMENT print() can be somewhat chatty, but is useful for understanding the routing and mapping behaviour of the MVC framework,
-            //especially when running in a non app context environment as this test is.
             .andDo(print())
             .andExpect(status().isNotFound());
   }
@@ -64,7 +62,7 @@ public class ViewOrderIntegrationTest {
             orderDetailsEvent(key));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}", key.toString())
+            get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
   }
@@ -76,7 +74,7 @@ public class ViewOrderIntegrationTest {
             orderDetailsEvent(key));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}", key.toString())
+            get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
             .andExpect(jsonPath("$.key").value(key.toString()));
