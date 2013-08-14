@@ -317,7 +317,7 @@ At this point it's valuable to take a look at the remaining test implementations
 
 You now have a collection of test classes that will fail given that no controller's actually exist yet to respond to the mocked HTTP requests.
 
-Now it's time to focus on making the `ViewOrderIntegrationTest` and the `CancelOrderIntegrationTest`  tests pass. 
+Now it's time to focus on making the `ViewOrderIntegrationTest`, `CancelOrderIntegrationTest` and `CreateNewOrderIntegrationTest`  tests pass. 
 
 ### Implementing the OrderQueriesController
 
@@ -560,6 +560,10 @@ All good so far, but XML marshalling from Java objects is a little more involved
 ## Summary
 
 So far you've seen how to create controllers that can implement your RESTful service's API, and how to test those controllers using 'MockMVC' outside of a container to build your confidence that the handler mappings work and your controller will react to the right forms of HTTP Requests with the right types of content.
+
+Your Life Preserver now contains a whole new set of components, your controllers, in the RESTful domain:
+
+![Life Preserver showing RESTful Controllers](../images/life-preserver-rest-controllers-focus.png)
 
 It's now time to complete the plumbing so that your RESTful service can be run up for real.
 
