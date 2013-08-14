@@ -45,20 +45,76 @@ In order to make this work, you will need to introduce the concept of links into
 
 First you need to import Spring HATEOAS into your project by updating `build.gradle` with the following:
 
-    dependencies {
-        ...
-        compile 'org.springframework.hateoas:spring-hateoas:0.7.0.RELEASE'
-        ...
-    }
+```groovy
+dependencies {
+    ...
+    compile 'org.springframework.hateoas:spring-hateoas:0.7.0.RELEASE'
+    ...
+}
+```
 
 ### Creating a (Failing) Test for HATEOAS
 
 Following our practice so far of creating a test before altering the codebase add the into your `OrdersTest` test class.
 
+```java
+@Test
+public void thatOrdersHaveCorrectHateoasLinks() {
+
+    ResponseEntity<Order> entity = ...
+    
+    Order order = entity.getBody();
+    
+    String orderBase = "/aggregators/order/" + order.getKey();
+    
+    assertEquals(entity.getHeaders().getLocation().toString(), order.getLink("self").getHref());
+    assertTrue(order.getLink("Order Status").getHref().endsWith(orderBase + "/status"));
+}
+```
+    
+This code will not compile yet as the `Order` class in the RESTful Domain doesn't yet have a `getLink()` method.
+
+The full test class will now look like the following:
+
+```java
+package com.yummynoodlebar.rest.functional;
+
+import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
+import com.yummynoodlebar.rest.domain.Order;
+import com.yummynoodlebar.rest.domain.OrderStatus;
+import org.junit.Test;
+import org.springframework.http.*;
+import org.springframework.security.crypto.codec.Base64;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+
+public class OrderTests {
+
+    @Test
+    public void thatOrdersCanBeAddedAndQueried() {
+    
+        ResponseEntity<Order> entity = createOrder();
+        
+        String path = entity.getHeaders().getLocation().getPath();
+        
+        assertEquals(HttpStatus.CREATED, entity.getStatusCode());
+        assertTrue(path.startsWith("/aggregators/order/"));
+        Order order = entity.getBody();
+        
+        System.out.println ("The Order ID is " + order.getKey());
+        System.out.println ("The Location is " + entity.getHeaders().getLocation());
+        
+        assertEquals(2, order.getItems().size());
+    }
+    
     @Test
     public void thatOrdersHaveCorrectHateoasLinks() {
     
-        ResponseEntity<Order> entity = ...
+        ResponseEntity<Order> entity = createOrder();
         
         Order order = entity.getBody();
         
@@ -68,112 +124,63 @@ Following our practice so far of creating a test before altering the codebase ad
         assertTrue(order.getLink("Order Status").getHref().endsWith(orderBase + "/status"));
     }
     
-This code will not compile yet as the `Order` class in the RESTful Domain doesn't yet have a `getLink()` method.
-
-The full test class will now look like the following:
-
-    package com.yummynoodlebar.rest.functional;
+    @Test
+    public void thatNewOrderHasOrdersStatusCreated() {
     
-    import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
-    import com.yummynoodlebar.rest.domain.Order;
-    import com.yummynoodlebar.rest.domain.OrderStatus;
-    import org.junit.Test;
-    import org.springframework.http.*;
-    import org.springframework.security.crypto.codec.Base64;
-    import org.springframework.web.client.RestTemplate;
+        ResponseEntity<Order> entity = createOrder();
+        
+        Order order = entity.getBody();
+        
+        HttpEntity<String> requestEntity = new HttpEntity<String>(
+            RestDataFixture.standardOrderJSON(),getHeaders());
+        
+        RestTemplate template = new RestTemplate();
+        
+        ResponseEntity<OrderStatus> response = template.exchange(
+            order.getLink("Order Status").getHref(),
+            HttpMethod.GET,
+            requestEntity, OrderStatus.class);
+        
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Order Created", response.getBody().getStatus());
+    }
     
-    import java.util.Arrays;
+    private ResponseEntity<Order> createOrder() {
+        HttpEntity<String> requestEntity = new HttpEntity<String>(
+            RestDataFixture.standardOrderJSON(),getHeaders());
+        
+        RestTemplate template = new RestTemplate();
+        return template.postForEntity(
+            "http://localhost:8080/aggregators/order",
+            requestEntity, Order.class);
+    }
     
-    import static junit.framework.TestCase.assertEquals;
-    import static junit.framework.TestCase.assertTrue;
-    
-    public class OrderTests {
-    
-        @Test
-        public void thatOrdersCanBeAddedAndQueried() {
+    static HttpHeaders getHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         
-            ResponseEntity<Order> entity = createOrder();
-            
-            String path = entity.getHeaders().getLocation().getPath();
-            
-            assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-            assertTrue(path.startsWith("/aggregators/order/"));
-            Order order = entity.getBody();
-            
-            System.out.println ("The Order ID is " + order.getKey());
-            System.out.println ("The Location is " + entity.getHeaders().getLocation());
-            
-            assertEquals(2, order.getItems().size());
-        }
+        String authorisation = "letsnosh" + ":" + "noshing";
+        byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+        headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
         
-        @Test
-        public void thatOrdersHaveCorrectHateoasLinks() {
-        
-            ResponseEntity<Order> entity = createOrder();
-            
-            Order order = entity.getBody();
-            
-            String orderBase = "/aggregators/order/" + order.getKey();
-            
-            assertEquals(entity.getHeaders().getLocation().toString(), order.getLink("self").getHref());
-            assertTrue(order.getLink("Order Status").getHref().endsWith(orderBase + "/status"));
-        }
-        
-        @Test
-        public void thatNewOrderHasOrdersStatusCreated() {
-        
-            ResponseEntity<Order> entity = createOrder();
-            
-            Order order = entity.getBody();
-            
-            HttpEntity<String> requestEntity = new HttpEntity<String>(
-                RestDataFixture.standardOrderJSON(),getHeaders());
-            
-            RestTemplate template = new RestTemplate();
-            
-            ResponseEntity<OrderStatus> response = template.exchange(
-                order.getLink("Order Status").getHref(),
-                HttpMethod.GET,
-                requestEntity, OrderStatus.class);
-            
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-            assertEquals("Order Created", response.getBody().getStatus());
-        }
-        
-        private ResponseEntity<Order> createOrder() {
-            HttpEntity<String> requestEntity = new HttpEntity<String>(
-                RestDataFixture.standardOrderJSON(),getHeaders());
-            
-            RestTemplate template = new RestTemplate();
-            return template.postForEntity(
-                "http://localhost:8080/aggregators/order",
-                requestEntity, Order.class);
-        }
-        
-        static HttpHeaders getHeaders() {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-            
-            String authorisation = "letsnosh" + ":" + "noshing";
-            byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
-            headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
-            
-            return headers;
-        }
-    
+        return headers;
     }
 
+}
+```
 
 This test will now not compile.
 
 To rectify this, but still leave a failing test, update `rest.domain.Order` to read 
-    
-    ..
-    import org.springframework.hateoas.ResourceSupport;
 
-    public class Order extends ResourceSupport implements Serializable {
-        ...
+```java
+..
+import org.springframework.hateoas.ResourceSupport;
+
+public class Order extends ResourceSupport implements Serializable {
+...
+```
 
 By extending `ResourceSupport` from Spring HATEOAS your test will now compile but it will still fail if you run it as the links generated will be empty.
 
@@ -182,8 +189,9 @@ By extending `ResourceSupport` from Spring HATEOAS your test will now compile bu
 It's time to tell your RESTful domain classes, in particular here the `Order` class, how to generate links in their representations.
 
 To add a link using Spring Hateoas you do the following:
-    order.add(linkTo(OrderQueriesController.class).slash(key).withSelfRel());
-    
+```java
+order.add(linkTo(OrderQueriesController.class).slash(key).withSelfRel());
+```
 Firstly you define where the link is going, in this case to the OrderQueriesController, followed by an ID for the template, which is UUID in this case.  
 
 The ID is required in order for the generated link to be able to provide the parameters needed for the template URI that you on OrderQueriesController earlier to map the URI to OrderQueriesController.viewOrder().
@@ -191,7 +199,9 @@ The ID is required in order for the generated link to be able to provide the par
 The `withSelfRel()` indicates that this is the definitive URI for this Resource, a self reference. This is most useful if you store a Resource without its url and want to reference it again later, or if you have just created a new Resource and want to navigate to its location.  In the second case, the Location header should also be available.
 
 To add links that are not self referencing, the syntax is:
-    order.add(linkTo(OrderStatusController.class).slash(key).slash("status").withRel("Order Status"));
+```java
+order.add(linkTo(OrderStatusController.class).slash(key).slash("status").withRel("Order Status"));
+```
 
 This creates an explicit relation link, that of 'Order Status' that can then be queried for by a client.
 
@@ -200,20 +210,21 @@ In the Life Preserver model we have been using, the `rest.domain.Order` class is
 ![Life Preserver showing REST Domain Components](../images/life-preserver-rest-domain-components-focus.png)
 
 Now it's time for you to extend the `rest.domain.Order` class to include link generation by adding then following:
-
-    public static Order fromOrderDetails(OrderDetails orderDetails) {
-        Order order = new Order();
-        
-        order.dateTimeOfSubmission = orderDetails.getDateTimeOfSubmission();
-        order.key = orderDetails.getKey();
-        order.setItems(orderDetails.getOrderItems());
-        
-        order.add(linkTo(OrderController.class).slash(order.key).withSelfRel());
-        order.add(linkTo(OrderController.class).slash(order.key).slash("status").withRel("Order Status"));
-        order.add(linkTo(OrderController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
-        
-        return order;
-    }
+```java
+public static Order fromOrderDetails(OrderDetails orderDetails) {
+    Order order = new Order();
+    
+    order.dateTimeOfSubmission = orderDetails.getDateTimeOfSubmission();
+    order.key = orderDetails.getKey();
+    order.setItems(orderDetails.getOrderItems());
+    
+    order.add(linkTo(OrderController.class).slash(order.key).withSelfRel());
+    order.add(linkTo(OrderController.class).slash(order.key).slash("status").withRel("Order Status"));
+    order.add(linkTo(OrderController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
+    
+    return order;
+}
+```
 
 Run up the application using `./gradlew tomcatRunWar` and the run `OrderTests` again and now you should find that it passes, meaning that the JSON contains the appropriate links and you've successfully implemented HATEOAS for your RESTful Service!
 
