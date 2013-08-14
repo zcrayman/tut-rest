@@ -39,6 +39,7 @@ Why an 'integration' test? Because we're going to be testing the controller with
 
 The next step will be to add an instance of `MockMvc` to our test class and to set up a mock controller and `OrderService`.
 
+```java
 public class ViewOrderIntegrationTest {
 
   	MockMvc mockMvc;
@@ -58,6 +59,7 @@ public class ViewOrderIntegrationTest {
     	this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
   	}
+```
 
 In the `@Before` annotated `setup()` method, we're setting up Mockito as well as generating a mock Spring MVC environment, including adding JSON message conversion as we'll be expecting JSON back when we ask for the current state of an Order.
 
@@ -65,6 +67,7 @@ MockMVC is a relatively new part of Spring MVC and gives a method to fully test 
 
 Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
 
+```java
 	@Test
   	public void thatViewOrderRendersCorrectly() throws Exception {
 
@@ -77,6 +80,7 @@ Finally we can implement a test method that performs an HTTP Request on our cont
             .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
             .andExpect(jsonPath("$.key").value(key.toString()));
   	}
+```
 
 It's worth at this point looking at the final call in the above method, the usage of `MockMVC`, in a little more detail.
 
@@ -91,6 +95,7 @@ The Spring MockMVC component makes it possible to do this testing where you can 
 
 The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 
+```java
 	package com.yummynoodlebar.rest.controller;
 
 	import com.yummynoodlebar.core.events.orders.RequestOrderDetailsEvent;
@@ -173,11 +178,13 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
             .andExpect(jsonPath("$.key").value(key.toString()));
   	}
 	}
+```
 
 #### Testing DELETE HTTP Method HTTP Requests
 
 Next let's take a look at a test implemented in exactly the same fashion, but performing the job of cancelling an Order by sending a HTTP Request with a DELETE HTTP Method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
 
+```java
   	@Test
   	public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
 
@@ -194,11 +201,13 @@ Next let's take a look at a test implemented in exactly the same fashion, but pe
             Matchers.<DeleteOrderEvent>hasProperty("key",
                     Matchers.equalTo(key))));
   	}
+```
 
 The main differences with this test is that there is no content returned from the mock HTTP Request performed using `mockMvc`. Instead you are using Mockito's verify behaviour to ensure that your controller is making the appropriate `deleteOrder` call to the mock `orderService` in order for the test to pass.
 
 The full implementation of all the command-oriented (i.e. changes a resource's state) tests captured in `CancelOrderIntegrationTest` is shown below:
 
+```java
 	package com.yummynoodlebar.rest.controller;
 
 	import com.yummynoodlebar.core.events.orders.DeleteOrderEvent;
@@ -291,6 +300,7 @@ The full implementation of all the command-oriented (i.e. changes a resource's s
             .andExpect(status().isForbidden());
   	  }
 	}
+```
 
 #### Testing POST HTTP Method HTTP Requests for Creating Resources
 
@@ -298,6 +308,7 @@ Finally it's worth taking a look at how to test HTTP Requests that contain POST 
 
 Open the `CreateNewOrderIntegrationTest` class and you should see the following method:
 
+```java
 	@Test
   	public void thatCreateOrderPassesLocationHeader() throws Exception {
 
@@ -308,7 +319,8 @@ Open the `CreateNewOrderIntegrationTest` class and you should see the following 
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(header().string("Location", Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
   	}
- 
+```
+
 The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI that is of the form expected given the posted new Order content.
 
 At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point the tests will all fail as we haven't created any corresponding controllers…
@@ -325,12 +337,15 @@ Let's start by implementing the controller that is responsible for handling requ
 
 The first step is to map the root URI to the controller as shown in the following code snippet:
 
+```java
 	@Controller
 	@RequestMapping("/aggregators/orders")
 	class OrderQueriesController {
+```
 
 The `ViewOrdersIntegrationTest` is specifically looking to test requests that are sent to /aggregators/orders/{id} and so you need to implement a controller handler method that will service those requests as shown below:
 
+```java
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
     	public ResponseEntity<Order> viewOrder(@PathVariable String id) {
 
@@ -344,6 +359,7 @@ The `ViewOrdersIntegrationTest` is specifically looking to test requests that ar
 
         	return new ResponseEntity<Order>(order, HttpStatus.OK);
     	}
+```
 
 Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. It is a reasonable design goal to avoid having business logic in your controllers and delegate that responsibility to a collaborating component.
 
@@ -359,12 +375,15 @@ That's all the handler methods that we need for directly requesting information 
 
 To implement a handler method for the `CancelOrderIntegrationTest` tests, you're going to create a class called `OrderCommandsController` and map it to the root URL for Order resources /aggregators/orders as shown below.
 
+```java
 	@Controller
 	@RequestMapping("/aggregators/orders")
 	public class OrderCommandsController {
+```
 
 Next you need to implement a method that handles an HTTP Request that carried a DELETE HTTP Method, targeting a specific Order resource. The following code snippet shows that handler method:
 
+```java
   	    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     	public ResponseEntity<Order> cancelOrder(@PathVariable String id) {
 
@@ -382,6 +401,7 @@ Next you need to implement a method that handles an HTTP Request that carried a 
 
         	return new ResponseEntity<Order>(order, HttpStatus.FORBIDDEN);
     	}
+```
 
 The `cancelOrder` method needs to deal with additional conditions than an simple call to see a representation of an Order. Here there's the possibility that there is no Order with the indicated ID.
 
@@ -391,6 +411,7 @@ The `OrderCommandsControler` also needs to deal with the case where a new Order 
 
 The following code demonstrates how the POST case can be handled:
 
+```java
 	@RequestMapping(method = RequestMethod.POST)
     	public ResponseEntity<Order> createOrder(@RequestBody Order order, UriComponentsBuilder builder) {
 
@@ -405,7 +426,7 @@ The following code demonstrates how the POST case can be handled:
 
         	return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
     	}
-
+```
 The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP Headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
 
 ## Where did the JSON representations come from?
@@ -416,8 +437,10 @@ In traditional Spring MVC there would be a `ViewResolver` and a specific View to
 
 The secret for how things are working here is in looking at the dependencies that the project itself has. If you look in the `build.gradle` file in the project's root directory you should see the following entries in the project dependencies:
 
+```groovy
 	runtime 'com.fasterxml.jackson.core:jackson-core:2.2.2'
     runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
+```
 
 These two dependencies are enough for Spring MVC to be able to take classes defined in your RESTful domain that capture the representations that need to be rendered, see the `com.yummynoodlebar.rest.domain` package, and render those objects as JSON according to the content type requested by the client.
 
@@ -431,6 +454,7 @@ In our test environment, JSON is being requested. But what about when another co
 
 Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
 
+```java
 	public class ViewOrderXmlIntegrationTest {
 
   	MockMvc mockMvc;
@@ -479,15 +503,19 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
             .andExpect(jsonPath("$.key").value(key.toString()));
   	  }
 	}
+```
 
 This test exercises your web service in two ways: it requests Order representations as JSON and also as XML.
 
 The first thing to notice in the tests is that the `mockMvc` object is being set up to support both XML and JSON. This will only work if the appropriate jar files are on the classpath, and so a quick glance in `build.gradle` will show the following dependencies to support JAXB2 rendering of XML representations:
 
+```groovy
 	  runtime 'javax.xml.bind:jaxb-api:2.2.9'
+```
 
 All good so far, but XML marshalling from Java objects is a little more involved that JSON. Here you're using JAXB2, and so in addition you'll need to annotate your REST domain classes so that the additional meta-data to marshall the right XML is supplied. Take a look inside the `Order` class in `com.yummynoodlebar.rest.domain` for the following example:
 
+```java
 	package com.yummynoodlebar.rest.domain;
 
 	import com.yummynoodlebar.core.events.orders.OrderDetails;
@@ -556,6 +584,7 @@ All good so far, but XML marshalling from Java objects is a little more involved
 	    return order;
 	  }
 	}
+```
 
 ## Summary
 

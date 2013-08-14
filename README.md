@@ -31,7 +31,7 @@ The current architecture of the application is shown in the following "Life Pres
 
 Open up the project "Initial" at this point and you'll see that the "Life Preserver" diagram maps to the different packages under src/main/java. 
 
-Inside the application's top level packages, i.e. com.yummynoodlebar, the package structure is broken down as:
+Inside the core application's top level packages, i.e. com.yummynoodlebar.core, the package structure is broken down as:
 
 * *domain* - This package's purpose is to contain the components that cleanly capture the application's core domain concepts. These classes are a manifestation of the [ubiquitous language](http://martinfowler.com/bliki/UbiquitousLanguage.html) of the core domain.
 
