@@ -276,15 +276,74 @@ Instead here inside the `configure` overridden method from `WebSecurityConfigure
 
 ## Configuring the Spring Security Filter Chain
 
-To actually use this in the system, we have to include this in our web application setup.  open up `WebAppInitializer` again.
+Spring Security relies on a Servlet Filter to apply your security configuration. A filter is used so that security is applied before the Spring MVC Dispatcher Servlet gets involved in processing incoming requests. The Spring Security filter is referred to as the Spring Security Filter Chain as it actually delegates to a chain of filters internally that each apply one aspect of the security responsibility.
 
-Include `SecurityConfig` into the creation of the `rootContext`
+You now need to configure this filter chain by updating the web application configuration you created earlier. Currently this configuration is contained in the `WebAppInitializer` class, and should look like the following:
+
+	package com.yummynoodlebar.config;
+
+	import org.slf4j.Logger;
+	import org.slf4j.LoggerFactory;
+	import org.springframework.web.WebApplicationInitializer;
+	import org.springframework.web.context.ContextLoaderListener;
+	import org.springframework.web.context.WebApplicationContext;
+	import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+	import org.springframework.web.filter.DelegatingFilterProxy;
+	import org.springframework.web.servlet.DispatcherServlet;
+
+	import javax.servlet.FilterRegistration;
+	import javax.servlet.ServletContext;
+	import javax.servlet.ServletRegistration;
+	import java.util.Set;
+
+	public class WebAppInitializer implements WebApplicationInitializer {
+
+  	private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
+
+  	@Override
+  	public void onStartup(ServletContext servletContext) {
+    	WebApplicationContext rootContext = createRootContext(servletContext);
+
+    	configureSpringMvc(servletContext, rootContext);
+  	}
+
+  	private WebApplicationContext createRootContext(ServletContext servletContext) {
+    	AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+    	rootContext.register(CoreConfig.class);
+    	rootContext.refresh();
+
+    	servletContext.addListener(new ContextLoaderListener(rootContext));
+    	servletContext.setInitParameter("defaultHtmlEscape", "true");
+
+    	return rootContext;
+  	}
+
+  	private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
+    	AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
+    	mvcContext.register(MVCConfig.class);
+
+    	mvcContext.setParent(rootContext);
+
+    	ServletRegistration.Dynamic appServlet = servletContext.addServlet(
+        "webservice", new DispatcherServlet(mvcContext));
+    	appServlet.setLoadOnStartup(1);
+    	Set<String> mappingConflicts = appServlet.addMapping("/");
+
+    	if (!mappingConflicts.isEmpty()) {
+      	for (String s : mappingConflicts) {
+        	LOG.error("Mapping conflict: " + s);
+      	}
+      	throw new IllegalStateException(
+          "'webservice' cannot be mapped to '/'");
+    	}
+  	  }
+	}
+
+The first step is to simple add your new `SecurityConfig` JavaConfig class to the root context:
 
     rootContext.register(CoreConfig.class, SecurityConfig.class);
 
-Spring Seucurity operates as a Java Servlet Filter.  This means that it executes before any servlets, including the Spring MVC DispatcherServlet.
-
-So, to include it, we need to create a new method to setup a Spring Security Filter.
+Now you can add the Spring Security Filter:
 
     private void configureSpringSecurity(ServletContext servletContext, WebApplicationContext rootContext) {
         FilterRegistration.Dynamic springSecurity = 
@@ -293,17 +352,30 @@ So, to include it, we need to create a new method to setup a Spring Security Fil
         springSecurity.addMappingForUrlPatterns(null, true, "/*");
     }
 
-This sets up a Spring `DelegatingFilterProxy` with the `rootContext`.  Given the name `springSecurityFilterChain`, this filter will pass all calls down to a Spring managed bean named `springSecurityFilterChain` that it finds in `rootContext`.
-This bean is set up by the `@Configuration` Spring Config class `SecurityConfig`.
+This sets up a Spring `DelegatingFilterProxy` with the `rootContext`. 
 
-Try running up the application again, using `./gradlew tomcatRunWar` and run the tests in `OrderTests` again.  Assuming they pass, your application is now secured!
+The name `springSecurityFilterChain` for the filter chain is important as this means that the filter will pass all calls down to a Spring Bean named `springSecurityFilterChain` that it finds in the `rootContext`. You configured this bean using `@Configuration` in the Spring JavaConfig class `SecurityConfig`.
 
-As mentioned above, your browser now won't be able to access the REST api, as it does not implement any kind of challenge/ response mechanism (an HTTP 401/ Authorization Required).
+## Run your new Secure RESTful Service
 
-To be able to access the API using a browser, you must include the headers pre-emptively.  Extensions exist for common browser that allow you to do this, notably [Header Hacker for Chrome](https://chrome.google.com/webstore/detail/header-hacker/phnffahgegfkcobeaapbenpmdnkifigc?hl=en) and [Modify Headers for Firefox](http://www.garethhunt.com/modifyheaders/)
+Run your RESTful Service again using:
 
-Now that we have a security REST service that allows us to access data in the format of our choosing, we're done, right?
+	> ./gradlew tomcatRunWar
 
-Wrong.  The next level is to re-introduce a fundamental part of the web, linking between resources. This allows users and automated clients to step around your API and discover related resources, by using the oddly named technique of HATEOAS.
+Then run your amended tests in the `OrderTests` class again. Everything should pass and so now you've added security to your RESTful service!
+
+## Summary
+
+In this section you've extended your Configuration Domain to secure your RESTful service as shown in the updated Life Preserver:
+
+![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-security-config-domain-focus.png)
+
+Now that you have a secure RESTful service that allows us to access data in the format of our choosing it feels like that's our job done...
+
+There's one last thing to do. It's time to think about *discovery*.
+
+How does a client go about discovering what resources you're making available from your RESTful service, and what can be done with those resources? Without having to communicate all of that information up front and set it in stone for all of eternity?
+
+It's time for your to implement possibly the worst acronym in the history of the web; it's time to implement HATEOAS.
 
 [Next… Make your Service Discoverable using Spring HATEOAS](../6/)
