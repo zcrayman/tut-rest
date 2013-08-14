@@ -24,7 +24,7 @@ To work through this tutorial you'll need a few things:
 
 ## Yummy Noodle Bar is going Global
 
-TODO Drop in real image of front of Yummy Noodle Bar restaurant
+![Yummy Noodle Bar](images/yummynoodle.jpg)
 
 Yummy Noodle Bar wants to provide a RESTful web service to a set of aggregators that want to submit orders, in particular “Let’s Nosh” who are a massive brand of aggregator that will potentially bring in big business to the small-scale noodle bar.
 
