@@ -235,7 +235,7 @@ You now have your failing test! You now have a justifying failing test to change
 
 ## Securing Your Resources 
 
-As we have imported Spring Security 3.2, we can use Java Config to set it all up. Create a new Spring configuration in com.yummynoodlebar.config named `SecurityConfig`.
+You can now add a new concern to your application: Security Configuration. Create a new Spring configuration in com.yummynoodlebar.config named `SecurityConfig` that contains the following:
 
     package com.yummynoodlebar.config;
     
@@ -266,16 +266,15 @@ As we have imported Spring Security 3.2, we can use Java Config to set it all up
     
     }
 
- This config create an authentication with an in memory database of users, containing a single user, 'letsnosh' with the USER role.
+First, this configuration enables security using the `@EnableWebSecurity` annotation, and extends the `WebSecurityConfigurerAdapter` so that you can perform more detailed configuration of the web security you're applying.
 
-It protects the /aggregators/** urls to ensure that only users with the USER role can access them.
+The `registerAuthentication` method is overridden from `WebSecurityConfigurerAdapter` in order to configure an in memory database of users that contains a single user, 'letsnosh', with the USER role. 
 
-It enables only HTTP BASIC authentication, and does not implement any challenge/ login system.
+RESTful services are usually consumed programmatically via clients, such as your test code. It doesn't make much sense to implement a usual challenge+login page system as there is no one to enter the information into the login page if it was actually presented. 
 
-So, all accesses to the page must include an HTTP BASIC Authorization Header. Any request without this header will be responded to with a 403 Forbidden status.
+Instead here inside the `configure` overridden method from `WebSecurityConfigurerAdapter` you've configured URL level protection using the `http.authorizeUrls()` method. The `http.authorizeUrls()` method protects the /aggregators/** urls, ensuring that only users with the USER role can access them. This means that access to your RESTful URIs must include an HTTP BASIC Authorization Header, and that any request without this header will be responded to with a 403 (Forbidden) HTTP Status Code.
 
-Once this is up and running, your browser will be denied access by default.  
-
+## Configuring the Spring Security Filter Chain
 
 To actually use this in the system, we have to include this in our web application setup.  open up `WebAppInitializer` again.
 
