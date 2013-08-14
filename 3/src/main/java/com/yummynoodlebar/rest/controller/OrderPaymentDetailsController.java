@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/aggregators/order/{id}/paymentdetails")
-class OrderPaymentDetailsController {
+@RequestMapping("/aggregators/orders/{id}/paymentdetails")
+public class OrderPaymentDetailsController {
 
   private OrderService orderService;
 

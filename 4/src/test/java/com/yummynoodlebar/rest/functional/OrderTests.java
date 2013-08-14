@@ -25,13 +25,13 @@ public class OrderTests {
         RestDataFixture.standardOrderJSON(),headers);
 
     ResponseEntity<Order> entity = template.postForEntity(
-        "http://localhost:8080/aggregators/order",
+        "http://localhost:8080/aggregators/orders",
         requestEntity, Order.class);
 
     String path = entity.getHeaders().getLocation().getPath();
 
     assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-    assertTrue(path.startsWith("/aggregators/order/"));
+    assertTrue(path.startsWith("/aggregators/orders/"));
     Order order = entity.getBody();
 
     System.out.println ("The Order ID is " + order.getKey());

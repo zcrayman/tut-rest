@@ -6,11 +6,12 @@ import com.yummynoodlebar.rest.domain.Order;
 import org.junit.Test;
 import org.springframework.http.*;
 import org.springframework.security.crypto.codec.Base64;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.assertTrue;
 
 public class OrderTests {
@@ -24,13 +25,13 @@ public class OrderTests {
 
     RestTemplate template = new RestTemplate();
     ResponseEntity<Order> entity = template.postForEntity(
-    "http://localhost:8080/aggregators/order",
+    "http://localhost:8080/aggregators/orders",
     requestEntity, Order.class);
 
     String path = entity.getHeaders().getLocation().getPath();
 
     assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-    assertTrue(path.startsWith("/aggregators/order/"));
+    assertTrue(path.startsWith("/aggregators/orders/"));
     Order order = entity.getBody();
 
     System.out.println ("The Order ID is " + order.getKey());
@@ -47,11 +48,15 @@ public class OrderTests {
         getHeaders("letsnosh" + ":" + "BADPASSWORD"));
 
     RestTemplate template = new RestTemplate();
-    ResponseEntity<Order> entity = template.postForEntity(
-    "http://localhost:8080/aggregators/order",
-    requestEntity, Order.class);
+    try {
+      ResponseEntity<Order> entity = template.postForEntity(
+      "http://localhost:8080/aggregators/orders",
+      requestEntity, Order.class);
 
-    assertEquals(HttpStatus.FORBIDDEN, entity.getStatusCode());
+      fail("Request Passed incorrectly with status " + entity.getStatusCode());
+    } catch (HttpClientErrorException ex) {
+      assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+    }
   }
 
   static HttpHeaders getHeaders(String auth) {

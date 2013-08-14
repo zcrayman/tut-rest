@@ -1,8 +1,8 @@
 package com.yummynoodlebar.rest.domain;
 
 import com.yummynoodlebar.core.events.orders.OrderDetails;
-import com.yummynoodlebar.rest.controller.OrderController;
 import org.springframework.hateoas.ResourceSupport;
+import com.yummynoodlebar.rest.controller.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -75,10 +75,11 @@ public class Order extends ResourceSupport implements Serializable {
     //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
     //this section is all that is actually needed in our model to add hateoas support.
 
-    //Much of the rest of the framework is working around the blending of domains that happens in many spring apps
-    order.add(linkTo(OrderController.class).slash(order.key).withSelfRel());
-    order.add(linkTo(OrderController.class).slash(order.key).slash("status").withRel("Order Status"));
-    order.add(linkTo(OrderController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
+    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
+    //We have explicitly avoided that.
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).withSelfRel());
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("status").withRel("Order Status"));
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
 
     return order;
   }

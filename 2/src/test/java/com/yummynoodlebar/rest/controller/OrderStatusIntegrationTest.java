@@ -51,7 +51,7 @@ public class OrderStatusIntegrationTest {
             orderStatusNotFound(key));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}/status", key.toString())
+            get("/aggregators/orders/{id}/status", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
   }
@@ -63,7 +63,7 @@ public class OrderStatusIntegrationTest {
             orderStatus(key, "Cooking"));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}/status", key.toString())
+            get("/aggregators/orders/{id}/status", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk());
@@ -76,7 +76,7 @@ public class OrderStatusIntegrationTest {
             orderStatus(key, "Cooking"));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}/status", key.toString())
+            get("/aggregators/orders/{id}/status", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.orderId").value(key.toString()))
@@ -90,7 +90,7 @@ public class OrderStatusIntegrationTest {
             orderStatus(key, "Cooking"));
 
     this.mockMvc.perform(
-            get("/aggregators/order/{id}/status", key.toString())
+            get("/aggregators/orders/{id}/status", key.toString())
                     .accept(MediaType.TEXT_XML))
             .andDo(print())
             .andExpect(content().contentType(MediaType.TEXT_XML))

@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/aggregators/orders")
-class OrderQueriesController {
+public class OrderQueriesController {
 
     private static Logger LOG = LoggerFactory.getLogger(OrderQueriesController.class);
 

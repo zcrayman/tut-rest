@@ -1,7 +1,7 @@
 package com.yummynoodlebar.rest.domain;
 
 import com.yummynoodlebar.core.events.orders.OrderStatusDetails;
-import com.yummynoodlebar.rest.controller.OrderController;
+import com.yummynoodlebar.rest.controller.OrderQueriesController;
 import com.yummynoodlebar.rest.controller.OrderStatusController;
 import org.springframework.hateoas.ResourceSupport;
 
@@ -32,7 +32,7 @@ public class OrderStatus extends ResourceSupport {
     status.statusDate = orderDetails.getStatusDate();
 
     status.add(linkTo(OrderStatusController.class, key.toString()).withSelfRel());
-    status.add(linkTo(OrderController.class).slash(key).withRel("Order"));
+    status.add(linkTo(OrderQueriesController.class).slash(key).withRel("Order"));
 
     return status;
   }

@@ -28,7 +28,7 @@ public class CreateNewOrderIntegrationTest {
   MockMvc mockMvc;
 
   @InjectMocks
-  OrderController controller;
+  OrderCommandsController controller;
 
   @Mock
   OrderService orderService;
@@ -50,12 +50,10 @@ public class CreateNewOrderIntegrationTest {
   public void thatCreateOrderUsesHttpCreated() throws Exception {
 
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
-            //print() can be somewhat chatty, but is useful for understanding the routing and mapping behaviour of the MVC framework,
-            //especially when running in a non app context environment as this test is.
             .andDo(print())
             .andExpect(status().isCreated());
   }
@@ -64,7 +62,7 @@ public class CreateNewOrderIntegrationTest {
   public void thatCreateOrderRendersAsJson() throws Exception {
 
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
@@ -76,10 +74,10 @@ public class CreateNewOrderIntegrationTest {
   public void thatCreateOrderPassesLocationHeader() throws Exception {
 
     this.mockMvc.perform(
-            post("/aggregators/order")
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
-            .andExpect(header().string("Location", Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
+            .andExpect(header().string("Location", Matchers.endsWith("/aggregators/orders/f3512d26-72f6-4290-9265-63ad69eccc13")));
   }
 }

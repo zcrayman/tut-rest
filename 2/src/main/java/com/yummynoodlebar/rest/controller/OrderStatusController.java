@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/aggregators/order/{id}/status")
-class OrderStatusController {
+@RequestMapping("/aggregators/orders/{id}/status")
+public class OrderStatusController {
 
   @Autowired
   private OrderService orderService;

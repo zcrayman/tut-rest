@@ -39,7 +39,7 @@ public class OrderCommandsController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(
-                builder.path("/aggregators/order/{id}")
+                builder.path("/aggregators/orders/{id}")
                         .buildAndExpand(orderCreated.getNewOrderKey().toString()).toUri());
 
         return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
