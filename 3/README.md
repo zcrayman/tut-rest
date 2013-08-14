@@ -7,6 +7,10 @@ Now you have written and tested your controllers, it's time to bring the whole a
 * Initialising your RESTful Service's Web Infrastructure
 * Running your RESTful service in a Web Container
 
+In order to bring in these new concerns to your application, you're going to need a whole new domain on your Life Preserver: the Configuration domain:
+
+![Life Preserver showing Configuration Domain](../images/life-preserver-empty-config-domain-focus.png)
+
 ## Creating a Configuration for your Application's Core Domain using Spring JavaConfig
 
 The Yummy Noodle Bar application contains a core set of components that include domain classes and services.
@@ -363,6 +367,10 @@ If you plan on executing your service in another container and want to generate 
 ## Summary
 
 You've come a long way! You've now got a fully configured RESTful web service that is running in Tomcat and can be packaged for distribution in a WAR file.
+
+You've added two new components to your Configuration Domain, `CoreConfig` and `MVCConfig` as shown in the updated Life Preserver below:
+
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-initial-config-domain-focus.png)
 
 But how do you really know that when you've deployed your service it really works? That's the job of functional testing, and that's your task in the next section of this tutorial.
 
