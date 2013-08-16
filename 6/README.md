@@ -2,9 +2,9 @@
 
 HATEOAS, Hypermedia As The Engine of Application State, may be one of the worst acronyms you may come across, but it is also a crucial technology and approach to building flexible RESTful services.
 
-HATEOS allows you to build services that *support the discovery of resources* and re-introduce the linking of resources together that is an essential part of hypertext systems.
+HATEOAS allows you to build services that *support the discovery of resources* and re-introduce the linking of resources together that is an essential part of hypertext systems.
 
-HATEOS provides a consistent mechanism for you to describe what resources you have and what resources relate to them. A client that understands HATEOS and its corresponding links will be able to effectively discover and react to what resources are supported at a given moment in time *without having to agree this all up front*.
+HATEOAS provides a consistent mechanism for you to describe what resources you have and what resources relate to them. A client that understands HATEOAS and its corresponding links will be able to effectively discover and react to what resources are supported at a given moment in time *without having to agree this all up front*.
 
 ### Resources and Linking them together
 
