@@ -15,7 +15,7 @@ Or maybe you're just curious to see what a Spring-implemented RESTful web servic
 
 ## What you'll build
 
-Yummy Noodle Bar is going global. It wants to provide a RESTful web service to a set of aggregators, in particular Let’s Nosh, a massive brand of aggregator that will bring big business to the small-scale noodle bar. You'll extend Yummy Noodle Bar's internal application by creating a new public Web API for submitting, tracking, canceling, and amending orders.
+Yummy Noodle Bar is going global. It wants to provide a RESTful web service to a set of aggregators, in particular Let’s Nosh, a popular restaurant directory that will bring big business to the small-scale noodle bar. You'll extend Yummy Noodle Bar's internal application by creating a new public Web API for submitting, tracking, canceling, and amending orders.
 
 ![Yummy Noodle Bar](images/yummynoodle.jpg)
 
@@ -32,9 +32,9 @@ The current architecture of the application is shown in the following "life pres
 
 ![Life Preserver showing Core packages](images/life-preserver-initial.png)
 
-Open the Initial project and you'll see that the life preserver diagram maps to the different packages under src/main/java. 
+Open the Initial project and you'll see that the life preserver diagram maps to the different packages under src/main/java/com/yummynoodlebar
 
-Under the application's top-level packages, that is, com.yummynoodlebar.core, here's what the packages contain:
+Under the core application's top-level packages, that is, com.yummynoodlebar.core, here's what the packages contain:
 
 * **domain**. Components that cleanly capture the application's Core domain concepts. These classes are a manifestation of the [ubiquitous language](http://martinfowler.com/bliki/UbiquitousLanguage.html) of the Core domain.
 
@@ -54,13 +54,13 @@ RESTful web services integrate your application and the myriad possible clients 
 
 Given the integration between your application and the outside world, consider the following design and implementation constraints:
 
-* Your RESTful service component's primary purpose is to implement the necessary functionality for the specific RESTful service you are exposing, and are not necessarily a one-to-one exposure of the internals of your application.
+* Your RESTful service API is your focus; the core application structure should not influence the design of the API.
 * The components that make up your RESTful services need to evolve at a rate that is appropriate for the many consumers that rely on your services.
 * Your RESTful service components should not contain any core logic for your application, but they will collaborate with other components in the Core domains of your application in order to orchestrate the necessary functionality for the service interface.
 
 ## Tutorial road map
 
-* [Step 1: Modeling a RESTful Web Service Domain](1/)
+* [Step 1: Modeling the Core and RESTful Web Service Domains](1/)
 * [Step 2: Building Your First RESTful Web Service](2/)
 * [Step 3: Wiring Up and Deploying your Service](3/)
 * [Step 4: Testing Your Service with Spring's REStTemplate](4/)

@@ -1,10 +1,10 @@
-## Step 1: Modeling the RESTful Web Service Domain
+# Step 1: Modeling the Core and RESTful Web Service Domains
 
 For the first version of your new Yummy Noodle Bar RESTful service, the ability to create, update, and remove Orders is the focus.
 
-It is tempting simply to expose the Core Order domain to the outside world and work from there, but that would ignore the boundary between the Core and the RESTful service domain.
+It is tempting simply to expose the Core Order domain to the outside world and work from there, but that would ignore the boundary between the Core and the RESTful service domain and would lead to the REST API being driven by the internal application structure, and so becoming coupled to that internal structure.
 
-The public API of your service (the RESTful service domain) that you will expose to aggregators needs to change at a rate that is friendly to those clients. The Core needs to evolve at a rate that corresponds to the Yummy Noodle Bar system's need to evolve internally. Potential friction exists between the two domains as they may need to evolve at different rates.
+The public API of your service (the RESTful service domain) that you will expose to clients needs to change at a rate that is friendly to those clients. The Core needs to evolve at a rate that corresponds to the Yummy Noodle Bar system's need to evolve internally. Potential friction exists between the two domains as they may need to evolve at different rates.
 
 To manage this friction you need to create concepts and components in the RESTful service domain that are unique to, and can evolve at the rate needed by, the RESTful domain itself. This may result in similar types of components to those in the Core domain but because their purpose will be very different, the similarities are superficial.
 
@@ -14,7 +14,7 @@ In the Core domain the concepts are captured as part of the internal ubiquitous 
 
 ![Life Preserver showing Core Domain](../images/life-preserver-core-domain-focus.png)
 
-Open the `initial` project. Under src/main/java/com/yummynoodlebar/domain, you see the components of the core, application-internal domain of Yummy Noodle Bar:
+Open the `initial` project. Under src/main/java/com/yummynoodlebar/core/domain, you see the components of the core, application-internal domain of Yummy Noodle Bar:
 
 * **Order**. An individual order in the system that has an associated status and status history for tracking purposes.
 
@@ -26,7 +26,7 @@ Open the `initial` project. Under src/main/java/com/yummynoodlebar/domain, you s
 
 * **PaymentStatus**. Current status of a Payment that a customer wants to make for a given Order.
 
-This tutorial focuses on the Order domain classes, which can be acted upon by a number of events under the com.yummynoodlebar/events/orders package as shown on the following diagram:
+This tutorial focuses on the Order domain classes, which can be acted upon by a number of events under the com.yummynoodlebar.events.orders package as shown on the following diagram:
 
 ![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
 
@@ -69,21 +69,22 @@ To determine the resources that you will support through your RESTful service, l
 * PaymentDetails
 * PaymentStatus
 
-The purpose of the Yummy Noodle RESTful service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. A subset of the available domain concepts make up your initial cut of the resources you are going to expose:
+The purpose of the Yummy Noodle RESTful service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. Therefore, we don't need to expose the entirety of these domain concepts via REST, instead we can take the following subset :
 
 * Order
 * OrderStatus
 * PaymentDetails
 * PaymentStatus
 
-The updated life preserver shows where these domain components live in the design.
+The updated life preserver shows where these domain components will live in the design.
 
 ![Life Preserver RESTful Domain Focus](../images/life-preserver-rest-domain-concepts-focus.png)
 
-
-As mentioned before, although these concepts exist in the Core domain and the RESTful Service domain, this is not exactly repetition as the purpose of the implementations are very different from Core to REST.
+As mentioned before, although these concepts exist in both the Core domain and the RESTful Service domain, this is not duplication as the purpose of the implementations are very different from Core to REST.
 
 ### Design your resource URIs
+
+While these resources will be represented by a class in code, you must first decide the REST API, as this will drive the design of the code that implements the API and so the implementation of the resources.
 
 Each resource needs to be addressable by a URI. In addition, the address implies the relationship between each of the resources.
 
@@ -125,7 +126,7 @@ This quality of the URI changing to work with specific resources is what gives a
 
 ### Add the operations (HTTP methods)
 
-Along with the URLs you're going to expose for the RESTful service for each resource, you also need to specify what can be done to each resource.
+Along with the URLs you're going to expose for the RESTful service for each resource, you also need to decide what can be done to each resource.
 
 RESTful services rely on the HTTP methods passed as part of an HTTP request header to tell the service what needs to be done with the addressed resource. The full set of HTTP methods allowed constitute the [uniform interface](http://en.wikipedia.org/wiki/Representational_state_transfer) to RESTful services.
 
