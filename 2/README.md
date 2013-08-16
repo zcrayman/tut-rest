@@ -302,7 +302,7 @@ The full implementation of all the command-oriented (i.e. changes a resource's s
 	}
 ```
 
-#### Test POST HTTP method HTTP requests for creating resources
+#### Test POST HTTP method HTTP requests for creating resources
 
 Take a look at how to test HTTP requests that contain POST as the HTTP method. Specifically, a POST creates a new resource and *generates a new URI for that new resource*, and so this URI generation also needs to be part of the test.
 
@@ -317,16 +317,12 @@ Open the `CreateNewOrderIntegrationTest` class and you should see the following 
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
-            .andExpect(header().string("Location", Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
+            .andExpect(header().string("Location", 
+                        Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
   	}
-<<<<<<< HEAD
 ```
 
 The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI that is of the form expected given the posted new Order content.
-=======
- 
-The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP header and that it contains a URI that is of the form expected, given the posted new Order content.
->>>>>>> ffafe69b5a6c880bd0524be667246011c8171578
 
 Now look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point those tests will fail as you haven't created any corresponding controllers.
 
@@ -431,13 +427,8 @@ The following code demonstrates how the POST case can be handled:
 
         	return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
     	}
-<<<<<<< HEAD
 ```
 The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP Headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
-=======
-
-The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
->>>>>>> ffafe69b5a6c880bd0524be667246011c8171578
 
 ## Where did the JSON representations come from?
 

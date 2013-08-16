@@ -241,17 +241,17 @@ The following table describes the HTTP status codes that each of your URIs and H
         <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 <tr>
-        <td>/aggregators/order/{id}/status</td>
+        <td>/aggregators/orders/{id}/status</td>
 			  <td>GET</td>
         <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 <tr>
-        <td>/aggregators/order/{id}/paymentdetails</td>
+        <td>/aggregators/orders/{id}/paymentdetails</td>
 			  <td>GET</td>
         <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
 	  </tr>
 <tr>
-        <td>/aggregators/order/{id}/paymentdetails</td>
+        <td>/aggregators/orders/{id}/paymentdetails</td>
 			  <td>PUT</td>
         <td>201 (Created); 406 (Not Acceptable) if there is a problem with the format of the incoming data on the new payment details; 404 (Not Found) if Order Resource not found</td>
 	  </tr>
