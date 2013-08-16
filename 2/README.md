@@ -1,14 +1,14 @@
-# Step 2: Building Your First RESTful Service using Spring MVC
+# Step 2: Building Your First RESTful Web Service with Spring MVC
 
-It's time to implement your Yummy Noodle Bar RESTful service. The first step in building a service with Spring MVC is to construct and test one or more Controllers that will be responsible for handling each of the incoming HTTP Requests that you defined for your service in the previous step.
+It's time to implement your Yummy Noodle Bar RESTful web service. The first step in building a service with Spring MVC is to construct and test one or more controllers that are responsible for handling each incoming HTTP request that you defined for your service in the previous step.
 
-## Starting with a (Failing) Test
+## Start with a (failing) test
 
-[Test Driven Development (TDD)]() teaches us that if you haven't got a failing test then there's no code to write! So before we dive into implementing our service, let's create a couple of tests that justifies and encourages us to write some code to make the test pass.
+[Test Driven Development (TDD)]() teaches us that if you haven't got a failing test then there's no code to write! So before you dive into implementing the service, create a couple of tests that justify and encourage you to write some code to make the test pass.
 
-### Splitting Commands from Queries
+### Separate commands from queries
 
-Before you start creating tests, you need to think a little more about the categories of requests that our service is going to have to respond to. You are going to be writing tests that look for all the HTTP Restful interactions we designed in the previous section.
+Before you start creating tests, consider the categories of requests that your service will respond to. You are going to be writing tests that look for all the HTTP RESTful interactions that you designed in Step 1.
 
 These interactions can be split into X categories:
 
@@ -18,26 +18,26 @@ These interactions can be split into X categories:
 * Requests that query Payment Details
 * Requests that change the state of an Order's Payment Details
 
-This can for our purposes be simplified into two further categories of interactions:
+You can separate these interactions into two categories:
 
 * Requests that change a resource's state (a Command)
 * Requests that query a resource's state (a Query)
 
-It's possible to implement these two categories of interactions using one controller for each resource but the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises us to split these responsibilities into different routes through our application, and so in this tutorial we'll implement these concerns separately.
+It's possible to implement these two categories of interactions using one controller for each resource. However, the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises you to split these responsibilities into different routes through your application. In this tutorial you implement these concerns separately.
 
-### Implementing Failing Test(s) for a Controller with MockMVC
+### Implement failing test(s) for a controller with MockMVC
 
-We won't implement all of the tests needed for your RESTful service here, the full source is available for download separately. Instead we'll look at two unit tests that look for an example of each of the categories of interaction through the RESTful service, commands and queries.
+You won't implement all tests needed for your RESTful service here; the full source is available for download separately. Instead you use two unit tests that look for an example of each category of interaction through the RESTful service, commands, and queries.
 
-#### Testing GET HTTP Method HTTP Requests
+#### Test GET HTTP method HTTP requests
 
-The first test is going to target ensuring that a request to view an order's details is possible, so let's call the class `ViewOrderIntegrationTest`.
+The first test ensures that a request to view an order's details is possible, so call the class `ViewOrderIntegrationTest`.
 
 	public class ViewOrderIntegrationTest {
 
-Why an 'integration' test? Because we're going to be testing the controller within the constraints of a mock Spring MVC environment. This way we can test the mappings of our incoming requests to the appropriate handler methods while still getting all the speed benefits of testing out of a real container.
+Why an integration test? Because you're going to be testing the controller within the constraints of a mock Spring MVC environment. This way you can test the mappings of your incoming requests to the appropriate handler methods while still getting the speed benefits of testing a real container.
 
-The next step will be to add an instance of `MockMvc` to our test class and to set up a mock controller and `OrderService`.
+Next, add an instance of `MockMvc` to the test class and set up a mock controller and `OrderService`.
 
 ```java
 public class ViewOrderIntegrationTest {
@@ -61,11 +61,11 @@ public class ViewOrderIntegrationTest {
   	}
 ```
 
-In the `@Before` annotated `setup()` method, we're setting up Mockito as well as generating a mock Spring MVC environment, including adding JSON message conversion as we'll be expecting JSON back when we ask for the current state of an Order.
+In the `@Before` annotated `setup()` method, you set up Mockito and generate a mock Spring MVC environment, including adding JSON message conversion, because you expect JSON when you ask for the current state of an Order.
 
-MockMVC is a relatively new part of Spring MVC and gives a method to fully test a Controller, including all of its annotations, routing and URI templates.  It does this by initialising the MVC Controller classes in a full MVC environment, including the DispatcherServlet and then running assertions against that.  The only piece missing from this testing puzzle is the web context itself, which we will cover in section 4.
+MockMVC is a relatively new part of Spring MVC and gives a method to fully test a Controller, including all of its annotations, routing, and URI templates.  It does this by initializing the MVC Controller classes in a full MVC environment, including the DispatcherServlet and then running assertions against that.  The only piece missing from this testing puzzle is the web context itself, which is covered in Step 4.
 
-Finally we can implement a test method that performs an HTTP Request on our controller and asserts that the response from that invocation contains the JSON that was requested.
+Finally you can implement a test method that performs an HTTP Request on the controller and asserts that the response from that invocation contains the JSON that was requested.
 
 ```java
 	@Test
@@ -82,16 +82,16 @@ Finally we can implement a test method that performs an HTTP Request on our cont
   	}
 ```
 
-It's worth at this point looking at the final call in the above method, the usage of `MockMVC`, in a little more detail.
+Now look at the final call in the above method, the usage of `MockMVC`, in a little more detail.
 
-In order, the `mockMvc` object is performing the following:
+The `mockMvc` object is performing the following tasks, in sequence:
 
 * Performing a mock HTTP Request with a GET HTTP Method on the URI /aggregators/orders/{id}.
 * Replacing the {id} marker in the URI template with the contents of the response to the key.toString() call.
 * Specifying in the 'accept' HTTP Header that the service should respond with JSON.
-* Analysing the content of the returned JSON to ensure that some mocked data is present, as provided by the mock collaborators that were set up at the start of the test method.
+* Analyzing the content of the returned JSON to ensure that some mocked data is present, as provided by the mock collaborators that were set up at the start of the test method.
 
-The Spring MockMVC component makes it possible to do this testing where you can be sure that for a given URI a given rendered content in the response will be returned, all executed in a unit test from within your IDE or Continuous Integration environments.
+The Spring MockMVC component makes it possible to do this testing where you can be sure that for a given URI, a given rendered content in the response will be returned, all executed in a unit test from within your IDE or Continuous Integration environments.
 
 The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 
@@ -180,9 +180,9 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 	}
 ```
 
-#### Testing DELETE HTTP Method HTTP Requests
+#### Test DELETE HTTP method HTTP requests
 
-Next let's take a look at a test implemented in exactly the same fashion, but performing the job of cancelling an Order by sending a HTTP Request with a DELETE HTTP Method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
+Take a look at a test implemented in exactly the same fashion, but performing the job of canceling an Order by sending a HTTP request with a DELETE HTTP method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
 
 ```java
   	@Test
@@ -203,7 +203,7 @@ Next let's take a look at a test implemented in exactly the same fashion, but pe
   	}
 ```
 
-The main differences with this test is that there is no content returned from the mock HTTP Request performed using `mockMvc`. Instead you are using Mockito's verify behaviour to ensure that your controller is making the appropriate `deleteOrder` call to the mock `orderService` in order for the test to pass.
+The main difference with this test is that no content is returned from the mock HTTP Request performed using `mockMvc`. Instead you are using Mockito's verify behavior to ensure that your controller is making the appropriate `deleteOrder` call to the mock `orderService` in order for the test to pass.
 
 The full implementation of all the command-oriented (i.e. changes a resource's state) tests captured in `CancelOrderIntegrationTest` is shown below:
 
@@ -302,9 +302,9 @@ The full implementation of all the command-oriented (i.e. changes a resource's s
 	}
 ```
 
-#### Testing POST HTTP Method HTTP Requests for Creating Resources
+#### Test POST HTTP method HTTP requests for creating resources
 
-Finally it's worth taking a look at how to test HTTP Requests that contain POST as the HTTP Method. Specifically, a POST creates a new resource and *generates a new URI for that new resource* and so this URI generation will also need to be part of our test.
+Take a look at how to test HTTP requests that contain POST as the HTTP method. Specifically, a POST creates a new resource and *generates a new URI for that new resource*, and so this URI generation also needs to be part of the test.
 
 Open the `CreateNewOrderIntegrationTest` class and you should see the following method:
 
@@ -319,23 +319,28 @@ Open the `CreateNewOrderIntegrationTest` class and you should see the following 
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(header().string("Location", Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
   	}
+<<<<<<< HEAD
 ```
 
 The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI that is of the form expected given the posted new Order content.
+=======
+ 
+The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP header and that it contains a URI that is of the form expected, given the posted new Order content.
+>>>>>>> ffafe69b5a6c880bd0524be667246011c8171578
 
-At this point it's valuable to take a look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point the tests will all fail as we haven't created any corresponding controllers…
+Now look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point those tests will fail as you haven't created any corresponding controllers.
 
-## Making the Tests Pass: Implementing the Controllers
+## Make the tests pass: implement the controllers
 
-You now have a collection of test classes that will fail given that no controller's actually exist yet to respond to the mocked HTTP requests.
+You now have a collection of test classes that will fail, given that no controllers exist yet to respond to the mocked HTTP requests.
 
 Now it's time to focus on making the `ViewOrderIntegrationTest`, `CancelOrderIntegrationTest` and `CreateNewOrderIntegrationTest`  tests pass. 
 
-### Implementing the OrderQueriesController
+### Implement the OrderQueriesController
 
-Let's start by implementing the controller that is responsible for handling requests that simply read the current state of the Order resources. This will be the controller that will make the `ViewOrderIntegrationTest` tests pass.
+Start by implementing the controller that is responsible for handling requests that simply read the current state of the Order resources. This controller will make the `ViewOrderIntegrationTest` tests pass.
 
-The first step is to map the root URI to the controller as shown in the following code snippet:
+Map the root URI to the controller as shown in the following code snippet:
 
 ```java
 	@Controller
@@ -361,19 +366,19 @@ The `ViewOrdersIntegrationTest` is specifically looking to test requests that ar
     	}
 ```
 
-Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. It is a reasonable design goal to avoid having business logic in your controllers and delegate that responsibility to a collaborating component.
+Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. It is a reasonable design goal to avoid business logic in your controllers and delegate that responsibility to a collaborating component.
 
-As you can see from the `@RequestMapping` annotation, the `viewOrder` handler method is mapped a URI that is constructed from a combination of the controller's default URI, /aggregator/orders, combined with the template parameter of `{id}` to make the complete mapping for this method /aggregator/orders/{id}.
+As you can see from the `@RequestMapping` annotation, the `viewOrder` handler method is mapped to a URI that is constructed from a combination of the controller's default URI, /aggregator/orders, combined with the template parameter of `{id}` to make the complete mapping for this method /aggregator/orders/{id}.
 
-The `{id}` parameter is then mapped as a String into the `viewOrder` method. Finally, since this is a read-only query request, then `@RequestMapping` also specifies that this method should only be called for HTTP requests with a GET HTTP Method.
+The `{id}` parameter is then mapped as a String into the `viewOrder` method. Finally, since this is a read-only query request, then `@RequestMapping` also specifies that this method should only be called for HTTP requests with a GET HTTP method.
  
-Finally the handler method needs to return the content that the client requests. Rather than add this concern into your controller handler method directly, but using `@ResponseBody` you can indicate that the objects returned from the method should be marshalled directly into the content that is expected in the response.
+Finally the handler method needs to return the content that the client requests. Rather than add this concern into your controller handler method directly, but using `@ResponseBody`, you can indicate that the objects returned from the method should be marshaled directly into the content that is expected in the response.
 
-That's all the handler methods that we need for directly requesting information about the current state of your service's Orders as specified by the `ViewOrderIntegrationTest`. The next step is to support that state being manipulated by requests that instigate commands.
+Those are all the handler methods you need to directly request information about the current state of your service's Orders as specified by the `ViewOrderIntegrationTest`. The next step is to support that state being manipulated by requests that instigate commands.
 
-### Implementing the OrderCommandsController
+### Implement the OrderCommandsController
 
-To implement a handler method for the `CancelOrderIntegrationTest` tests, you're going to create a class called `OrderCommandsController` and map it to the root URL for Order resources /aggregators/orders as shown below.
+To implement a handler method for the `CancelOrderIntegrationTest` tests, you create a class called `OrderCommandsController` and map it to the root URL for Order resources /aggregators/orders as shown below.
 
 ```java
 	@Controller
@@ -381,7 +386,7 @@ To implement a handler method for the `CancelOrderIntegrationTest` tests, you're
 	public class OrderCommandsController {
 ```
 
-Next you need to implement a method that handles an HTTP Request that carried a DELETE HTTP Method, targeting a specific Order resource. The following code snippet shows that handler method:
+Next you need to implement a method that handles an HTTP request that carried a DELETE HTTP method, targeting a specific Order resource. The following code snippet shows that handler method:
 
 ```java
   	    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
@@ -403,11 +408,11 @@ Next you need to implement a method that handles an HTTP Request that carried a 
     	}
 ```
 
-The `cancelOrder` method needs to deal with additional conditions than an simple call to see a representation of an Order. Here there's the possibility that there is no Order with the indicated ID.
+The `cancelOrder` method needs to deal with conditions in addition to a simple call to see a representation of an Order. Here there's the possibility that there is no Order with the indicated ID.
 
-To vary the response code to a handler method, you need to use the `ResponseEntity` class. In the example above, the `ResponseEntity` objects afford you the opportunity to return an HTTP Status code of 403 (Forbidden) if an attempt is made to cancel an Order that does not exist.
+To vary the response code to a handler method, you use the `ResponseEntity` class. In the example above, the `ResponseEntity` objects afford you the opportunity to return an HTTP Status code of 403 (Forbidden) if an attempt is made to cancel an Order that does not exist.
 
-The `OrderCommandsControler` also needs to deal with the case where a new Order resource is being created using an HTTP Request that contains an HTTP Post Method.
+The `OrderCommandsControler` also needs to deal with the case where a new Order resource is being created using an HTTP request that contains an HTTP POST method.
 
 The following code demonstrates how the POST case can be handled:
 
@@ -426,16 +431,21 @@ The following code demonstrates how the POST case can be handled:
 
         	return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
     	}
+<<<<<<< HEAD
 ```
 The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP Headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
+=======
+
+The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
+>>>>>>> ffafe69b5a6c880bd0524be667246011c8171578
 
 ## Where did the JSON representations come from?
 
-Now when you run the tests in the example project you'll find that they all pass. But wait a second, how did those tests pass when they look for JSON content and we haven't specified how that is being rendered?
+Now when you run the tests in the example project you'll find that they all pass. But wait a second, how did those tests pass when they look for JSON content and you haven't specified how that is being rendered?
 
-In traditional Spring MVC there would be a `ViewResolver` and a specific View to render content for an HTTP Response. With a RESTful service, it is much more common to render the returned object from a handler method *as the content itself* and so a view is rarely needed.
+In traditional Spring MVC there would be a `ViewResolver` and a specific View to render content for an HTTP response. With a RESTful service, it is much more common to render the returned object from a handler method *as the content itself* and so a view is rarely needed.
 
-The secret for how things are working here is in looking at the dependencies that the project itself has. If you look in the `build.gradle` file in the project's root directory you should see the following entries in the project dependencies:
+The secret of how things are working here is in looking at the dependencies that the project itself has. If you look in the `build.gradle` file in the project's root directory you should see the following entries in the project dependencies:
 
 ```groovy
 	runtime 'com.fasterxml.jackson.core:jackson-core:2.2.2'
@@ -444,13 +454,13 @@ The secret for how things are working here is in looking at the dependencies tha
 
 These two dependencies are enough for Spring MVC to be able to take classes defined in your RESTful domain that capture the representations that need to be rendered, see the `com.yummynoodlebar.rest.domain` package, and render those objects as JSON according to the content type requested by the client.
 
-This might be a little new to anyone coming from traditional web application development. It is normal in traditional web application development for a browser to send a whole plethora of possible options as part of the content type negotiation on a given HTTP request. The server will then decide what content to return from that large set of possibilities.
+This scenario might be new to someone coming from traditional web application development. It is normal in traditional web application development for a browser to send a plethora of possible options as part of the content type negotiation on a given HTTP request. The server will then decide what content to return from that large set of possibilities.
 
-With a RESTful service it is much more typical for a client to ask for exactly what it requires as a content type for a returned representation, and so rather than your controller declaring a specific view to render, the Spring MVC content negotiation is invoked according to what content type is requested by the client.
+With a RESTful service it is much more typical for a client to ask for exactly what it requires as a content type for a returned representation. Rather than your controller declaring a specific view to render, the Spring MVC content negotiation is invoked according to what content type is requested by the client.
 
-In our test environment, JSON is being requested. But what about when another content type is requested? For example, perhaps the client would prefer XML?
+In this test environment, JSON is being requested. But what if another content type is requested? For example, perhaps the client prefers XML?
 
-### Using JAXB to marshall Objects into Content
+### Use JAXB to marshall objects into content
 
 Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
 
@@ -505,15 +515,15 @@ Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
 	}
 ```
 
-This test exercises your web service in two ways: it requests Order representations as JSON and also as XML.
+This test requests Order representations as JSON and also as XML.
 
-The first thing to notice in the tests is that the `mockMvc` object is being set up to support both XML and JSON. This will only work if the appropriate jar files are on the classpath, and so a quick glance in `build.gradle` will show the following dependencies to support JAXB2 rendering of XML representations:
+The first thing to notice in the tests is that the `mockMvc` object is being set up to support both XML and JSON. This works only if the appropriate jar files are on the classpath. A glance in `build.gradle` shows the following dependencies to support JAXB2 rendering of XML representations:
 
 ```groovy
 	  runtime 'javax.xml.bind:jaxb-api:2.2.9'
 ```
 
-All good so far, but XML marshalling from Java objects is a little more involved that JSON. Here you're using JAXB2, and so in addition you'll need to annotate your REST domain classes so that the additional meta-data to marshall the right XML is supplied. Take a look inside the `Order` class in `com.yummynoodlebar.rest.domain` for the following example:
+All good so far, but XML marshaling from Java objects is a little more involved that JSON. Here you're using JAXB2, and so in addition you'll need to annotate your REST domain classes so that the additional metadata to marshall the right XML is supplied. Take a look inside the `Order` class in `com.yummynoodlebar.rest.domain` for the following example:
 
 ```java
 	package com.yummynoodlebar.rest.domain;
@@ -588,12 +598,11 @@ All good so far, but XML marshalling from Java objects is a little more involved
 
 ## Summary
 
-So far you've seen how to create controllers that can implement your RESTful service's API, and how to test those controllers using 'MockMVC' outside of a container to build your confidence that the handler mappings work and your controller will react to the right forms of HTTP Requests with the right types of content.
+Congratulations! You've created controllers that can implement your RESTful service's API. You've tested those controllers using 'MockMVC' outside of a container to confirm that the handler mappings work and that your controller will react to the right forms of HTTP requests with the right types of content.
 
 Your Life Preserver now contains a whole new set of components, your controllers, in the RESTful domain:
 
 ![Life Preserver showing RESTful Controllers](../images/life-preserver-rest-controllers-focus.png)
 
-It's now time to complete the plumbing so that your RESTful service can be run up for real.
 
 [Next… Wiring Up and Deploying your Service](../3/)
