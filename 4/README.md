@@ -1,16 +1,16 @@
-# Step 4: Testing your Service using RESTTemplate
-
-Your RESTful service is now happily running in Tomcat and life is good, right? Everything is working fine, right? You're sure…
+Your RESTful service is now running in Tomcat and life is good, right? Everything is working fine, right? 
 
 It's time to prove it.
 
-Full stack Functional tests provide the last check-in-the-box that your service's functionality is all in place and works fully integrated together.
+# Step 4: Testing your Service with Spring's REStTemplate
 
-The rule for these is that there should be as few as possible to prove that the full stack works.  Ideally you would have just one, testing your '*happy path*', or the code path that ***must work*** for you to make money.
+Full-stack functional tests provide the last check-in-the-box that your service is fully integrated and functional.
 
-In order to show how simple it is to create functional tests you're going to be using Spring's `RESTTemplate`.   Following the above rule, we have one code path tested, placing orders, which is the core part of the rest interface, if this doesn't work then the Yummy Noodle Bar will go out of business.
+There should be as few tests as possible to prove that the full stack works.  Ideally you would have just one, testing your '*happy path*', or the code path that ***must work*** for you to make money.
 
-## Implementing a Functional Test using RestTemplate
+You'll use Spring's `REStTemplate` to create functional tests. Following the above rule, you test one code path, placing orders, which is the core part of the REST interface. If this doesn't work, Yummy Noodle Bar will go out of business. 
+
+## Implement a functional test with RestTemplate
 
 Open the `OrderTests` test class in the `com.yummynoodlebar.functional` package and you should see one method that begins according to the following code snippet:
 
@@ -91,10 +91,8 @@ public class OrderTests {
 
 ## Summary
 
-The Spring `RestTemplate` provides a powerful means of functionally interacting with your RESTful services, regardless of your choice of testing framework.
+The Spring `RestTemplate` is a powerful means of functionally interacting with your RESTful services, regardless of your testing framework. Here you've implemented a minimal set of functional tests, looking specifically at ensuring that new Order resources can be created. Your REST service is moving closer to production use by all those high-profile aggregators.
 
-Here you've implemented a minimal set of functional tests, looking specifically at ensuring that new Order resources can be created. Your REST service is moving closer and closer to production and opening the doors to usage by all those high-profile aggregators.
-
-There's just one hitch, how do you ensure that only legitimate aggregators can submit Orders to your system? It's time to secure your RESTful service.
+There's just one hitch. How do you ensure that only legitimate aggregators can submit Orders to your system? It's time to secure your RESTful service.
 
 [Next… Securing your Service with Spring Security](../5/)
