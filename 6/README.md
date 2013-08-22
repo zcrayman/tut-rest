@@ -27,10 +27,10 @@ into this:
     "name": "Derek",
     "age": 15
     
-    links : [ 
-        { rel : "self", href : "http://myhost/people/derek" },
-        { rel : "Mother", href : "http://myhost/people/shirley" },
-        { rel : "Father", href : "http://myhost/people/brad" }
+    "links" : [ 
+        { "rel" : "self", "href" : "http://myhost/people/derek" },
+        { "rel" : "Mother", "href" : "http://myhost/people/shirley" },
+        { "rel" : "Father", "href" : "http://myhost/people/brad" }
     ]
 }
 ```
