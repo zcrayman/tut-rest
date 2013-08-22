@@ -12,37 +12,7 @@ You'll use Spring's `REStTemplate` to create functional tests. Following the abo
 
 ## Implement a functional test with RestTemplate
 
-Open the `OrderTests` test class in the `com.yummynoodlebar.functional` package and you should see one method that begins according to the following code snippet:
-
-```java
-@Test
-public void thatOrdersCanBeAddedAndQueried() {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-    
-    RestTemplate template = new RestTemplate();
-```
-    
-Here you're setting up an initial Spring `RestTemplate`. You've created some initial HTTP Headers that set the content type to JSON and set the accept header also to JSON in anticipation of receiving JSON in the response.
-
-Next you prepare an `HTTPEntity` to contain the request that you'll submit to your service:
-
-```java
-	HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),headers);
-```
-This `HTTPEntity` uses a test fixture class to generate some JSON data that will form the content of your POST request to your service.
-
-Now it's time to exercise your running service:
-```java
-	ResponseEntity<Order> entity = template.postForEntity(
-        "http://localhost:8080/aggregators/order",
-        requestEntity, Order.class);
-```
-You are executing an HTTP Request with a POST HTTP Method against your service that you set running in the previous section. If you have any problems running the test, check that your service is still running in Tomcat and that the connection details are correct.
-
-With your `ResponseEntity` to hand, you can now inspect the response to ensure that it is valid. The complete functional test is provided in the following code:
+Create a new class `com.yummynoodlebar.functional.OrderTests` and enter the following code:
 
 ```java
 package com.yummynoodlebar.rest.functional;
@@ -88,6 +58,40 @@ public class OrderTests {
     }
 }
 ```
+
+Stepping through this, the first piece for you to understand is this :-
+
+```java
+@Test
+public void thatOrdersCanBeAddedAndQueried() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+    
+    RestTemplate template = new RestTemplate();
+```
+    
+Here you're setting up an initial Spring `RestTemplate`. You've created some initial HTTP Headers that set the content type to JSON and set the accept header also to JSON in anticipation of receiving JSON in the response.
+
+Next you prepare an `HTTPEntity` to contain the request that you'll submit to your service:
+
+```java
+	HttpEntity<String> requestEntity = new HttpEntity<String>(
+        RestDataFixture.standardOrderJSON(),headers);
+```
+This `HTTPEntity` uses a test fixture class to generate some JSON data that will form the content of your POST request to your service.
+
+Now it's time to exercise your running service:
+```java
+	ResponseEntity<Order> entity = template.postForEntity(
+        "http://localhost:8080/aggregators/order",
+        requestEntity, Order.class);
+```
+You are executing an HTTP Request with a POST HTTP Method against your service that you set running in the previous section. If you have any problems running the test, check that your service is still running in Tomcat and that the connection details are correct.
+
+With your `ResponseEntity` to hand, you can now inspect the response to ensure that it is valid.
+
+
 
 ## Summary
 
