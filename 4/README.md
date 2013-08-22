@@ -42,13 +42,13 @@ public class OrderTests {
         RestDataFixture.standardOrderJSON(),headers);
         
         ResponseEntity<Order> entity = template.postForEntity(
-                "http://localhost:8080/aggregators/order",
+                "http://localhost:8080/aggregators/orders",
                 requestEntity, Order.class);
         
         String path = entity.getHeaders().getLocation().getPath();
         
         assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-        assertTrue(path.startsWith("/aggregators/order/"));
+        assertTrue(path.startsWith("/aggregators/orders/"));
         Order order = entity.getBody();
         
         System.out.println ("The Order ID is " + order.getKey());
@@ -84,7 +84,7 @@ This `HTTPEntity` uses a test fixture class to generate some JSON data that will
 Now it's time to exercise your running service:
 ```java
 	ResponseEntity<Order> entity = template.postForEntity(
-        "http://localhost:8080/aggregators/order",
+        "http://localhost:8080/aggregators/orders",
         requestEntity, Order.class);
 ```
 You are executing an HTTP Request with a POST HTTP Method against your service that you set running in the previous section. If you have any problems running the test, check that your service is still running in Tomcat and that the connection details are correct.
