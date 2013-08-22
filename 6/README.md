@@ -25,7 +25,7 @@ into this:
 ```json
 {
     "name": "Derek",
-    "age": 15
+    "age": 15,
     
     "links" : [ 
         { "rel" : "self", "href" : "http://myhost/people/derek" },
