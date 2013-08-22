@@ -23,7 +23,7 @@ You can separate these interactions into two categories:
 * Requests that change a resource's state (a Command)
 * Requests that query a resource's state (a Query)
 
-It's possible to implement these two categories of interactions using one controller for each resource. However, the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises you to split these responsibilities into different routes through your application. In this tutorial you implement these concerns separately.
+It's possible to implement these two categories of interactions using one controller for each resource. However, the [Command Query Responsibility Segregation (CQRS)](http://martinfowler.com/bliki/CQRS.html) pattern advises you to split these responsibilities into different routes through your application. In this tutorial you will implement these concerns separately.
 
 ### Implement failing test(s) for a controller with MockMVC
 
@@ -182,7 +182,7 @@ The full set implementation of the `ViewOrderIntegrationTest` is shown below:
 
 #### Test DELETE HTTP method HTTP requests
 
-Take a look at a test implemented in exactly the same fashion, but performing the job of canceling an Order by sending a HTTP request with a DELETE HTTP method to the Order's URI (the full code for this can be found in the `CancelOrderIntegrationTest` test class):
+Take a look at a test implemented in exactly the same fashion, but performing the job of canceling an Order by sending a HTTP request with a DELETE HTTP method to the Order's URI (the full code for this will be found in the `CancelOrderIntegrationTest` test class):
 
 ```java
   	@Test
@@ -306,20 +306,92 @@ The full implementation of all the command-oriented (i.e. changes a resource's s
 
 Take a look at how to test HTTP requests that contain POST as the HTTP method. Specifically, a POST creates a new resource and *generates a new URI for that new resource*, and so this URI generation also needs to be part of the test.
 
-Open the `CreateNewOrderIntegrationTest` class and you should see the following method:
+Create a new test class, `CreateNewOrderIntegrationTest` class and enter the following:
 
 ```java
-	@Test
-  	public void thatCreateOrderPassesLocationHeader() throws Exception {
+package com.yummynoodlebar.rest.controller;
 
-    	this.mockMvc.perform(
+import com.yummynoodlebar.core.events.orders.CreateOrderEvent;
+import com.yummynoodlebar.core.services.OrderService;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.UUID;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.mockito.Mockito.*;
+import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.*;
+import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.*;
+
+
+public class CreateNewOrderIntegrationTest {
+
+  MockMvc mockMvc;
+
+  @InjectMocks
+  OrderCommandsController controller;
+
+  @Mock
+  OrderService orderService;
+
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+
+    this.mockMvc = standaloneSetup(controller)
+            .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
+
+    when(orderService.createOrder(any(CreateOrderEvent.class))).thenReturn(
+            orderCreated(UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13")));
+  }
+
+  @Test
+  public void thatCreateOrderUsesHttpCreated() throws Exception {
+
+    this.mockMvc.perform(
             post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
-            .andExpect(header().string("Location", 
-                        Matchers.endsWith("/aggregators/order/f3512d26-72f6-4290-9265-63ad69eccc13")));
-  	}
+            .andDo(print())
+            .andExpect(status().isCreated());
+  }
+
+  @Test
+  public void thatCreateOrderRendersAsJson() throws Exception {
+
+    this.mockMvc.perform(
+            post("/aggregators/orders")
+                    .content(standardOrderJSON())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+              .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
+              .andExpect(jsonPath("$.key").value("f3512d26-72f6-4290-9265-63ad69eccc13"));
+  }
+
+  @Test
+  public void thatCreateOrderPassesLocationHeader() throws Exception {
+
+    this.mockMvc.perform(
+            post("/aggregators/orders")
+                    .content(standardOrderJSON())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(header().string("Location",                      
+                        Matchers.endsWith("/aggregators/orders/f3512d26-72f6-4290-9265-63ad69eccc13")));
+  }
+}
+
 ```
 
 The focus here is on the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI that is of the form expected given the posted new Order content.
@@ -453,57 +525,83 @@ In this test environment, JSON is being requested. But what if another content t
 
 ### Use JAXB to marshall objects into content
 
-Open the `ViewOrderXmlIntegrationTest` class and you should see the following:
+It is also necessary for the service to be able to use XML to represent the entities. Create a new test `com.yummynoodlebar.rest.controller.ViewOrderXmlIntegrationTest` to ensure that this will work and and put in the following :
 
 ```java
-	public class ViewOrderXmlIntegrationTest {
+package com.yummynoodlebar.rest.controller;
 
-  	MockMvc mockMvc;
+import com.yummynoodlebar.core.events.orders.RequestOrderDetailsEvent;
+import com.yummynoodlebar.core.services.OrderService;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
+import org.springframework.test.web.servlet.MockMvc;
 
-  	@InjectMocks
-  	OrderQueriesController controller;
+import java.util.UUID;
 
-  	@Mock
-  	OrderService orderService;
+import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.orderDetailsEvent;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-  	UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+public class ViewOrderXmlIntegrationTest {
 
-  	  @Before
-  	  public void setup() {
-    	MockitoAnnotations.initMocks(this);
+  MockMvc mockMvc;
 
-    	this.mockMvc = standaloneSetup(controller)
+  @InjectMocks
+  OrderQueriesController controller;
+
+  @Mock
+  OrderService orderService;
+
+  UUID key = UUID.fromString("f3512d26-72f6-4290-9265-63ad69eccc13");
+
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+
+    this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter(),
                                   new Jaxb2RootElementHttpMessageConverter()).build();
-  	  }
+  }
 
-  	  @Test
-  	  public void thatViewOrderRendersXMLCorrectly() throws Exception {
-    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+  @Test
+  public void thatViewOrderRendersXMLCorrectly() throws Exception {
+
+    when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
 
-    	this.mockMvc.perform(
+    this.mockMvc.perform(
             get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.TEXT_XML))
             .andDo(print())
             .andExpect(content().contentType(MediaType.TEXT_XML))
             .andExpect(xpath("/order/key").string(key.toString()));
-  	  }
+  }
 
-  	  @Test
-  	  public void thatViewOrderRendersJsonCorrectly() throws Exception {
+  @Test
+  public void thatViewOrderRendersJsonCorrectly() throws Exception {
 
-    	when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
+    when(orderService.requestOrderDetails(any(RequestOrderDetailsEvent.class))).thenReturn(
             orderDetailsEvent(key));
 
-    	this.mockMvc.perform(
+    this.mockMvc.perform(
             get("/aggregators/orders/{id}", key.toString())
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.key").value(key.toString()));
-  	  }
-	}
+  }
+}
+
 ```
 
 This test requests Order representations as JSON and also as XML.
@@ -514,78 +612,26 @@ The first thing to notice in the tests is that the `mockMvc` object is being set
 	  runtime 'javax.xml.bind:jaxb-api:2.2.9'
 ```
 
-All good so far, but XML marshaling from Java objects is a little more involved that JSON. Here you're using JAXB2, and so in addition you'll need to annotate your REST domain classes so that the additional metadata to marshall the right XML is supplied. Take a look inside the `Order` class in `com.yummynoodlebar.rest.domain` for the following example:
+All good so far, but XML marshalling from Java objects is a little more involved that JSON. Here you're using JAXB2, and so in addition you'll need to annotate your REST domain classes so that the additional metadata to marshall the right XML is supplied. Open the `Order` class in `com.yummynoodlebar.rest.domain` and add the `@XmlRootElement` annotation, as below:
 
 ```java
-	package com.yummynoodlebar.rest.domain;
+package com.yummynoodlebar.rest.domain;
 
-	import com.yummynoodlebar.core.events.orders.OrderDetails;
+...
+import javax.xml.bind.annotation.XmlRootElement;
 
-	import javax.xml.bind.annotation.XmlRootElement;
-	import java.io.Serializable;
-	import java.util.Collections;
-	import java.util.Date;
-	import java.util.Map;
-	import java.util.UUID;
+...
 
-	@XmlRootElement
-	public class Order implements Serializable {
+@XmlRootElement
+public class Order implements Serializable {
 
-  	private Date dateTimeOfSubmission;
-
-  	private Map<String, Integer> items;
-
-  	private UUID key;
-
-  	public Date getDateTimeOfSubmission() {
-    	return dateTimeOfSubmission;
-  	}
-
-  	public UUID getKey() {
-    	return key;
-  	}
-
-  	public Map<String, Integer> getItems() {
-    	return items;
-  	}
-
-  	public void setItems(Map<String, Integer> items) {
-    	if (items == null) {
-      	this.items = Collections.emptyMap();
-    	} else {
-      	this.items = Collections.unmodifiableMap(items);
-    	}
-  	}
-
-  	public void setDateTimeOfSubmission(Date dateTimeOfSubmission) {
-    	this.dateTimeOfSubmission = dateTimeOfSubmission;
-  	}
-
-  	public void setKey(UUID key) {
-    	this.key = key;
-  	}
-
-  	public OrderDetails toOrderDetails() {
-    	OrderDetails details = new OrderDetails();
-
-    	details.setOrderItems(items);
-    	details.setKey(key);
-    	details.setDateTimeOfSubmission(dateTimeOfSubmission);
-
-    	return details;
-  	}
-
-  	public static Order fromOrderDetails(OrderDetails orderDetails) {
-    	Order order = new Order();
-
-    	order.dateTimeOfSubmission = orderDetails.getDateTimeOfSubmission();
-	   order.key = orderDetails.getKey();
-	    order.setItems(orderDetails.getOrderItems());
-
-	    return order;
-	  }
-	}
+   ...
+   
+}
 ```
+
+
+The XML marshalling tests will now all pass and your controller can speak XML.
 
 ## Summary
 

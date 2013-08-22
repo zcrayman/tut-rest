@@ -351,24 +351,47 @@ To find out, first tell Gradle that you will use Tomcat. Add the following to yo
 
 ```groovy
 apply plugin: 'tomcat'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
+
 
 buildscript {
   repositories {
     mavenCentral()
+    maven {
+      url "http://download.java.net/maven/2"
+    }
     maven { url 'http://repo.springsource.org/plugins-release' }
   }
+
   dependencies {
     classpath 'org.gradle.api.plugins:gradle-tomcat-plugin:0.9.8'
+    classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.1'
   }
 }
+
+dependencies {
+  def tomcatVersion = '7.0.42'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+      exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+
+  provided 'javax.servlet:javax.servlet-api:3.0.1'
+  ... 
+}
+
 ```
 
-Adding the following property to the end of the `build.gradle` ensures that our application runs at the root context, instead of the project name (which defaults to the name of the parent directory)
+Adding the following property to the end of the `build.gradle` ensures that our application runs at the root context, instead of the project name (which is set in settings.groovy)
    
 ```groovy 
 tomcatRunWar.contextPath = ''   
 ```
-Now we can run the following from the command line to execute our new service on port 8080 by default:
+Now you can run the following from the command line to execute the new service, on port 8080 by default:
 
 	> ./gradlew tomcatRunWar
 
