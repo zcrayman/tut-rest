@@ -1,4 +1,7 @@
-Now that you have written and tested your controllers, it's time to bring the whole application together.
+Now that you have written and tested your controllers, now proudly added to your Life Preserver as shown below, it's time to bring the whole application together.
+
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-controllers-and-core-domain-zoom-out.png)
+
 # Step 3: Configuring and deploying your service
 
 At this point you are ready to:
