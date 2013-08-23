@@ -1,5 +1,9 @@
 # Step 2: Building Your First RESTful Web Service with Spring MVC
 
+You've decided on your RESTful service's resources and captured them on your Life Preserver as the RESTful domain's components:
+
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-core-domain-zoom-out.png)
+
 It's time to implement your Yummy Noodle Bar RESTful web service. The first step in building a service with Spring MVC is to construct and test one or more controllers that are responsible for handling each incoming HTTP request that you defined for your service in the previous step.
 
 ## Start with a (failing) test
