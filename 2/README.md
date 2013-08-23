@@ -649,5 +649,4 @@ The full view of your current Life Preserver should look like the following:
 
 ![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-controllers-and-core-domain-zoom-out.png)
 
-
 [Next… Wiring Up and Deploying your Service](../3/)
