@@ -1,5 +1,9 @@
 
-You've set up functionality for the Yummy Noodle Bar RESTful service. At this point, it's a little *too* functional: you only want the right clients, the aggregators, to be able to submit and manage orders through the service. 
+You've set up functionality for the Yummy Noodle Bar RESTful service and your Life Preserver is looking great at this point:
+
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-rest-domain-and-controllers-and-core-domain-and-config-domain-initial-zoom-out.png)
+
+The problem is, at this point the Yummy Nood eBar RESTful service is a little *too* functional: you only want the right clients, the aggregators, to be able to submit and manage orders through the service. 
 
 # Step 5: Securing your Service with Spring Security
 
