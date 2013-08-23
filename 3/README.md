@@ -414,6 +414,10 @@ You've added two new components to your Configuration domain, `CoreConfig` and `
 
 ![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-initial-config-domain-focus.png)
 
+Your full Life Preserver should now look like the following:
+
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-rest-domain-and-controllers-and-core-domain-and-config-domain-initial-zoom-out.png)
+
 But how do you really know that when you've deployed your service it really works? That's the job of functional testing, and that's your task in the next section of this tutorial.
 
 [Next… Testing your Service using REStTemplate](../4/)
