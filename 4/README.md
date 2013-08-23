@@ -2,7 +2,7 @@ Your RESTful service is now running in Tomcat and life is good, right? Everythin
 
 It's time to prove it.
 
-# Step 4: Testing your Service with Spring's REStTemplate
+# Step 4: Testing your Service with Spring's RestTemplate
 
 Full-stack functional tests provide the last check-in-the-box that your service is fully integrated and functional.
 
