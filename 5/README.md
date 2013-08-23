@@ -381,6 +381,10 @@ You've extended your Configuration domain to secure your RESTful service as show
 
 ![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-security-config-domain-focus.png)
 
+Your full Life Preserver should look like the following:
+
+![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-rest-domain-and-controllers-and-core-domain-and-config-domain-full-zoom-out.png)
+
 Now that you have a secure RESTful service that allows you to access data in your chosen format, it's time to think about *discovery*.
 
 How does a client go about discovering what resources you're making available from your RESTful service, and what can be done with those resources? Without having to communicate all of that information up front and set it in stone for all of eternity?
