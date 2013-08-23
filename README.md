@@ -28,9 +28,11 @@ Yummy Noodle Bar is going global. It wants to provide a RESTful web service to a
 
 ## Yummy Noodle Bar application architecture and the Core domain
 
-The current architecture of the application is shown in the following "life preserver" diagram:
+The current architecture of the application is shown in the following "Life Preserver" diagram:
 
 ![Life Preserver showing Core packages](images/life-preserver-initial.png)
+
+The Life Preserver diagram is a tool for building applications that following the principles of the [Hexagonal Architecture, sometimes referred to as 'Ports and Adapters' originally characterised by Alistair Cockburn](http://alistair.cockburn.us/Hexagonal+architecture). The Life Preserver diagram shows your application's core internal domains along with the surrounding 'integration' domains that map directly to the packages and components that you'll be working within and upon throughout this tutorial, so it's a great way to understand where things are.
 
 Open the Initial project and you'll see that the life preserver diagram maps to the different packages under src/main/java/com/yummynoodlebar
 
