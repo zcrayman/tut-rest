@@ -262,7 +262,7 @@ The following table describes the HTTP status codes that each of your URIs and H
 
 Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
 
-![Life Preserver Full showing Core Domain and REST Domain](../imageslife-preserver-rest-domain-and-core-domain-zoom-out.png)
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-core-domain-zoom-out.png)
 
 You've also decided the URI addresses of your resources; the HTTP methods that will be supported for requests to those URIs; and finally the HTTP status codes that you intend to return for the requests.
 
