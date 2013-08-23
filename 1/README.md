@@ -1,4 +1,4 @@
-# Step 1: Modeling the Core and RESTful Web Service Domains
+# Step 1: Modelling the Core and RESTful Web Service Domains
 
 For the first version of your new Yummy Noodle Bar RESTful service, the ability to create, update, and remove Orders is the focus.
 
@@ -260,6 +260,10 @@ The following table describes the HTTP status codes that each of your URIs and H
 
 ## Summary
 
-Congratulations! You've determined the resources you're going to expose; the URI addresses of those resources; the HTTP methods that will be supported for requests to those URIs; and finally the HTTP status codes that you intend to return for the requests.
+Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
+
+![Life Preserver Full showing Core Domain and REST Domain](../imageslife-preserver-rest-domain-and-core-domain-zoom-out.png)
+
+You've also decided the URI addresses of your resources; the HTTP methods that will be supported for requests to those URIs; and finally the HTTP status codes that you intend to return for the requests.
 
 [Next… Building Your First RESTful Service](../2/) 
