@@ -645,5 +645,9 @@ Your Life Preserver now contains a whole new set of components, your controllers
 
 ![Life Preserver showing RESTful Controllers](../images/life-preserver-rest-controllers-focus.png)
 
+The full view of your current Life Preserver should look like the following:
+
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-controllers-and-core-domain-zoom-out.png)
+
 
 [Next… Wiring Up and Deploying your Service](../3/)
