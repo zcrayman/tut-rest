@@ -32,25 +32,22 @@ The current architecture of the application is shown in the following "Life Pres
 
 ![Life Preserver showing Core packages](images/life-preserver-initial.png)
 
-The Life Preserver diagram is a tool for building applications that following the principles of the [Hexagonal Architecture, sometimes referred to as 'Ports and Adapters' originally characterised by Alistair Cockburn](http://alistair.cockburn.us/Hexagonal+architecture). The Life Preserver diagram shows your application's core internal domains along with the surrounding 'integration' domains that map directly to the packages and components that you'll be working within and upon throughout this tutorial, so it's a great way to understand where things are.
+The Life Preserver diagram is a tool for building applications that following the principles of the [Hexagonal Architecture, sometimes referred to as 'Ports and Adapters' originally characterised by Alistair Cockburn](http://alistair.cockburn.us/Hexagonal+architecture). The Life Preserver diagram shows your application's core internal domains along with the surrounding 'integration' domains that map directly to the packages and components that you'll be working on throughout this tutorial, so it's a great way to understand where things are.
 
-Open the Initial project and you'll see that the life preserver diagram maps to the different packages under src/main/java/com/yummynoodlebar
+Open the Initial project and you'll see that the life preserver diagram maps to the different packages under `src/main/java/com/yummynoodlebar`.
 
-Under the core application's top-level packages, that is, com.yummynoodlebar.core, here's what the packages contain:
+Under the core application's top-level packages, `com.yummynoodlebar.core`, here's what the packages contain:
 
 * **domain**. Components that cleanly capture the application's Core domain concepts. These classes are a manifestation of the [ubiquitous language](http://martinfowler.com/bliki/UbiquitousLanguage.html) of the Core domain.
-
 * **repository**. Components that store and retrieve the current state of the system's domain objects.
-
 * **event**. Components that are the events that the domain can receive and process.
-
 * **service**. Components that handle the actions that can be performed when an event is received.
 
 Take a moment to familiarize yourself with the components in each package. The tests for the core domain components are available in the src/test area in the `initial` project. They will give you an idea of how these components will be used.
 
 ## RESTful web services domain
 
-RESTful web services integrate your application and the myriad possible clients that need to consume your services. As such, RESTful services live in their own integration domain on the periphery of your application's core, as shown in the following update to your life preserver.
+RESTful web services integrate your application and the all of the possible clients that need to consume your services. As such, RESTful services live in their own integration domain, outside your application's core, as shown in the following update to your life preserver.
 
 ![Life Preserver showing Core and REST domain](images/life-preserver-rest-domain-intro.png)
 

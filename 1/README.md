@@ -14,19 +14,15 @@ In the Core domain the concepts are captured as part of the internal ubiquitous 
 
 ![Life Preserver showing Core Domain](../images/life-preserver-core-domain-focus.png)
 
-Open the `initial` project. Under src/main/java/com/yummynoodlebar/core/domain, you see the components of the core, application-internal domain of Yummy Noodle Bar:
+Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`, you see the components of the core, application-internal domain of Yummy Noodle Bar:
 
 * **Order**. An individual order in the system that has an associated status and status history for tracking purposes.
+* **OrderStatus**. Current status allocated to an `Order`.
+* **Payment**. Payment that a customer wants to make for a given `Order`.
+* **PaymentDetails**. Details of the `Payment` that a customer wants to make for a given `Order`.
+* **PaymentStatus**. Current status of a `Payment` that a customer wants to make for a given `Order`.
 
-* **OrderStatus**. Current status allocated to an order.
-
-* **Payment**. Payment that a customer wants to make for a given Order.
-
-* **PaymentDetails**. Details of the Payment that a customer wants to make for a given Order.
-
-* **PaymentStatus**. Current status of a Payment that a customer wants to make for a given Order.
-
-This tutorial focuses on the Order domain classes, which can be acted upon by a number of events under the com.yummynoodlebar.events.orders package as shown on the following diagram:
+This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
 
 ![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
 
@@ -35,17 +31,11 @@ Events in this case decouple out the domain concepts in the core of the Yummy No
 The event components associated with Orders include:
 
 * **RequestAllOrdersEvent** and **AllOrdersEvent**. Corresponding events to request the associated OrderDetails about all Orders and the response to that request.
-
 * **CreateOrderEvent** and **OrderCreatedEvent**. Corresponding events to request the creation of a new Order, and a confirmation that the new Order has been created.
-
 * **DeleteOrderEvent** and **OrderDeletedEvent**. Corresponding events to delete an existing Order and then to confirm that the Order has been deleted.
-
 * **RequestOrderDetailsEvent** and **OrderDetailsEvent**. Corresponding events to request the current details of an Order, and then to receive those details.
-
 * **RequestOrderStatusEvent** and **OrderStatusEvent**. Corresponding events to request the current status of an Order, and then to receive the current status.
-
 * **SetOrderPaymentEvent**. Triggered when Payment is to be set on an existing Order.
-
 * **OrderUpdatedEvent**. Triggered when an Order is updated.
 
 
@@ -69,7 +59,7 @@ To determine the resources that you will support through your RESTful service, l
 * PaymentDetails
 * PaymentStatus
 
-The purpose of the Yummy Noodle RESTful service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. Therefore, we don't need to expose the entirety of these domain concepts via REST, instead we can take the following subset :
+The purpose of the Yummy Noodle RESTful service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. Therefore, we don't need to expose the entirety of these domain concepts via REST. Instead we can take the following subset:
 
 * Order
 * OrderStatus
@@ -94,19 +84,19 @@ For your Yummy Noodle Bar RESTful Service domain, the resources will have the fo
 
         http://www.yummynoodlebar.com/aggregators/orders
 
-* One Order
+* One `Order`
 
         http://www.yummynoodlebar.com/aggregators/orders/{Order ID}
 
-* Current OrderStatus for one Order
+* Current `OrderStatus` for one `Order`
 
         http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/status
 
-* PaymentDetails for one Order
+* `PaymentDetails` for one `Order`
 
         http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentdetails
 
-* PaymentStatus for one Order
+* `PaymentStatus` for one `Order`
 
         http://www.yummynoodlebar.com/aggregators/orders/{Order ID}/paymentstatus
 
@@ -116,11 +106,11 @@ Each of the above URIs are expressed as *templates*; they contain blocks demarca
 
 For example, here the {} notation specifies where an Order with Order ID of 1 would have the following specific URL once the URI template is furnished with the Order Number:
 
-    http://www.yummynoodlebar.com/aggregators/order/1
+    http://www.yummynoodlebar.com/aggregators/orders/1
 
 An Order with an Order ID of 37 would have the following specific URI:
 
-    http://www.yummynoodlebar.com/aggregators/order/37
+    http://www.yummynoodlebar.com/aggregators/orders/37
 
 This quality of the URI changing to work with specific resources is what gives a resource the quality of being *addressable*.
 
@@ -133,30 +123,30 @@ RESTful services rely on the HTTP methods passed as part of an HTTP request head
 The following methods are supported.
 
 <table>
-<tr>
-    <th>HTTP Method</th>
-    <th>Description</th>
-</tr>
-    <tr>
-        <td>GET</td>
-			  <td>Retrieves a representation of the resource addressed by the URI used to submit the HTTP request upon.</td>
-	  </tr>
-<tr>
-				<td>POST</td>
-			  <td>Creates a new resource under the URI used to submit the POST HTTP Request upon.</td>
-</tr>
-<tr>
-				<td>PUT</td>
-			  <td>Updates the resource indicated by the URI used to submit the HTTP request upon. If a resource did not already exist at the specified URI, then a new resource at the specified address will be created.</td>
-</tr>
-<tr>
-        <td>DELETE</td>
-			  <td>Removes the resource from the system where it is addressed by the URI used to submit the HTTP request upon.</td>
-</tr>
-<tr>
-        <td>HEAD and OPTIONS</td>
-			  <td>Retrieve various meta-data about the resource addressed by the URI used to submit the HTTP request upon.</td>
-    </tr>
+	<tr>
+		<th>HTTP Method</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>GET</td>
+		<td>Retrieves a representation of the resource addressed by the URI used to submit the HTTP request upon.</td>
+	</tr>
+	<tr>
+		<td>POST</td>
+		<td>Creates a new resource under the URI used to submit the POST HTTP Request upon.</td>
+	</tr>
+	<tr>
+		<td>PUT</td>
+		<td>Updates the resource indicated by the URI used to submit the HTTP request upon. If a resource did not already exist at the specified URI, then a new resource at the specified address will be created.</td>
+	</tr>
+	<tr>
+		<td>DELETE</td>
+		<td>Removes the resource from the system where it is addressed by the URI used to submit the HTTP request upon.</td>
+	</tr>
+	<tr>
+		<td>HEAD and OPTIONS</td>
+		<td>Retrieve various meta-data about the resource addressed by the URI used to submit the HTTP request upon.</td>
+	</tr>
 </table>
 
 The HTTP 1.1 Specification provides a detailed description of all the HTTP Methods.
@@ -166,46 +156,46 @@ POST and PUT have similar but not identical functions. You use POST to create ne
 The following table describes what HTTP methods will be supported for each supported resource address.
 
 <table>
-    <tr>
-    <th>Resource URI</th>
-    <th>Supported HTTP Methods</th>
-    <th>Description</th>
-</tr>
-    <tr>
-        <td>/aggregators/orders</td>
-			  <td>GET</td>
-        <td>Asks for a representation of all of the orders.</td>
-	  </tr>
-    <tr>
-        <td>/aggregators/orders</td>
-			  <td>POST</td>
-        <td>Attempt to create a new order, returning the location (in the Location HTTP Header) of the newly created resource.</td>
-	  </tr>
-	  <tr>
-        <td>/aggregators/orders/{id}</td>
-			  <td>GET</td>
-        <td>Asks for a representation of a specific Order resource.</td>
-	  </tr>
-<tr>
-        <td>/aggregators/orders/{id}</td>
-			  <td>DELETE</td>
-        <td>Requests the deletion of a specified Order resource.</td>
-	  </tr>
-<tr>
-        <td>/aggregators/order/{id}/status</td>
-			  <td>GET</td>
-        <td>Asks for a representation of a specific Order's current status.</td>
-	  </tr>
-<tr>
-        <td>/aggregators/order/{id}/paymentdetails</td>
-			  <td>GET</td>
-        <td>Asks for a representation of a specific Order's payment details resource.</td>
-	  </tr>
-<tr>
-        <td>/aggregators/order/{id}/paymentdetails</td>
-			  <td>PUT</td>
-        <td>Updates a specific Order's payment details resource.</td>
-	  </tr>
+	<tr>
+		<th>Resource URI</th>
+		<th>Supported HTTP Methods</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>/aggregators/orders</td>
+		<td>GET</td>
+		<td>Asks for a representation of all of the orders.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders</td>
+		<td>POST</td>
+		<td>Attempt to create a new order, returning the location (in the Location HTTP Header) of the newly created resource.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}</td>
+		<td>GET</td>
+		<td>Asks for a representation of a specific Order resource.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}</td>
+		<td>DELETE</td>
+		<td>Requests the deletion of a specified Order resource.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/order/{id}/status</td>
+		<td>GET</td>
+		<td>Asks for a representation of a specific Order's current status.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/order/{id}/paymentdetails</td>
+		<td>GET</td>
+		<td>Asks for a representation of a specific Order's payment details resource.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/order/{id}/paymentdetails</td>
+		<td>PUT</td>
+		<td>Updates a specific Order's payment details resource.</td>
+	</tr>
 </table>
 
 
@@ -216,46 +206,46 @@ No RESTful design is complete without considering responses to requests. Now you
 The following table describes the HTTP status codes that each of your URIs and HTTP method combinations will respond with.
 
 <table>
-    <tr>
-    <th>Resource URI</th>
-    <th>Supported HTTP Methods</th>
-    <th>Supported HTTP Status Codes</th>
-</tr>
-    <tr>
-        <td>/aggregators/orders</td>
-			  <td>GET</td>
-        <td>200 (OK, Success)</td>
-	  </tr>
-    <tr>
-        <td>/aggregators/orders</td>
-			  <td>POST</td>
-        <td>201 (Created) if the Order resource is successfully created, in addition to a Location header that contains the link to the newly created Order resource; 406 (Not Acceptable) if the format of the incoming data for the new resource is not valid</td>
-	  </tr>
-	  <tr>
-        <td>/aggregators/orders/{id}</td>
-			  <td>GET</td>
-        <td>Asks for a representation of a specific Order resource.</td>
-	  </tr>
-<tr>
-        <td>/aggregators/orders/{id}</td>
-			  <td>DELETE</td>
-        <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
-	  </tr>
-<tr>
-        <td>/aggregators/orders/{id}/status</td>
-			  <td>GET</td>
-        <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
-	  </tr>
-<tr>
-        <td>/aggregators/orders/{id}/paymentdetails</td>
-			  <td>GET</td>
-        <td>200 (OK); 404 (Not Found) if Order Resource not found</td>
-	  </tr>
-<tr>
-        <td>/aggregators/orders/{id}/paymentdetails</td>
-			  <td>PUT</td>
-        <td>201 (Created); 406 (Not Acceptable) if there is a problem with the format of the incoming data on the new payment details; 404 (Not Found) if Order Resource not found</td>
-	  </tr>
+	<tr>
+		<th>Resource URI</th>
+		<th>Supported HTTP Methods</th>
+		<th>Supported HTTP Status Codes</th>
+	</tr>
+	<tr>
+		<td>/aggregators/orders</td>
+		<td>GET</td>
+		<td>200 (OK, Success)</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders</td>
+		<td>POST</td>
+		<td>201 (Created) if the Order resource is successfully created, in addition to a Location header that contains the link to the newly created Order resource; 406 (Not Acceptable) if the format of the incoming data for the new resource is not valid</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}</td>
+		<td>GET</td>
+		<td>Asks for a representation of a specific Order resource.</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}</td>
+		<td>DELETE</td>
+		<td>200 (OK); 404 (Not Found) if Order Resource not found</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}/status</td>
+		<td>GET</td>
+		<td>200 (OK); 404 (Not Found) if Order Resource not found</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}/paymentdetails</td>
+		<td>GET</td>
+		<td>200 (OK); 404 (Not Found) if Order Resource not found</td>
+	</tr>
+	<tr>
+		<td>/aggregators/orders/{id}/paymentdetails</td>
+		<td>PUT</td>
+		<td>201 (Created); 406 (Not Acceptable) if there is a problem with the format of the incoming data on the new payment details; 404 (Not Found) if Order Resource not found</td>
+	</tr>
 </table>
 
 ## Summary
