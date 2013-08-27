@@ -18,146 +18,23 @@ Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`
 
 * **Order**. An individual order in the system that has an associated status and status history for tracking purposes.
 
-`src/main/java/com/yummynoodlebar/core/domain/Order.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-import com.yummynoodlebar.core.events.orders.OrderDetails;
-import org.springframework.beans.BeanUtils;
-
-import java.util.*;
-
-public class Order {
-
-  private final Date dateTimeOfSubmission;
-  private Map<String, Integer> orderItems;
-  private final UUID key;
-  private Customer customer;
-
-  private OrderStatus status;
-  private List<OrderStatus> statusHistory;
-
-  public Order(final Date dateTimeOfSubmission) {
-    this.key = UUID.randomUUID();
-    this.dateTimeOfSubmission = dateTimeOfSubmission;
-    statusHistory = new ArrayList<OrderStatus>();
-  }
-
-  public void addStatus(OrderStatus newStatus) {
-    statusHistory.add(newStatus);
-    status = newStatus;
-  }
-
-  public OrderStatus getStatus() {
-    return status;
-  }
-
-  public Date getDateTimeOfSubmission() {
-    return dateTimeOfSubmission;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public void setOrderItems(Map<String, Integer> orderItems) {
-    if (orderItems == null) {
-      this.orderItems = Collections.emptyMap();
-    } else {
-      this.orderItems = Collections.unmodifiableMap(orderItems);
-    }
-  }
-
-  public Map<String, Integer> getOrderItems() {
-    return orderItems;
-  }
-
-  public boolean canBeDeleted() {
-    return true;
-  }
-
-  public OrderDetails toOrderDetails() {
-    OrderDetails details = new OrderDetails();
-
-    BeanUtils.copyProperties(this, details);
-
-    return details;
-  }
-
-  public static Order fromOrderDetails(OrderDetails orderDetails) {
-    Order order = new Order(orderDetails.getDateTimeOfSubmission());
-
-    BeanUtils.copyProperties(orderDetails, order);
-
-    return order;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Order.java" prefix="initial"/>
 
 * **OrderStatus**. Current status allocated to an `Order`.
 
-`src/main/java/com/yummynoodlebar/core/domain/OrderStatus.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-import com.yummynoodlebar.core.events.orders.OrderStatusDetails;
-
-import java.util.Date;
-import java.util.UUID;
-
-public class OrderStatus {
-
-  private Date statusDate;
-  private String status;
-
-  public OrderStatus(final Date date, final String status) {
-    this.status = status;
-    this.statusDate = date;
-  }
-
-  public Date getStatusDate() {
-    return statusDate;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public OrderStatusDetails toStatusDetails() {
-    return new OrderStatusDetails(statusDate, status);
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/OrderStatus.java" prefix="initial"/>
 
 * **Payment**. Payment that a customer wants to make for a given `Order`.
 
-`src/main/java/com/yummynoodlebar/core/domain/Payment.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-public class Payment {
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Payment.java" prefix="initial"/>
 
 * **PaymentDetails**. Details of the `Payment` that a customer wants to make for a given `Order`.
 
-`src/main/java/com/yummynoodlebar/core/domain/PaymentDetails.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-public class PaymentDetails {
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentDetails.java" prefix="initial"/>
 
 * **PaymentStatus**. Current status of a `Payment` that a customer wants to make for a given `Order`.
 
-`src/main/java/com/yummynoodlebar/core/domain/PaymentStatus.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-public class PaymentStatus {
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentStatus.java" prefix="initial"/>
 
 This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
 
@@ -169,343 +46,41 @@ The event components associated with Orders include:
 
 * **RequestAllOrdersEvent** and **AllOrdersEvent**. Corresponding events to request the associated OrderDetails about all Orders and the response to that request.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/RequestAllOrdersEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.RequestReadEvent;
-
-public class RequestAllOrdersEvent extends RequestReadEvent {
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/RequestAllOrdersEvent.java" prefix="initial"/>
 	
-`src/main/java/com/yummynoodlebar/core/events/orders/AllOrdersEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.ReadEvent;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-public class AllOrdersEvent extends ReadEvent {
-
-  private final List<OrderDetails> ordersDetails;
-
-  public AllOrdersEvent(List<OrderDetails> orders) {
-    this.ordersDetails = Collections.unmodifiableList(orders);
-  }
-
-  public Collection<OrderDetails> getOrdersDetails() {
-    return this.ordersDetails;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/AllOrdersEvent.java" prefix="initial"/>
 
 * **CreateOrderEvent** and **OrderCreatedEvent**. Corresponding events to request the creation of a new Order, and a confirmation that the new Order has been created.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/CreateOrderEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.CreateEvent;
-
-public class CreateOrderEvent extends CreateEvent {
-  private OrderDetails details;
-
-  public CreateOrderEvent(OrderDetails details) {
-    this.details = details;
-  }
-
-  public OrderDetails getDetails() {
-    return details;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/CreateOrderEvent.java" prefix="initial"/>
 	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderCreatedEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.CreatedEvent;
-
-import java.util.UUID;
-
-public class OrderCreatedEvent extends CreatedEvent {
-
-  private final UUID newOrderKey;
-  private final OrderDetails details;
-
-  public OrderCreatedEvent(final UUID newOrderKey, final OrderDetails details) {
-    this.newOrderKey = newOrderKey;
-    this.details = details;
-  }
-
-  public OrderDetails getDetails() {
-    return details;
-  }
-
-  public UUID getNewOrderKey() {
-    return newOrderKey;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderCreatedEvent.java" prefix="initial"/>
 
 * **DeleteOrderEvent** and **OrderDeletedEvent**. Corresponding events to delete an existing Order and then to confirm that the Order has been deleted.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/DeleteOrderEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.DeleteEvent;
-
-import java.util.UUID;
-
-public class DeleteOrderEvent extends DeleteEvent {
-
-  private final UUID key;
-
-  public DeleteOrderEvent(final UUID key) {
-    this.key = key;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/DeleteOrderEvent.java" prefix="initial"/>
 	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderDeletedEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.DeletedEvent;
-
-import java.util.UUID;
-
-public class OrderDeletedEvent extends DeletedEvent {
-
-  private UUID key;
-  private OrderDetails details;
-  private boolean deletionCompleted;
-
-  private OrderDeletedEvent(UUID key) {
-    this.key = key;
-  }
-
-  public OrderDeletedEvent(UUID key, OrderDetails details) {
-    this.key = key;
-    this.details = details;
-    this.deletionCompleted = true;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderDetails getDetails() {
-    return details;
-  }
-
-  public boolean isDeletionCompleted() {
-    return deletionCompleted;
-  }
-
-  public static OrderDeletedEvent deletionForbidden(UUID key, OrderDetails details) {
-    OrderDeletedEvent ev = new OrderDeletedEvent(key, details);
-    ev.entityFound=true;
-    ev.deletionCompleted=false;
-    return ev;
-  }
-
-  public static OrderDeletedEvent notFound(UUID key) {
-    OrderDeletedEvent ev = new OrderDeletedEvent(key);
-    ev.entityFound=false;
-    return ev;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderDeletedEvent.java" prefix="initial"/>
 
 * **RequestOrderDetailsEvent** and **OrderDetailsEvent**. Corresponding events to request the current details of an Order, and then to receive those details.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderDetailsEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.RequestReadEvent;
-
-import java.util.UUID;
-
-public class RequestOrderDetailsEvent extends RequestReadEvent {
-  private UUID key;
-
-  public RequestOrderDetailsEvent(UUID key) {
-    this.key = key;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderDetailsEvent.java" prefix="initial"/>
 	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderDetailsEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.ReadEvent;
-
-import java.util.UUID;
-
-public class OrderDetailsEvent extends ReadEvent {
-  private UUID key;
-  private OrderDetails orderDetails;
-
-  private OrderDetailsEvent(UUID key) {
-    this.key = key;
-  }
-
-  public OrderDetailsEvent(UUID key, OrderDetails orderDetails) {
-    this.key = key;
-    this.orderDetails = orderDetails;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderDetails getOrderDetails() {
-    return orderDetails;
-  }
-
-  public static OrderDetailsEvent notFound(UUID key) {
-    OrderDetailsEvent ev = new OrderDetailsEvent(key);
-    ev.entityFound=false;
-    return ev;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderDetailsEvent.java" prefix="initial"/>
 
 * **RequestOrderStatusEvent** and **OrderStatusEvent**. Corresponding events to request the current status of an Order, and then to receive the current status.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderStatusEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.RequestReadEvent;
-
-import java.util.UUID;
-
-public class RequestOrderStatusEvent extends RequestReadEvent {
-  private UUID key;
-
-  public RequestOrderStatusEvent(UUID key) {
-    this.key = key;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderStatusEvent.java" prefix="initial"/>
 	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderStatusEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.ReadEvent;
-
-import java.util.UUID;
-
-public class OrderStatusEvent extends ReadEvent {
-  private UUID key;
-  private OrderStatusDetails orderStatus;
-
-  private OrderStatusEvent(UUID key) {
-    this.key = key;
-  }
-
-  public OrderStatusEvent(UUID key, OrderStatusDetails orderStatus) {
-    this.key = key;
-    this.orderStatus = orderStatus;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderStatusDetails getOrderStatus() {
-    return orderStatus;
-  }
-
-  public static OrderStatusEvent notFound(UUID key) {
-    OrderStatusEvent ev = new OrderStatusEvent(key);
-    ev.entityFound=false;
-    return ev;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderStatusEvent.java" prefix="initial"/>
 
 * **SetOrderPaymentEvent**. Triggered when Payment is to be set on an existing Order.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/SetOrderPaymentEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.UpdateEvent;
-
-import java.util.UUID;
-
-public class SetOrderPaymentEvent extends UpdateEvent {
-
-  private UUID key;
-  private PaymentDetails paymentDetails;
-
-  public SetOrderPaymentEvent(UUID key, PaymentDetails paymentDetails) {
-    this.key = key;
-    this.paymentDetails = paymentDetails;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public PaymentDetails getPaymentDetails() {
-    return paymentDetails;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/SetOrderPaymentEvent.java" prefix="initial"/>
 
 * **OrderUpdatedEvent**. Triggered when an Order is updated.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderUpdatedEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.UpdatedEvent;
-
-import java.util.UUID;
-
-public class OrderUpdatedEvent extends UpdatedEvent {
-
-  private UUID key;
-  private OrderDetails orderDetails;
-
-  public OrderUpdatedEvent(UUID key, OrderDetails orderDetails) {
-    this.key = key;
-    this.orderDetails = orderDetails;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderDetails getOrderDetails() {
-    return orderDetails;
-  }
-}
-```
+	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderUpdatedEvent.java" prefix="initial"/>
 	
 
 ## Model the orders and order resources
