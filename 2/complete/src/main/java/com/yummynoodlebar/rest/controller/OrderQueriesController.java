@@ -15,9 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+// {!begin root}
 @Controller
 @RequestMapping("/aggregators/orders")
 public class OrderQueriesController {
+// {!end root}
 
     private static Logger LOG = LoggerFactory.getLogger(OrderQueriesController.class);
 
@@ -35,6 +37,7 @@ public class OrderQueriesController {
         return orders;
     }
 
+    // {!begin viewOrder}
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<Order> viewOrder(@PathVariable String id) {
 
@@ -48,4 +51,5 @@ public class OrderQueriesController {
 
         return new ResponseEntity<Order>(order, HttpStatus.OK);
     }
+    // {!end viewOrder}
 }

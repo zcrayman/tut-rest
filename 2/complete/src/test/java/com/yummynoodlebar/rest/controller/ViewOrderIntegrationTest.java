@@ -22,7 +22,10 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.*;
 import static com.yummynoodlebar.rest.controller.fixture.RestEventFixtures.*;
 
+// {!begin intro}
+// {!begin opening}
 public class ViewOrderIntegrationTest {
+// {!end opening}
 
   MockMvc mockMvc;
 
@@ -41,6 +44,7 @@ public class ViewOrderIntegrationTest {
     this.mockMvc = standaloneSetup(controller)
             .setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
   }
+// {!end intro}
 
   @Test
   public void thatViewOrderUsesHttpNotFound() throws Exception {
@@ -67,6 +71,7 @@ public class ViewOrderIntegrationTest {
             .andExpect(status().isOk());
   }
 
+  // {!begin thatViewOrderRendersCorrectly}
   @Test
   public void thatViewOrderRendersCorrectly() throws Exception {
 
@@ -79,4 +84,5 @@ public class ViewOrderIntegrationTest {
             .andExpect(jsonPath("$.items['" + YUMMY_ITEM + "']").value(12))
             .andExpect(jsonPath("$.key").value(key.toString()));
   }
+  // {!end thatViewOrderRendersCorrectly}
 }

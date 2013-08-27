@@ -21,15 +21,18 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.UUID;
 
+// {!begin root}
 @Controller
 @RequestMapping("/aggregators/orders")
 public class OrderCommandsController {
+// {!end root}
 
     private static Logger LOG = LoggerFactory.getLogger(OrderCommandsController.class);
 
     @Autowired
     private OrderService orderService;
 
+    // {!begin createOrder}
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Order> createOrder(@RequestBody Order order, UriComponentsBuilder builder) {
 
@@ -44,7 +47,9 @@ public class OrderCommandsController {
 
         return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
     }
+    // {!end createOrder}
 
+    // {!begin cancelOrder}
     @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
     public ResponseEntity<Order> cancelOrder(@PathVariable String id) {
 
@@ -62,4 +67,5 @@ public class OrderCommandsController {
 
         return new ResponseEntity<Order>(order, HttpStatus.FORBIDDEN);
     }
+    // {!end cancelOrder}
 }

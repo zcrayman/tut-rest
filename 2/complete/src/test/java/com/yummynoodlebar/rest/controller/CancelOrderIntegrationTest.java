@@ -43,6 +43,7 @@ public class CancelOrderIntegrationTest {
 
   }
 
+  // {!begin thatDeleteOrderUsesHttpOkOnSuccess}
   @Test
   public void thatDeleteOrderUsesHttpOkOnSuccess() throws Exception {
 
@@ -60,6 +61,7 @@ public class CancelOrderIntegrationTest {
             Matchers.<DeleteOrderEvent>hasProperty("key",
                     Matchers.equalTo(key))));
   }
+  // {!end thatDeleteOrderUsesHttpOkOnSuccess}
 
   @Test
   public void thatDeleteOrderUsesHttpNotFoundOnEntityLookupFailure() throws Exception {

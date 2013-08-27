@@ -11,9 +11,13 @@ dependencies {
 
     compile 'org.slf4j:slf4j-api:1.7.5'
     runtime 'org.slf4j:slf4j-jdk14:1.7.5'
+    // {!begin jackson}
     runtime 'com.fasterxml.jackson.core:jackson-core:2.2.2'
     runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
+    // {!end jackson}
+    // {!begin jaxb}
     runtime 'javax.xml.bind:jaxb-api:2.2.9'
+    // {!end jaxb}
 
     testCompile 'com.jayway.jsonpath:json-path-assert:0.8.1'
     testCompile 'org.springframework:spring-test:3.2.3.RELEASE'
