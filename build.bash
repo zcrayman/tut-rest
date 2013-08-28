@@ -23,3 +23,6 @@ cd 6
 cat README.ftl.md | fpp > README.md
 cd ..
 
+cd 7
+cat README.ftl.md | fpp > README.md
+cd ..
