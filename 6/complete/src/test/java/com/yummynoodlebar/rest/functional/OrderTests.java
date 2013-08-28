@@ -52,6 +52,7 @@ public class OrderTests {
     }
   }
 
+  // {!begin thatOrdersHaveCorrectHateoasLinks}
   @Test
   public void thatOrdersHaveCorrectHateoasLinks() {
 
@@ -64,6 +65,7 @@ public class OrderTests {
     assertEquals(entity.getHeaders().getLocation().toString(), order.getLink("self").getHref());
     assertTrue(order.getLink("Order Status").getHref().endsWith(orderBase + "/status"));
   }
+  // {!end thatOrdersHaveCorrectHateoasLinks}
 
   @Test
   public void thatNewOrderHasOrdersStatusCreated() {

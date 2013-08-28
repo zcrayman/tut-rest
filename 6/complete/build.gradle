@@ -37,7 +37,9 @@ dependencies {
     compile 'org.springframework:spring-core:3.2.3.RELEASE'
     compile 'org.springframework:spring-webmvc:3.2.3.RELEASE'
     compile 'com.jayway.jsonpath:json-path:0.8.1'
+    // {!begin hateoas}
     compile 'org.springframework.hateoas:spring-hateoas:0.7.0.RELEASE'
+    // {!end hateoas}
 
     compile 'org.springframework.security:spring-security-web:3.2.0.M2'
     compile 'org.springframework.security:spring-security-core:3.2.0.M2'

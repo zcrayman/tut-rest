@@ -1,7 +1,9 @@
 package com.yummynoodlebar.rest.domain;
 
 import com.yummynoodlebar.core.events.orders.OrderDetails;
+// {!begin import}
 import org.springframework.hateoas.ResourceSupport;
+// {!end import}
 import com.yummynoodlebar.rest.controller.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,7 +20,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 //Order implementation is made for integration with things like this.
 
 @XmlRootElement
+// {!begin resourceSupport}
 public class Order extends ResourceSupport implements Serializable {
+// {!end resourceSupport}
 
   private Date dateTimeOfSubmission;
 
@@ -64,7 +68,7 @@ public class Order extends ResourceSupport implements Serializable {
     return details;
   }
 
-
+  // {!begin fromOrderDetails}
   public static Order fromOrderDetails(OrderDetails orderDetails) {
     Order order = new Order();
 
@@ -77,10 +81,15 @@ public class Order extends ResourceSupport implements Serializable {
 
     //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
     //We have explicitly avoided that.
+    // {!begin selfRel}
     order.add(linkTo(OrderQueriesController.class).slash(order.key).withSelfRel());
+    // {!end selfRel}
+    // {!begin status}
     order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("status").withRel("Order Status"));
+    // {!end status}
     order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
 
     return order;
   }
+  // {!end fromOrderDetails}
 }

@@ -1,16 +1,16 @@
-HATEOAS (Hypermedia As The Engine of Application State) may be an unfortunate acronym, but it is also a crucial technology and approach to building flexible RESTful services. HATEOS allows you to build services that *support the discovery of resources* and re-introduce the linking of resources together that is an essential part of hypertext systems.
+[HATEOAS (Hypermedia As The Engine of Application State)][gs-rest-hateoas] may be an unfortunate acronym, but it is also a crucial technology and approach to building flexible RESTful services. HATEOS allows you to build services that *support the discovery of resources* and re-introduce the linking of resources together that is an essential part of hypertext systems.
 
 ## Step 6: Make your service discoverable with Spring HATEOAS
 
 HATEOAS provides a consistent mechanism for you to describe what resources you have and what resources relate to them. A client that understands HATEOS and its corresponding links can effectively discover and react to what resources are supported at a given moment in time *without having to agree to this all up front*.
 
-Building a REST service is all about creating resources, representing them to clients, and providing consistent locations at which the resources are accessed.  Of course, many of your resources will be related.  For Yummy Noodle Bar, an Order resource has related Status and Payment Detail resources.  In advance, you could tell the developers of the clients that the uri of the status is `/orders/{id}/status`.   
+Building a REST service is all about creating resources, representing them to clients, and providing consistent locations at which the resources are accessed.  Of course, many of your resources will be related.  For Yummy Noodle Bar, an Order resource has related Status and Payment Detail resources.  In advance, you could tell the developers of the clients that the URI of the status is `/orders/{id}/status`.   
 
 What if you didn't have to do this, and could instead embed the location of the status within the Order resource itself? This is the natural way that hypertext systems work, and HTTP is no exception.  It naturally deals in URLs, and the most native system delivered over HTTP, HTML, has linking deeply integrated.  
 
 How do you build a RESTful service to include links between your resources?
 
-Enter HATEOAS.  
+Enter [HATEOAS][u-hateoas].  
 
 HATEOAS adds support to be able to turn this:
 
@@ -39,39 +39,38 @@ To make this work, you need to introduce into your resource representations the 
 
 ### Implement HATEOAS for Yummy Noodle Bar with Spring HATEOAS
 
-Import Spring HATEOAS into your project by updating `build.gradle`:
+Import Spring HATEOAS into your project by updating `build.gradle`'s dependency list with this:
 
-```groovy
-dependencies {
-    ...
+`build.gradle`
+```gradle
     compile 'org.springframework.hateoas:spring-hateoas:0.7.0.RELEASE'
-    ...
-}
 ```
 
 ### Create a (failing) test for HATEOAS
 
 Continuing the practice of creating a test before altering the codebase, add the following into your `OrdersTest` test class.
 
+`src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
 ```java
-@Test
-public void thatOrdersHaveCorrectHateoasLinks() {
+  @Test
+  public void thatOrdersHaveCorrectHateoasLinks() {
 
-    ResponseEntity<Order> entity = ...
-    
+    ResponseEntity<Order> entity = createOrder();
+
     Order order = entity.getBody();
-    
-    String orderBase = "/aggregators/order/" + order.getKey();
-    
+
+    String orderBase = "/aggregators/orders/" + order.getKey();
+
     assertEquals(entity.getHeaders().getLocation().toString(), order.getLink("self").getHref());
     assertTrue(order.getLink("Order Status").getHref().endsWith(orderBase + "/status"));
-}
+  }
 ```
     
 This code will not compile yet because the `Order` class in the RESTful Domain doesn't have a `getLink()` method yet.
 
 The full test class will now look like the following:
 
+`src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
 ```java
 package com.yummynoodlebar.rest.functional;
 
@@ -182,40 +181,48 @@ public class OrderTests {
     return headers;
   }
 }
+
+
 ```
     
-This code will not compile yet as the `Order` class in the RESTful Domain doesn't yet have a `getLink()` method.
+As just stated, this code will not compile yet as the `Order` class in the RESTful Domain doesn't yet have a `getLink()` method.
 
-To rectify this, but still leave a failing test, update `rest.domain.Order` to read 
+To rectify this, but still leave a failing test, update `Order` to read:
 
+`src/main/java/com/yummynoodlebar/rest/domain/Order.java`
 ```java
-..
 import org.springframework.hateoas.ResourceSupport;
+```
 
+`src/main/java/com/yummynoodlebar/rest/domain/Order.java`
+```java
 public class Order extends ResourceSupport implements Serializable {
-...
 ```
 
 Extending `ResourceSupport` from Spring HATEOAS lets your test compile, but it will still fail if you run it, because the links generated will be empty.
 
 ## Implement HATEOAS for your RESTful domain classes
 
-It's time to tell your RESTful domain classes, in particular here the `Order` class, how to generate links in their representations.
+It's time to tell your RESTful domain classes, in particular the `Order` class, how to generate links in their representations.
 
-To add a link using Spring HATEOAS you do the following:
+To add your first link using Spring HATEOAS, add this to `fromOrderDetails()`:
+
+`src/main/java/com/yummynoodlebar/rest/domain/Order.java`
 ```java
-order.add(linkTo(OrderQueriesController.class).slash(key).withSelfRel());
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).withSelfRel());
 ```
     
 You define where the link is going, in this case to the OrderQueriesController, followed by an ID for the template, which is UUID in this case.  
 
 The ID is required for the generated link to be able to provide the parameters needed for the template URI that you on OrderQueriesController earlier to map the URI to OrderQueriesController.viewOrder().
 
-The `withSelfRel()` indicates that this is the definitive URI for this resource, a self- reference. This is most useful if you store a resource without its url and want to reference it again later, or if you have just created a new resource and want to navigate to its location.  In the second case, the Location header should also be available.
+The `withSelfRel()` indicates that this is the definitive URI for this resource, a self-reference. This is most useful if you store a resource without its url and want to reference it again later, or if you have just created a new resource and want to navigate to its location.  In the second case, the Location header should also be available.
 
 To add links that are not self referencing, the syntax is:
+
+`src/main/java/com/yummynoodlebar/rest/domain/Order.java`
 ```java
-order.add(linkTo(OrderStatusController.class).slash(key).slash("status").withRel("Order Status"));
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("status").withRel("Order Status"));
 ```
 
 This creates an explicit relation link, that of 'Order Status' that can then be queried for by a client.
@@ -224,21 +231,28 @@ In the life preserver model, the `rest.domain.Order` class is the focus for all 
 
 ![Life Preserver showing REST Domain Components](../images/life-preserver-rest-domain-components-focus.png)
 
-Now it's time for you to extend the `rest.domain.Order` class to include link generation by adding the following:
+Now it's time for you to extend the `rest.domain.Order` class to include all links:
+
+`src/main/java/com/yummynoodlebar/rest/domain/Order.java`
 ```java
-public static Order fromOrderDetails(OrderDetails orderDetails) {
+  public static Order fromOrderDetails(OrderDetails orderDetails) {
     Order order = new Order();
-    
+
     order.dateTimeOfSubmission = orderDetails.getDateTimeOfSubmission();
     order.key = orderDetails.getKey();
     order.setItems(orderDetails.getOrderItems());
-    
-    order.add(linkTo(OrderController.class).slash(order.key).withSelfRel());
-    order.add(linkTo(OrderController.class).slash(order.key).slash("status").withRel("Order Status"));
-    order.add(linkTo(OrderController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
-    
+
+    //TODOCUMENT.  Adding the library, the above extends ResourceSupport and
+    //this section is all that is actually needed in our model to add hateoas support.
+
+    //Much of the rest of the framework is helping deal with the blending of domains that happens in many spring apps
+    //We have explicitly avoided that.
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).withSelfRel());
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("status").withRel("Order Status"));
+    order.add(linkTo(OrderQueriesController.class).slash(order.key).slash("paymentdetails").withRel("Payment Details"));
+
     return order;
-}
+  }
 ```
 
 Run the application using `./gradlew tomcatRunWar` and then run `OrderTests` again. You should find that it passes, meaning that the JSON contains the appropriate links and you've successfully implemented HATEOAS for your RESTful Service!
@@ -252,3 +266,6 @@ Here you've learned the basics of applying Spring HATEOAS to extending your REST
 Now it's time for a coffee and a wrap-up as you've got a complete RESTful service ready to go. Yummy Noodle Bar could not be happier!
 
 [Next… Recap and What's Next](../7/)
+
+[gs-rest-hateoas]: /guides/gs/rest-hateoas
+[u-hateoas]: /understanding/HATEOAS
