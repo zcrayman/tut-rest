@@ -13,6 +13,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class OrderTests {
 
+  // {!begin first}
   @Test
   public void thatOrdersCanBeAddedAndQueried() {
     HttpHeaders headers = new HttpHeaders();
@@ -20,13 +21,18 @@ public class OrderTests {
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
     RestTemplate template = new RestTemplate();
+  // {!end first}
 
+    // {!begin second}
     HttpEntity<String> requestEntity = new HttpEntity<String>(
         RestDataFixture.standardOrderJSON(),headers);
+    // {!end second}
 
+    // {!begin third}
     ResponseEntity<Order> entity = template.postForEntity(
         "http://localhost:8080/aggregators/orders",
         requestEntity, Order.class);
+    // {!end third}
 
     String path = entity.getHeaders().getLocation().getPath();
 
