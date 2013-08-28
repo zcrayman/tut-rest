@@ -25,20 +25,9 @@ Spring Security helps you perform these steps without you having to change so mu
 
 First you add Spring Security dependencies to the project, by adding the following entries to your `build.gradle` script:
 
-`build.gradle`
-```gradle
-repositories {
-    mavenCentral()
-    maven { url 'http://repo.springsource.org/milestone/'}
-}
-```
+    <@snippet "build.gradle" "repos" "/complete" />
     
-`build.gradle`
-```gradle
-    compile 'org.springframework.security:spring-security-web:3.2.0.M2'
-    compile 'org.springframework.security:spring-security-core:3.2.0.M2'
-    compile 'org.springframework.security:spring-security-config:3.2.0.M2'
-```
+    <@snippet "build.gradle" "security" "/complete" />
 
 You add the Pivotal milestone repository so that you can use Spring Security 3.2.0.M2. This lets you use some dynamic configuration features of Spring Security, including setting up the web security through JavaConfig.
 
@@ -48,158 +37,25 @@ Now you need to secure your controllers. Until now you've been writing tests fir
 
 You already have a functional test from [Step 4](../4/) that attempts to access your running RESTful service. As HTTP Basic authentication requires you to add some new headers, you'll first extract the creation of those headers for the HTTP request into a separate method called `getHeaders`:
 
-`src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
-```java
-  static HttpHeaders getHeaders(String auth) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-    byte[] encodedAuthorisation = Base64.encode(auth.getBytes());
-    headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
-
-    return headers;
-  }
-```
+    <@snippet "src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java" "httpHeaders" "/complete" />
 
 While containing the previous code's JSON-based headers, it adds an Authorization header driven by an input parameter. This way, it is easy to test different security parameters from different test methods:
 
 Finally you can update the original test to use the new `getHeaders` helper method to add security headers to your outgoing HTTP request:
 
-`src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
-```java
-  @Test
-  public void thatOrdersCanBeAddedAndQueried() {
-
-    HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),
-        getHeaders("letsnosh" + ":" + "noshing"));
-
-    RestTemplate template = new RestTemplate();
-    ResponseEntity<Order> entity = template.postForEntity(
-    "http://localhost:8080/aggregators/orders",
-    requestEntity, Order.class);
-
-    String path = entity.getHeaders().getLocation().getPath();
-
-    assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-    assertTrue(path.startsWith("/aggregators/orders/"));
-    Order order = entity.getBody();
-
-    System.out.println ("The Order ID is " + order.getKey());
-    System.out.println ("The Location is " + entity.getHeaders().getLocation());
-
-    assertEquals(2, order.getItems().size());
-  }
-```
+    <@snippet "src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java" "newWay" "/complete" />
 
 You can do this by creating a request that you know should fail if security is enabled, and check that it does. 
 
 Add in the following test method where you will deliberately corrupt the password to something different to the previous `thatOrdersCanBeAddedAndQueried ` test method so that we can expect this request to fail:
 
-`src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
-```java
-  @Test
-  public void thatOrdersCannotBeAddedAndQueriedWithBadUser() {
-
-    HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),
-        getHeaders("letsnosh" + ":" + "BADPASSWORD"));
-
-    RestTemplate template = new RestTemplate();
-    try {
-      ResponseEntity<Order> entity = template.postForEntity(
-      "http://localhost:8080/aggregators/orders",
-      requestEntity, Order.class);
-
-      fail("Request Passed incorrectly with status " + entity.getStatusCode());
-    } catch (HttpClientErrorException ex) {
-      assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
-    }
-  }
-```
+    <@snippet "src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java" "badUser" "/complete" />
 
 In this test we're explicitly expecting an HTTP Response that contains an HTTP Status Code of 403 (Forbidden). However if you run this test against your service as it currently stands it will fail as the security credentials are still being ignored.
 
 The full code for your functional test, including security, will now look like the following:
 
-`src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
-```java
-package com.yummynoodlebar.rest.functional;
-
-
-import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
-import com.yummynoodlebar.rest.domain.Order;
-import org.junit.Test;
-import org.springframework.http.*;
-import org.springframework.security.crypto.codec.Base64;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-
-import static junit.framework.TestCase.*;
-import static junit.framework.TestCase.assertTrue;
-
-public class OrderTests {
-
-  @Test
-  public void thatOrdersCanBeAddedAndQueried() {
-
-    HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),
-        getHeaders("letsnosh" + ":" + "noshing"));
-
-    RestTemplate template = new RestTemplate();
-    ResponseEntity<Order> entity = template.postForEntity(
-    "http://localhost:8080/aggregators/orders",
-    requestEntity, Order.class);
-
-    String path = entity.getHeaders().getLocation().getPath();
-
-    assertEquals(HttpStatus.CREATED, entity.getStatusCode());
-    assertTrue(path.startsWith("/aggregators/orders/"));
-    Order order = entity.getBody();
-
-    System.out.println ("The Order ID is " + order.getKey());
-    System.out.println ("The Location is " + entity.getHeaders().getLocation());
-
-    assertEquals(2, order.getItems().size());
-  }
-
-  @Test
-  public void thatOrdersCannotBeAddedAndQueriedWithBadUser() {
-
-    HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),
-        getHeaders("letsnosh" + ":" + "BADPASSWORD"));
-
-    RestTemplate template = new RestTemplate();
-    try {
-      ResponseEntity<Order> entity = template.postForEntity(
-      "http://localhost:8080/aggregators/orders",
-      requestEntity, Order.class);
-
-      fail("Request Passed incorrectly with status " + entity.getStatusCode());
-    } catch (HttpClientErrorException ex) {
-      assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
-    }
-  }
-
-  static HttpHeaders getHeaders(String auth) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-    byte[] encodedAuthorisation = Base64.encode(auth.getBytes());
-    headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
-
-    return headers;
-  }
-}
-
-
-```
+    <@snippet path="src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java" prefix="complete" />
 
 You have your failing test that justifies changing the code in your application. Now it's time to add security to your RESTful service.
 
@@ -207,36 +63,7 @@ You have your failing test that justifies changing the code in your application.
 
 You can now add a new concern to your application: security configuration. Create a new Spring configuration in com.yummynoodlebar.config named `SecurityConfig` that contains the following:
 
-`src/main/java/com/yummynoodlebar/config/SecurityConfig.java`
-```java
-package com.yummynoodlebar.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-@EnableWebSecurity
-@Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-  @Override
-  protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-    auth.inMemoryAuthentication()
-        .withUser("letsnosh").password("noshing").roles("USER");
-  }
-
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeUrls()
-        .antMatchers("/aggregators/**").hasRole("USER")
-        .anyRequest().anonymous()
-        .and()
-        .httpBasic();
-  }
-}
-```
+    <@snippet path="src/main/java/com/yummynoodlebar/config/SecurityConfig.java" prefix="complete" />
 
 This configuration enables security using the `@EnableWebSecurity` annotation, and extends the `WebSecurityConfigurerAdapter` so that you can perform more detailed configuration of the web security you're applying.
 
@@ -254,44 +81,15 @@ You now need to configure this filter chain by updating the web application conf
 
 The first step is to simply add your new `SecurityConfig` JavaConfig class to the root context inside the `createRootContext()` method:
 
-`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
-```java
-  private WebApplicationContext createRootContext(ServletContext servletContext) {
-    AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-    rootContext.register(CoreConfig.class, SecurityConfig.class);
-    rootContext.refresh();
-
-    servletContext.addListener(new ContextLoaderListener(rootContext));
-    servletContext.setInitParameter("defaultHtmlEscape", "true");
-
-    return rootContext;
-  }
-```
+    <@snippet "src/main/java/com/yummynoodlebar/config/WebAppInitializer.java" "addToRootContext" "/complete" />
 
 Now you can add the Spring Security Filter:
 
-`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
-```java
-  private void configureSpringSecurity(ServletContext servletContext, WebApplicationContext rootContext) {
-    FilterRegistration.Dynamic springSecurity = servletContext.addFilter("springSecurityFilterChain",
-        new DelegatingFilterProxy("springSecurityFilterChain", rootContext));
-    springSecurity.addMappingForUrlPatterns(null, true, "/*");
-  }
-```
+    <@snippet "src/main/java/com/yummynoodlebar/config/WebAppInitializer.java" "configureSpringSecurity" "/complete" />
 
 This sets up a Spring `DelegatingFilterProxy` with the `rootContext` and is called from the `onStartup()` method.
 
-`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
-```java
-  @Override
-  public void onStartup(ServletContext servletContext) {
-    WebApplicationContext rootContext = createRootContext(servletContext);
-
-    configureSpringMvc(servletContext, rootContext);
-
-    configureSpringSecurity(servletContext, rootContext);
-  }
-```
+    <@snippet "src/main/java/com/yummynoodlebar/config/WebAppInitializer.java" "onStartup" "/complete" />
 
 The name `springSecurityFilterChain` for the filter chain is important as this means that the filter will pass all calls down to a Spring Bean named `springSecurityFilterChain` that it finds in the `rootContext`. You configured this bean using `@Configuration` in the Spring JavaConfig class `SecurityConfig`.
 

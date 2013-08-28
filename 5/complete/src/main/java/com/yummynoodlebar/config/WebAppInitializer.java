@@ -18,6 +18,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
   private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
 
+  // {!begin onStartup}
   @Override
   public void onStartup(ServletContext servletContext) {
     WebApplicationContext rootContext = createRootContext(servletContext);
@@ -26,7 +27,9 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
     configureSpringSecurity(servletContext, rootContext);
   }
+  // {!end onStartup}
 
+  // {!begin addToRootContext}
   private WebApplicationContext createRootContext(ServletContext servletContext) {
     AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
     rootContext.register(CoreConfig.class, SecurityConfig.class);
@@ -37,6 +40,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
     return rootContext;
   }
+  // {!end addToRootContext}
 
   private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
     AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
@@ -58,9 +62,11 @@ public class WebAppInitializer implements WebApplicationInitializer {
     }
   }
 
+  // {!begin configureSpringSecurity}
   private void configureSpringSecurity(ServletContext servletContext, WebApplicationContext rootContext) {
     FilterRegistration.Dynamic springSecurity = servletContext.addFilter("springSecurityFilterChain",
         new DelegatingFilterProxy("springSecurityFilterChain", rootContext));
     springSecurity.addMappingForUrlPatterns(null, true, "/*");
   }
+  // {!end configureSpringSecurity}
 }

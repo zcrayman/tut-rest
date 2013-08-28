@@ -21,11 +21,12 @@ buildscript {
   }
 }
 
-
+// {!begin repos}
 repositories {
     mavenCentral()
     maven { url 'http://repo.springsource.org/milestone/'}
 }
+// {!end repos}
 
 dependencies {
     def tomcatVersion = '7.0.42'
@@ -39,9 +40,11 @@ dependencies {
     compile 'org.springframework:spring-webmvc:3.2.3.RELEASE'
     compile 'com.jayway.jsonpath:json-path:0.8.1'
 
+    // {!begin security}
     compile 'org.springframework.security:spring-security-web:3.2.0.M2'
     compile 'org.springframework.security:spring-security-core:3.2.0.M2'
     compile 'org.springframework.security:spring-security-config:3.2.0.M2'
+    // {!end security}
 
     compile 'org.slf4j:slf4j-api:1.7.5'
     runtime 'org.slf4j:slf4j-jdk14:1.7.5'

@@ -16,6 +16,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class OrderTests {
 
+  // {!begin newWay}
   @Test
   public void thatOrdersCanBeAddedAndQueried() {
 
@@ -39,7 +40,9 @@ public class OrderTests {
 
     assertEquals(2, order.getItems().size());
   }
-  
+  // {!end newWay}
+
+  // {!begin badUser}
   @Test
   public void thatOrdersCannotBeAddedAndQueriedWithBadUser() {
 
@@ -58,7 +61,9 @@ public class OrderTests {
       assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
     }
   }
+  // {!end badUser}
 
+  // {!begin httpHeaders}
   static HttpHeaders getHeaders(String auth) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -69,6 +74,7 @@ public class OrderTests {
 
     return headers;
   }
+  // {!end httpHeaders}
 }
 
 
