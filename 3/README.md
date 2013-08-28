@@ -1,4 +1,4 @@
-Now that you have written and tested your controllers, now proudly added to your Life Preserver as shown below, it's time to bring the whole application together.
+Now that you have [written and tested your controllers](../2/), proudly added to your Life Preserver as shown below, it's time to bring the whole application together.
 
 ![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-controllers-and-core-domain-zoom-out.png)
 
@@ -25,6 +25,7 @@ You could just create a configuration for these components; however, as in the p
 
 First, construct an integration test that contains the following:
 
+`src/test/java/com/yummynoodlebar/config/CoreDomainIntegrationTest.java`
 ```java
 package com.yummynoodlebar.config;
 
@@ -45,26 +46,26 @@ import static junit.framework.TestCase.*;
 @ContextConfiguration(classes = {CoreConfig.class})
 public class CoreDomainIntegrationTest {
 
-	@Autowired
-	OrderService orderService;
+  @Autowired
+  OrderService orderService;
 
-	@Test
-	public void addANewOrderToTheSystem() {
+  @Test
+  public void addANewOrderToTheSystem() {
 
-	CreateOrderEvent ev = new CreateOrderEvent(new OrderDetails());
+    CreateOrderEvent ev = new CreateOrderEvent(new OrderDetails());
 
-	orderService.createOrder(ev);
+    orderService.createOrder(ev);
 
-	AllOrdersEvent allOrders = orderService.requestAllOrders(new RequestAllOrdersEvent());
+    AllOrdersEvent allOrders = orderService.requestAllOrders(new RequestAllOrdersEvent());
 
-	assertEquals(1, allOrders.getOrdersDetails().size());
-	}
+    assertEquals(1, allOrders.getOrdersDetails().size());
+  }
 }
 ```
 
-This integration test simply constructs an `ApplicationContext` using JavaConfig as specified on the `@ContextConfiguration` annotation. The Core domain's configuration will be created using Spring JavaConfig in a class called `CoreConfig`.
+This integration test constructs an `ApplicationContext` using JavaConfig as specified on the `@ContextConfiguration` annotation. The Core domain's configuration will be created using Spring JavaConfig in a class called `CoreConfig`.
 
-With that `ApplicationContext` constructed, the test can have its `OrderService` test entry point dependency injected, ready for the following test methods.
+With the `ApplicationContext` constructed, the test can have its `OrderService` test entry point autowired, ready for the test methods.
 
 Finally you have one test method that asserts that an `orderService` dependency has been provided and appears to work correctly.
 
@@ -76,6 +77,7 @@ The Core domain configuration for the Yummy Noodle Bar application only contains
 
 The following code shows the complete configuration class:
 
+`src/main/java/com/yummynoodlebar/config/CoreConfig.java`
 ```java
 package com.yummynoodlebar.config;
 
@@ -93,15 +95,15 @@ import java.util.UUID;
 @Configuration
 public class CoreConfig {
 
-	  @Bean
-	  public OrderService createService(OrdersRepository repo) {
-	  return new OrderEventHandler(repo);
-	  }
+  @Bean
+  public OrderService createService(OrdersRepository repo) {
+    return new OrderEventHandler(repo);
+  }
 
-	  @Bean
-	  public OrdersRepository createRepo() {
-	  return new OrdersMemoryRepository(new HashMap<UUID, Order>());
-	  }
+  @Bean
+  public OrdersRepository createRepo() {
+    return new OrdersMemoryRepository(new HashMap<UUID, Order>());
+  }
 }
 ```
 
@@ -119,6 +121,7 @@ Configuring your new set of controllers is very straightforward as you have used
 
 You can create the following Spring JavaConfig to execute component scanning for the components in your application's RESTful domain:
 
+`src/main/java/com/yummynoodlebar/config/MVCConfig.java`
 ```java
 package com.yummynoodlebar.config;
 
@@ -132,12 +135,15 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class MVCConfig {}
 ```
 
-The `@ComponentScan` attribute in JavaConfig specifies that your components should be found underneath the base Java package of `com.yummynoodlebar.rest.controllers`. It's always a good idea to be as specific as possible when defining the place where component scanning should occur so that you don't accidentally initialize components you didn't expect!
+The `@ComponentScan` attribute in JavaConfig specifies that your components should be found underneath the base Java package of `com.yummynoodlebar.rest.controllers`. 
+
+> **Note:** It's always a good idea to be as specific as possible when defining the place where component scanning should occur so that you don't accidentally initialize components you didn't expect!
 
 ### Test your RESTful domain configuration
 
-No configuration should be trusted without an accompanying test. The following test is the full implementation that asserts that the output of the RESTful configuration is as it should be:
+No configuration should be trusted without an accompanying test. The following test asserts that the output of the RESTful configuration is as it should be:
 
+`src/test/java/com/yummynoodlebar/config/RestDomainIntegrationTest.java`
 ```java
 package com.yummynoodlebar.config;
 
@@ -166,41 +172,42 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {CoreConfig.class, MVCConfig.class})
 public class RestDomainIntegrationTest {
 
-  	@Autowired
-  	WebApplicationContext webApplicationContext;
+  @Autowired
+  WebApplicationContext webApplicationContext;
 
-  	private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-  	@Before
-  	public void setup() {
-    	this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-  	}
+  @Before
+  public void setup() {
+    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+  }
 
-  	@Test
-  	public void addANewOrderToTheSystem() throws Exception  {
-    	this.mockMvc.perform(
-            post("/aggregators/order")
+  @Test
+  public void addANewOrderToTheSystem() throws Exception  {
+    this.mockMvc.perform(
+            post("/aggregators/orders")
                     .content(standardOrderJSON())
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isCreated());
 
-    	this.mockMvc.perform(
+    this.mockMvc.perform(
             get("/aggregators/orders")
                     .accept(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].items['" + RestDataFixture.YUMMY_ITEM + "']").value(12));
 
-  	}
+  }
 }
-``` 
+```
+
 You've already asserted the correctness of the collaboration between your controllers and the underlying service components in the Core Domain. 
 
-This test ensures that once everything is wired together, the wiring in the MVCConfig is correct and the appropriate controllers are in attendance.
+This test ensures that once everything is wired together, the wiring in the `MVCConfig` is correct and the appropriate controllers are in attendance.
 
-The test validates the `MVCConfig` by mocking requests that exercise the handler mappings that should be present and asserting that the full responses expected are correct also. More testing could be done, but you've already asserted that your controllers should work appropriately in the previous steps. This test is simply there to show you that now you are configuring those components using Spring JavaConfig, they continue to perform as expected.
+The test validates the `MVCConfig` by mocking requests which exercise the handler mappings. The full responses are also confirmed to be correct. More testing could be done, but you've already asserted that your controllers should work appropriately in the previous steps. This test is simply there to show you that now you are configuring those components using Spring JavaConfig properly.
 
 ## Initialize your RESTful service web infrastructure
 
@@ -210,6 +217,7 @@ Here you're going to use the `WebApplicationInitializer` to set up your applicat
 
 First you create a new piece of configuration as a class inside `com.yummynoodlebar.config` called `WebAppInitializer` that extends the `WebApplicationInitializer` from Spring as shown below.
 
+`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
 ```java
 package com.yummynoodlebar.config;
 
@@ -229,62 +237,73 @@ import java.util.Set;
 
 public class WebAppInitializer implements WebApplicationInitializer {
 
-	private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
+  private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
 ```
 
-The `LOG` attribute is included to show that, because you're not using XML but rather plain Java, you can even log messages as your web infrastructure is initialised.
+The `LOG` attribute shows that you can even log messages as your web infrastructure is initialised, despite having no XML settings.
 
 Next you override the `onStartup` method which in turn sets up your root Spring Application Context by calling `createRootContext` and then finally request the configuration of SpringMvc by calling `configureSpringMvc`.
 
+`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
 ```java
-@Override
-public void onStartup(ServletContext servletContext) {
+  @Override
+  public void onStartup(ServletContext servletContext) {
     WebApplicationContext rootContext = createRootContext(servletContext);
-    
+
     configureSpringMvc(servletContext, rootContext);
-}
+  }
 ```
+
 The root Spring Application Context will contain the majority of your components including your Core Domain. In the `createRootContext` method an instance of the `AnnotationConfigWebApplicationContext` class is constructed and then configured by calling `register` indicating the JavaConfig classes to be applied. In your case the root context can be initialised simply with the `CoreConfig` class.
+
+`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
 ```java
-private WebApplicationContext createRootContext(ServletContext servletContext) {
+  private WebApplicationContext createRootContext(ServletContext servletContext) {
     AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
     rootContext.register(CoreConfig.class);
     rootContext.refresh();
-    
+
     servletContext.addListener(new ContextLoaderListener(rootContext));
     servletContext.setInitParameter("defaultHtmlEscape", "true");
-    
+
     return rootContext;
-}
+  }
 ```
+
 Now with a root Application Context already to hand, in the `configureSpringMvc` method you can configure the REST Domain components in a new `AnnotationConfigWebApplicationContext` application context, connecting this new context to the root application context so that your REST Domain components can see and be dependency-injected with components from the root application context.
 
+`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
 ```java
-private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
+  private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
     AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
     mvcContext.register(MVCConfig.class);
-    
+
     mvcContext.setParent(rootContext);
 ```
-    
-Finally, using the `servletContext` you can dynamically initialise the Spring MVC `DispatcherServlet`, in this case mapping the `DispatcherServlet` to the root of the newly registered application.
-```java
-ServletRegistration.Dynamic appServlet = servletContext.addServlet(
-"webservice", new DispatcherServlet(mvcContext));
-appServlet.setLoadOnStartup(1);
-Set<String> mappingConflicts = appServlet.addMapping("/");
 
-if (!mappingConflicts.isEmpty()) {
-	for (String s : mappingConflicts) {
-	LOG.error("Mapping conflict: " + s);
-	}
-	throw new IllegalStateException(
-  "'webservice' cannot be mapped to '/'");
-}
+Finally, using the `servletContext` you can dynamically initialise the Spring MVC `DispatcherServlet`, in this case mapping the `DispatcherServlet` to the root of the newly registered application.
+
+`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
+```java
+    ServletRegistration.Dynamic appServlet = servletContext.addServlet(
+        "webservice", new DispatcherServlet(mvcContext));
+    appServlet.setLoadOnStartup(1);
+    Set<String> mappingConflicts = appServlet.addMapping("/");
+
+    if (!mappingConflicts.isEmpty()) {
+      for (String s : mappingConflicts) {
+        LOG.error("Mapping conflict: " + s);
+      }
+      throw new IllegalStateException(
+          "'webservice' cannot be mapped to '/'");
+    }
 ```
+
 The `DispatcherServlet` is a 'front controller' servlet that receives all incoming requests that should be considered for the various controllers registered. The DispatcherServlet then is the overall orchestrator of how each incoming request is channelled to the appropriate handler method on the available controllers.
 
 The full `WebAppInitializer` source code is shown below:
+
+`src/main/java/com/yummynoodlebar/config/WebAppInitializer.java`
 ```java
 package com.yummynoodlebar.config;
 
@@ -304,61 +323,63 @@ import java.util.Set;
 
 public class WebAppInitializer implements WebApplicationInitializer {
 
-    private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
-    
-    @Override
-    public void onStartup(ServletContext servletContext) {
-        WebApplicationContext rootContext = createRootContext(servletContext);
-        
-        configureSpringMvc(servletContext, rootContext);
+  private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
+
+  @Override
+  public void onStartup(ServletContext servletContext) {
+    WebApplicationContext rootContext = createRootContext(servletContext);
+
+    configureSpringMvc(servletContext, rootContext);
+  }
+
+  private WebApplicationContext createRootContext(ServletContext servletContext) {
+    AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
+    rootContext.register(CoreConfig.class);
+    rootContext.refresh();
+
+    servletContext.addListener(new ContextLoaderListener(rootContext));
+    servletContext.setInitParameter("defaultHtmlEscape", "true");
+
+    return rootContext;
+  }
+
+  private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
+    AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
+    mvcContext.register(MVCConfig.class);
+
+    mvcContext.setParent(rootContext);
+    ServletRegistration.Dynamic appServlet = servletContext.addServlet(
+        "webservice", new DispatcherServlet(mvcContext));
+    appServlet.setLoadOnStartup(1);
+    Set<String> mappingConflicts = appServlet.addMapping("/");
+
+    if (!mappingConflicts.isEmpty()) {
+      for (String s : mappingConflicts) {
+        LOG.error("Mapping conflict: " + s);
+      }
+      throw new IllegalStateException(
+          "'webservice' cannot be mapped to '/'");
     }
-    
-    private WebApplicationContext createRootContext(ServletContext servletContext) {
-        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(CoreConfig.class);
-        rootContext.refresh();
-        
-        servletContext.addListener(new ContextLoaderListener(rootContext));
-        servletContext.setInitParameter("defaultHtmlEscape", "true");
-        
-        return rootContext;
-        }
-    
-    private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
-        AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
-        mvcContext.register(MVCConfig.class);
-        
-        mvcContext.setParent(rootContext);
-        
-        ServletRegistration.Dynamic appServlet = servletContext.addServlet(
-                "webservice", new DispatcherServlet(mvcContext));
-        appServlet.setLoadOnStartup(1);
-        Set<String> mappingConflicts = appServlet.addMapping("/");
-        
-        if (!mappingConflicts.isEmpty()) {
-            for (String s : mappingConflicts) {
-                LOG.error("Mapping conflict: " + s);
-            }
-            throw new IllegalStateException(
-                "'webservice' cannot be mapped to '/'");
-        }
-    }
+  }
 }
 ```
+
 
 ## Running your RESTful service in a Web Container
 
 It's the moment of truth: can you execute your new RESTful service? 
 
-To find out, first tell Gradle that you will use Tomcat. Add the following to your `build.gradle` file:
+To find out, first tell Gradle that you will use Tomcat. Update your `build.gradle` file to look like this:
 
-```groovy
+`build.gradle`
+```gradle
+apply plugin: 'war'
 apply plugin: 'tomcat'
+apply plugin: 'java'
 apply plugin: 'propdeps'
 apply plugin: 'propdeps-maven'
 apply plugin: 'propdeps-idea'
 apply plugin: 'propdeps-eclipse'
-
 
 buildscript {
   repositories {
@@ -375,36 +396,70 @@ buildscript {
   }
 }
 
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-  def tomcatVersion = '7.0.42'
+    def tomcatVersion = '7.0.42'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
     tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
       exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
     }
 
-  provided 'javax.servlet:javax.servlet-api:3.0.1'
-  ... 
+    compile 'org.springframework:spring-core:3.2.3.RELEASE'
+    compile 'org.springframework:spring-webmvc:3.2.3.RELEASE'
+    compile 'com.jayway.jsonpath:json-path:0.8.1'
+
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    runtime 'org.slf4j:slf4j-jdk14:1.7.5'
+    runtime 'com.fasterxml.jackson.core:jackson-core:2.2.2'
+    runtime 'com.fasterxml.jackson.core:jackson-databind:2.2.2'
+    runtime 'javax.xml.bind:jaxb-api:2.2.9'
+
+    provided 'javax.servlet:javax.servlet-api:3.0.1'
+
+    testCompile 'com.jayway.jsonpath:json-path-assert:0.8.1'
+    testCompile 'org.springframework:spring-test:3.2.3.RELEASE'
+    testCompile 'junit:junit:4.+'
+    testCompile "org.mockito:mockito-all:1.9.5"
+
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.6'
+}
+
+tomcatRunWar.contextPath = ''
 ```
 
-Adding the following property to the end of the `build.gradle` ensures that our application runs at the root context, instead of the project name (which is set in settings.groovy)
-   
+You may notice at the bottom of the build file a setting to ensure the app runs at the root context:
+
 ```groovy 
 tomcatRunWar.contextPath = ''   
 ```
+
 Now you can run the following from the command line to execute the new service, on port 8080 by default:
 
-	> ./gradlew tomcatRunWar
+```sh
+$ ./gradlew tomcatRunWar
+```
 
-Then, if you visit `http://localhost:8080/aggregators/orders`, you should get the following JSON response, which indicates that you don't yet have any Orders in the application:
+Then, if you visit [http://localhost:8080/aggregators/orders](http://localhost:8080/aggregators/orders), you should get the following JSON response, which indicates that you don't yet have any Orders in the application:
+
+```json
+[]
+```
 
 If you need to set your web application to run on a different port or configure other settings, that information is available on the [Gradle Tomcat Plugin](https://github.com/bmuschko/gradle-tomcat-plugin/) project page.
 
 If you plan to execute your service in another container and want to generate a WAR file instead, run the following command:
 
-	> ./gradlew war
+```sh
+$ ./gradlew war
+```
 
 ## Summary
 

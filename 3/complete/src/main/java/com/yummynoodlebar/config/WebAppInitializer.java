@@ -1,3 +1,4 @@
+// {!begin top}
 package com.yummynoodlebar.config;
 
 import org.slf4j.Logger;
@@ -17,14 +18,18 @@ import java.util.Set;
 public class WebAppInitializer implements WebApplicationInitializer {
 
   private static Logger LOG = LoggerFactory.getLogger(WebAppInitializer.class);
+// {!end top}
 
+  // {!begin onStartup}
   @Override
   public void onStartup(ServletContext servletContext) {
     WebApplicationContext rootContext = createRootContext(servletContext);
 
     configureSpringMvc(servletContext, rootContext);
   }
+  // {!end onStartup}
 
+  // {!begin createRootContext}
   private WebApplicationContext createRootContext(ServletContext servletContext) {
     AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
     rootContext.register(CoreConfig.class);
@@ -35,13 +40,17 @@ public class WebAppInitializer implements WebApplicationInitializer {
 
     return rootContext;
   }
+  // {!end createRootContext}
 
+  // {!begin configureTop}
   private void configureSpringMvc(ServletContext servletContext, WebApplicationContext rootContext) {
     AnnotationConfigWebApplicationContext mvcContext = new AnnotationConfigWebApplicationContext();
     mvcContext.register(MVCConfig.class);
 
     mvcContext.setParent(rootContext);
 
+    // {!end configureTop}
+    // {!begin configureBottom}
     ServletRegistration.Dynamic appServlet = servletContext.addServlet(
         "webservice", new DispatcherServlet(mvcContext));
     appServlet.setLoadOnStartup(1);
@@ -54,5 +63,6 @@ public class WebAppInitializer implements WebApplicationInitializer {
       throw new IllegalStateException(
           "'webservice' cannot be mapped to '/'");
     }
+    // {!end configureBottom}
   }
 }
