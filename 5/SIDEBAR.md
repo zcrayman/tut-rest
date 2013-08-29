@@ -22,8 +22,6 @@
 
 * [REST][u-rest]
 * [JSON][u-json]
-* [View Templates][u-view-templates]
 
 [u-rest]: /understanding/REST
 [u-json]: /understanding/JSON
-[u-view-templates]: /understanding/view-templates
