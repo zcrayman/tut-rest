@@ -95,13 +95,35 @@ The name `springSecurityFilterChain` for the filter chain is important as this m
 
 ## Run your new secure RESTful service
 
-Run your RESTful service again:
+If you run the test suite by itself, it will fail:
+
+```sh
+$ cd 5/complete
+$ ./gradlew test
+
+com.yummynoodlebar.rest.functional.OrderTests > thatOrdersCannotBeAddedAndQueriedWithBadUser FAILED
+    org.springframework.web.client.ResourceAccessException at OrderTests.java:55
+        Caused by: java.net.SocketException at OrderTests.java:55
+
+com.yummynoodlebar.rest.functional.OrderTests > thatOrdersCanBeAddedAndQueried FAILED
+    org.springframework.web.client.ResourceAccessException at OrderTests.java:28
+        Caused by: java.net.SocketException at OrderTests.java:28
+```
+
+That's because you need to be running the web application first. Run your RESTful service again, but now in secure mode:
 
 ```sh
 $ ./gradlew tomcatRunWar
 ```
 
-Then run your amended tests in the `OrderTests` class again. Everything should pass and so now you've added security to your RESTful service!
+Then run your amended tests in the `OrderTests` class again, in another shell. Everything should pass and so now you've added security to your RESTful service!
+
+```sh
+$ ./gradlew test
+```
+
+Now the tests should all pass.
+
 
 ## Summary
 

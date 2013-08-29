@@ -98,6 +98,31 @@ You are executing an HTTP Request with a POST HTTP Method against the service yo
 
 With your `ResponseEntity` to hand, you can now inspect the response to ensure that it is valid.
 
+If you run the test suite by itself, it will fail:
+
+```sh
+$ cd 4/complete
+$ ./gradlew test
+
+com.yummynoodlebar.rest.functional.OrderTests > thatOrdersCanBeAddedAndQueried FAILED
+    org.springframework.web.client.ResourceAccessException at OrderTests.java:32
+        Caused by: java.net.SocketException at OrderTests.java:32
+```
+
+That's because you need to be running the web application first.
+
+```sh
+$ ./gradlew tomcatRunWar
+```
+
+In another shell, run the test suite again:
+
+```sh
+$ ./gradlew test
+```
+
+Now the tests should all pass.
+
 
 ## Summary
 

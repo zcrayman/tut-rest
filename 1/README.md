@@ -725,4 +725,6 @@ Congratulations! You've determined the resources you're going to expose and capt
 
 You've also decided the URI addresses of your resources; the HTTP methods that will be supported for requests to those URIs; and finally the HTTP status codes that you intend to return for the requests.
 
+We haven't run any code yet. That's what we'll do in the next section, when we build some services and tests.
+
 [Next… Building Your First RESTful Service](../2/) 

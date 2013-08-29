@@ -652,6 +652,15 @@ public class Order implements Serializable {
 
 The XML marshalling tests will now all pass and your controller can speak XML.
 
+You might have been running the various test cases along the way. If you want, you can run this section's entire test suite now:
+
+```sh
+$ cd 2/complete
+$ ./gradlew clean test
+```
+
+The test reports are found at `build/reports/tests/index.html`.
+
 ## Summary
 
 Congratulations! You've created controllers that can implement your RESTful service's API. You've tested those controllers using 'MockMVC' outside of a container to confirm that the handler mappings work. And you verified that your controller will react to the right forms of HTTP requests with the right types of content.

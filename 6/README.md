@@ -254,8 +254,28 @@ Now it's time for you to extend the `rest.domain.Order` class to include all lin
     return order;
   }
 ```
+    
+If you run the test suite by itself, it will fail:
 
-Run the application using `./gradlew tomcatRunWar` and then run `OrderTests` again. You should find that it passes, meaning that the JSON contains the appropriate links and you've successfully implemented HATEOAS for your RESTful Service!
+```sh
+$ cd 6/complete
+$ ./gradlew test
+
+… test failure...
+```
+
+That's because you need to be running the web application first. Run your RESTful service again, but with hypermedia features added:
+
+```sh
+$ ./gradlew tomcatRunWar
+```
+
+Then run your amended tests in the `OrderTests` class again, in another shell. 
+```sh
+$ ./gradlew test
+```
+
+You should find that it passes, meaning that the JSON contains the appropriate links and you've successfully implemented HATEOAS for your RESTful Service!
 
 ## Summary
 
