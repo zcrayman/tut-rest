@@ -13,8 +13,14 @@ ORIG=`pwd`
 for loc in "${doc_locations[@]}";
 do
   echo " $loc/README.ftl.md -> $loc/README.md"
+  if [[ "$loc" == *1* ]]; then
+    cp -R initial $loc/
+  fi
   cd $loc
   cat README.ftl.md | fpp > README.md
+  if [[ "$loc" == *1* ]]; then
+    rm -rf initial
+  fi
   cd $ORIG
 done
 
