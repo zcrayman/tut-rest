@@ -18,6 +18,8 @@ do
   fi
   cd $loc
   cat README.ftl.md | fpp > README.md
+  echo " $loc/SIDEBAR.ftl.md -> $loc/SIDEBAR.md"
+  cat SIDEBAR.ftl.md | fpp > SIDEBAR.md
   if [[ "$loc" == *1* ]]; then
     rm -rf initial
   fi

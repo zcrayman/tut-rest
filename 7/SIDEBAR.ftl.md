@@ -19,5 +19,5 @@
 * [REST][u-rest]
 * [JSON][u-json]
 
-[u-rest]: /understanding/REST
-[u-json]: /understanding/JSON
+<@u_rest/>
+<@u_json/>
