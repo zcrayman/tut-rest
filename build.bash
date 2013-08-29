@@ -1,28 +1,20 @@
 #!/bin/bash
 # Used to rebuild all the templated docs
 
-cat 1/README.ftl.md | fpp > 1/README.md
+#this finds all directories containing README.ftl.md and creates a bash array
+doc_locations=($(
+find . -type f -name 'README.ftl.md' |sed 's#\(.*\)/.*#\1#' |sort -u
+));
 
-cd 2
-cat README.ftl.md | fpp > README.md
-cd ..
+echo "Converting ..."
 
-cd 3
-cat README.ftl.md | fpp > README.md
-cd ..
+ORIG=`pwd`
 
-cd 4
-cat README.ftl.md | fpp > README.md
-cd ..
+for loc in "${doc_locations[@]}";
+do
+  echo " $loc/README.ftl.md -> $loc/README.md"
+  cd $loc
+  cat README.ftl.md | fpp > README.md
+  cd $ORIG
+done
 
-cd 5
-cat README.ftl.md | fpp > README.md
-cd ..
-
-cd 6
-cat README.ftl.md | fpp > README.md
-cd ..
-
-cd 7
-cat README.ftl.md | fpp > README.md
-cd ..
