@@ -2,12 +2,24 @@ package com.yummynoodlebar.rest.domain;
 
 import com.yummynoodlebar.core.events.orders.OrderDetails;
 import com.yummynoodlebar.rest.controller.fixture.RestDataFixture;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class OrderTests {
+
+  // {!begin supportHateoas}
+  @Before
+  public void setup() {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+  }
+  // {!end supportHateoas}
 
   @Test
   public void thatOrderCanConvertToOrderDetails() {

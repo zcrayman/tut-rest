@@ -1,4 +1,4 @@
-[HATEOAS (Hypermedia As The Engine of Application State)][gs-rest-hateoas] may be an unfortunate acronym, but it is also a crucial technology and approach to building flexible RESTful services. HATEOS allows you to build services that *support the discovery of resources* and re-introduce the linking of resources together that is an essential part of hypertext systems.
+[HATEOAS (Hypermedia As The Engine of Application State)][gs-rest-hateoas] may be an unfortunate acronym, but it is also a crucial technology and approach to building flexible RESTful services. HATEOS allows you to build services that *support the discovery of resources* and provide a standard way to implement the linking of resources together that is an essential part of hypertext systems.
 
 ## Step 6: Make your service discoverable with Spring HATEOAS
 
@@ -64,6 +64,12 @@ To rectify this, but still leave a failing test, update `Order` to read:
     <@snippet "src/main/java/com/yummynoodlebar/rest/domain/Order.java" "resourceSupport" "/complete" />
 
 Extending `ResourceSupport` from Spring HATEOAS lets your test compile, but it will still fail if you run it, because the links generated will be empty.
+
+You also need to update a test written previously `com.yummynoodlebar.rest.domain.OrderTests`.  Spring Hateoas can only be used during a servlet request, and requires some set up in a test.
+
+Update `com.yummynoodlebar.rest.domain.OrderTests` to include 
+
+    <@snippet "src/test/java/com/yummynoodlebar/rest/domain/OrderTests.java" "supportHateoas" "/complete" />
 
 ## Implement HATEOAS for your RESTful domain classes
 
