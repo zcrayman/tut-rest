@@ -18,23 +18,23 @@ Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`
 
 * **Order**. An individual order in the system that has an associated status and status history for tracking purposes.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Order.java" prefix="initial"/>
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Order.java" prefix="./../initial"/>
 
 * **OrderStatus**. Current status allocated to an `Order`.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/OrderStatus.java" prefix="initial"/>
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/OrderStatus.java" prefix="./../initial"/>
 
 * **Payment**. Payment that a customer wants to make for a given `Order`.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Payment.java" prefix="initial"/>
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Payment.java" prefix="./../initial"/>
 
 * **PaymentDetails**. Details of the `Payment` that a customer wants to make for a given `Order`.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentDetails.java" prefix="initial"/>
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentDetails.java" prefix="./../initial"/>
 
 * **PaymentStatus**. Current status of a `Payment` that a customer wants to make for a given `Order`.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentStatus.java" prefix="initial"/>
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentStatus.java" prefix="./../initial"/>
 
 This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
 
