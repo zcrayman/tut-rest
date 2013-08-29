@@ -2,12 +2,16 @@
 
 ### Getting Started guides
 
+* [Securing a Web Application][gs-securing-web]
+* [Authenticating a User with LDAP][gs-authenticating-ldap]
 * [Consuming a RESTful Web Service][gs-consuming-rest]
 * [Building a Hypermedia-Driven RESTful Web Service][gs-rest-hateoas]
 * [Consuming RESTful Web Services with Spring for Android][gs-consuming-rest-android]
 * [Consuming XML from a RESTful Web Service with Spring for Android][gs-consuming-rest-xml-android]
 * [Building a RESTful Web Service with Spring Boot Actuator][gs-actuator-service]
 
+[gs-securing-web]: /guides/gs/securing-web
+[gs-authenticating-ldap]: /guides/gs/authenticating-ldap
 [gs-consuming-rest]: /guides/gs/consuming-rest/
 [gs-consuming-rest-android]: /guides/gs/consuming-rest-android/
 [gs-rest-hateoas]: /guides/gs/rest-hateoas/
@@ -20,6 +24,6 @@
 * [JSON][u-json]
 * [View Templates][u-view-templates]
 
-[u-rest]: /understanding/REST
-[u-json]: /understanding/JSON
-[u-view-templates]: /understanding/view-templates
+<@u_rest/>
+<@u_json/>
+<@u_view_templates/>

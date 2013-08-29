@@ -20,6 +20,6 @@
 * [JSON][u-json]
 * [View Templates][u-view-templates]
 
-[u-rest]: /understanding/REST
-[u-json]: /understanding/JSON
-[u-view-templates]: /understanding/view-templates
+<@u_rest/>
+<@u_json/>
+<@u_view_templates/>
