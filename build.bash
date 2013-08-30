@@ -8,6 +8,9 @@ find . -type f -name 'README.ftl.md' |sed 's#\(.*\)/.*#\1#' |sort -u
 
 echo "Converting ..."
 
+echo "SIDEBAR.ftl.md -> SIDEBAR.md"
+cat SIDEBAR.ftl.md | fpp > SIDEBAR.md
+
 ORIG=`pwd`
 
 for loc in "${doc_locations[@]}";
@@ -18,8 +21,6 @@ do
   fi
   cd $loc
   cat README.ftl.md | fpp > README.md
-  echo " $loc/SIDEBAR.ftl.md -> $loc/SIDEBAR.md"
-  cat SIDEBAR.ftl.md | fpp > SIDEBAR.md
   if [[ "$loc" == *1* ]]; then
     rm -rf initial
   fi
