@@ -32,7 +32,7 @@ If you download the code base, you'll discover each section of this tutorial in 
 
 The **initial** code set contains:
 - a project layout
-- the core domain & event classes this tutorial starts off creating
+- the core domain & event classes this tutorial starts off creating (the 'Yummy Noodle Bar Application', above)
 - some basic unit tests for some of those classes
 
 The **complete** code set in each section includes the initial code base plus the code developed up to that point in the tutorial.
