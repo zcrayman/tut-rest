@@ -167,10 +167,13 @@ RESTful services rely on the HTTP methods passed as part of an HTTP request head
 The following methods are supported.
 
 <table>
+   <thead>
 	<tr>
 		<th>HTTP Method</th>
 		<th>Description</th>
 	</tr>
+	</thead>
+	<tbody>
 	<tr>
 		<td>GET</td>
 		<td>Retrieves a representation of the resource addressed by the URI used to submit the HTTP request upon.</td>
@@ -191,6 +194,7 @@ The following methods are supported.
 		<td>HEAD and OPTIONS</td>
 		<td>Retrieve various meta-data about the resource addressed by the URI used to submit the HTTP request upon.</td>
 	</tr>
+	</tbody>
 </table>
 
 The HTTP 1.1 Specification provides a detailed description of all the HTTP Methods.
@@ -200,11 +204,14 @@ POST and PUT have similar but not identical functions. You use POST to create ne
 The following table describes what HTTP methods will be supported for each supported resource address.
 
 <table>
+    <thead>
 	<tr>
 		<th>Resource URI</th>
 		<th>Supported HTTP Methods</th>
 		<th>Description</th>
 	</tr>
+	</thead>
+	<tbody>
 	<tr>
 		<td>/aggregators/orders</td>
 		<td>GET</td>
@@ -240,6 +247,7 @@ The following table describes what HTTP methods will be supported for each suppo
 		<td>PUT</td>
 		<td>Updates a specific Order's payment details resource.</td>
 	</tr>
+	</tbody>
 </table>
 
 
@@ -250,11 +258,14 @@ No RESTful design is complete without considering responses to requests. Now you
 The following table describes the HTTP status codes that each of your URIs and HTTP method combinations will respond with.
 
 <table>
+    <thead>
 	<tr>
 		<th>Resource URI</th>
 		<th>Supported HTTP Methods</th>
 		<th>Supported HTTP Status Codes</th>
 	</tr>
+	</thead>
+	<tbody>
 	<tr>
 		<td>/aggregators/orders</td>
 		<td>GET</td>
@@ -290,6 +301,7 @@ The following table describes the HTTP status codes that each of your URIs and H
 		<td>PUT</td>
 		<td>201 (Created); 406 (Not Acceptable) if there is a problem with the format of the incoming data on the new payment details; 404 (Not Found) if Order Resource not found</td>
 	</tr>
+	</tbody>
 </table>
 
 ## Summary
