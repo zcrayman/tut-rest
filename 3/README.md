@@ -113,7 +113,7 @@ Spring will create the `OrdersRepository` bean first, and then use that as the s
 
 Running the `CoreDomainIntegrationTest` in the `com.yummynoodlebar.config` test package will verify that your Core Domain configuration is good to go.
 
-## Create a configuration for the your REST components
+## Create a configuration for your REST components
 
 Configuring your new set of controllers is very straightforward as you have used `@Controller` on each of the controller classes. To initialize your RESTful domain's components, all you need to do is turn on component scanning so that Spring can find and initialize these Spring beans.
 
