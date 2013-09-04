@@ -15,13 +15,13 @@ Or maybe you're just curious to see what a Spring-implemented RESTful web servic
 
 ## What you'll build
 
-Yummy Noodle Bar is going global. It wants to provide a RESTful web service to a set of aggregators, in particular Let’s Nosh, a popular restaurant directory that will bring big business to the small-scale noodle bar. You'll extend Yummy Noodle Bar's internal application by creating a new public Web API for submitting, tracking, canceling, and amending orders.
+**Yummy Noodle Bar** is going global. It wants to provide a RESTful web service to a set of aggregators, in particular **Let’s Nosh**, a popular restaurant directory that will bring big business to the small-scale noodle bar. You'll extend Yummy Noodle Bar's internal application by creating a new public Web API for submitting, tracking, canceling, and amending orders.
 
 ![Yummy Noodle Bar](images/yummynoodle.jpg)
 
 ## What you'll need
 
-* About an hour.
+* About thirty minutes for each section. You should be able to comfortably work your way through the entire tutorial during your lunch break in a week (or do it all on the weekend!)
 * An installation of the [Gradle](http://www.gradle.org) build tool, version 1.6 or later.
 * A copy of the code (available either by [git][u-git] or a [downloadable zip file](https://github.com/spring-guides/tut-rest/archive/master.zip)).
 * An IDE of your choice; Spring recommends [Spring Tool Suite](http://www.springsource.org/sts), which is a [free download](http://www.springsource.org/sts).
@@ -37,11 +37,11 @@ The **initial** code set contains:
 
 The **complete** code set in each section includes the initial code base plus the code developed up to that point in the tutorial.
 
-You can choose to start with the **initial** code set, copy-and-paste your way through the guide, and then run things at the end. Or you can start with the **complete** code set for a given section, open each file, and read the source side-by-side as you walk through the tutorial.
+You can choose to start with the **initial** code set. Or you can start with the **complete** code set for a given section. Not every code file is displayed in the tutorial, because that would slow things down too much. But important ones are such as writing tests, creating RESTful services, and looking at some key domain objects
 
-While there are many build systems, this tutorial is built using [Gradle][gs-gradle] and includes the Gradle Wrapper, so you don't have to install anything to run the code.
+While there are many build systems, this tutorial is built using [Gradle][gs-gradle] and includes the Gradle Wrapper, so if you grab a copy of the code (as shown below) you don't have to install anything to run the code.
 
-For example, if you want to check out the initial code set:
+For example, if you want to inspect the initial code set, do this:
 
 ```sh
 $ git clone git@github.com:spring-guides/tut-rest.git
@@ -49,9 +49,9 @@ $ cd tut-rest/initial
 $ ./gradlew clean test
 ```
 
-From there, you can inspect `build/reports/tests` and see all the test results.
+From there, you can review `build/reports/tests` and see all the test results.
 
-If you want to switch to section 6, the last part, and run the web application and it's tests do this:
+If you want to switch to section 6, the last part of this tutorial, and run the web application and it's tests do this:
 
 ```sh
 $ cd ../6/complete

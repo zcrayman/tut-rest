@@ -18,70 +18,43 @@ Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`
 
 * **Order**. An individual order in the system that has an associated status and status history for tracking purposes.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Order.java" prefix="initial"/>
-
 * **OrderStatus**. Current status allocated to an `Order`.
-
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/OrderStatus.java" prefix="initial"/>
 
 * **Payment**. Payment that a customer wants to make for a given `Order`.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Payment.java" prefix="initial"/>
-
 * **PaymentDetails**. Details of the `Payment` that a customer wants to make for a given `Order`.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentDetails.java" prefix="initial"/>
-
 * **PaymentStatus**. Current status of a `Payment` that a customer wants to make for a given `Order`.
-
-	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/PaymentStatus.java" prefix="initial"/>
 
 This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
 
 ![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
 
-Events in this case decouple out the domain concepts in the core of the Yummy Noodle Bar application from the various integrations that may need to access and work upon the core. 
+The `Order` domain objects looks like this:
+
+	<@snippet path="src/main/java/com/yummynoodlebar/core/domain/Order.java" prefix="initial"/>
+	
+You can view the rest of the domain objects [here](https://github.com/spring-guides/tut-rest/tree/master/initial/src/main/java/com/yummynoodlebar/core/domain).
+
+Events in this case decouple the domain concepts in the core of the Yummy Noodle Bar application from the various integrations that may need to access and work upon the core. 
 
 The event components associated with Orders include:
 
 * **RequestAllOrdersEvent** and **AllOrdersEvent**. Corresponding events to request the associated OrderDetails about all Orders and the response to that request.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/RequestAllOrdersEvent.java" prefix="initial"/>
-	
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/AllOrdersEvent.java" prefix="initial"/>
-
 * **CreateOrderEvent** and **OrderCreatedEvent**. Corresponding events to request the creation of a new Order, and a confirmation that the new Order has been created.
-
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/CreateOrderEvent.java" prefix="initial"/>
-	
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderCreatedEvent.java" prefix="initial"/>
 
 * **DeleteOrderEvent** and **OrderDeletedEvent**. Corresponding events to delete an existing Order and then to confirm that the Order has been deleted.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/DeleteOrderEvent.java" prefix="initial"/>
-	
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderDeletedEvent.java" prefix="initial"/>
-
 * **RequestOrderDetailsEvent** and **OrderDetailsEvent**. Corresponding events to request the current details of an Order, and then to receive those details.
-
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderDetailsEvent.java" prefix="initial"/>
-	
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderDetailsEvent.java" prefix="initial"/>
 
 * **RequestOrderStatusEvent** and **OrderStatusEvent**. Corresponding events to request the current status of an Order, and then to receive the current status.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderStatusEvent.java" prefix="initial"/>
-	
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderStatusEvent.java" prefix="initial"/>
-
 * **SetOrderPaymentEvent**. Triggered when Payment is to be set on an existing Order.
-
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/SetOrderPaymentEvent.java" prefix="initial"/>
 
 * **OrderUpdatedEvent**. Triggered when an Order is updated.
 
-	<@snippet path="src/main/java/com/yummynoodlebar/core/events/orders/OrderUpdatedEvent.java" prefix="initial"/>
-	
+You can view the code for these events [here](https://github.com/spring-guides/tut-rest/tree/master/initial/src/main/java/com/yummynoodlebar/core/events/orders).
 
 ## Model the orders and order resources
 
@@ -103,7 +76,7 @@ To determine the resources that you will support through your RESTful service, l
 * PaymentDetails
 * PaymentStatus
 
-The purpose of the Yummy Noodle RESTful service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. Therefore, we don't need to expose the entirety of these domain concepts via REST. Instead we can take the following subset:
+The purpose of the Yummy Noodle RESTful service is to submit and track orders as they are executed and delivered. Therefore, we don't need to expose all of these domain concepts via REST. Instead we can focus on exposing the following subset:
 
 * Order
 * OrderStatus
@@ -118,7 +91,7 @@ As mentioned before, although these concepts exist in both the Core domain and t
 
 ### Design your resource URIs
 
-While these resources will be represented by a class in code, you must first decide the REST API, as this will drive the design of the code that implements the API and so the implementation of the resources.
+While these resources will be represented by a class in code, you must first decide the REST API. That is because the REST API will drive the design of code and the implementation of the resources.
 
 Each resource needs to be addressable by a URI. In addition, the address implies the relationship between each of the resources.
 
@@ -199,9 +172,9 @@ The following methods are supported.
 
 The HTTP 1.1 Specification provides a detailed description of all the HTTP Methods.
 
-POST and PUT have similar but not identical functions. You use POST to create new entities without knowing the final URI, and use PUT to create and update entities in a previously known URI.
+POST and PUT have similar but not identical functions. You use POST to create new entities without knowing the final URI, and you use PUT to create and update entities in a previously known URI.
 
-The following table describes what HTTP methods will be supported for each supported resource address.
+The following table describes what HTTP methods will be supported for each resource address.
 
 <table>
     <thead>
@@ -253,7 +226,7 @@ The following table describes what HTTP methods will be supported for each suppo
 
 ## Capture status codes
 
-No RESTful design is complete without considering responses to requests. Now you need to capture the [HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) your service will respond with for a given combination of URI and HTTP method on a request.
+No RESTful design is complete without considering responses to requests. Now is the time to capture the [HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) your service will respond with for a given combination of URI and HTTP method on a request.
 
 The following table describes the HTTP status codes that each of your URIs and HTTP method combinations will respond with.
 
@@ -306,7 +279,7 @@ The following table describes the HTTP status codes that each of your URIs and H
 
 ## Summary
 
-Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
+Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
 
 ![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-core-domain-zoom-out.png)
 

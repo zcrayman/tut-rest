@@ -18,6 +18,20 @@ Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`
 
 * **Order**. An individual order in the system that has an associated status and status history for tracking purposes.
 
+* **OrderStatus**. Current status allocated to an `Order`.
+
+* **Payment**. Payment that a customer wants to make for a given `Order`.
+
+* **PaymentDetails**. Details of the `Payment` that a customer wants to make for a given `Order`.
+
+* **PaymentStatus**. Current status of a `Payment` that a customer wants to make for a given `Order`.
+
+This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
+
+![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
+
+The `Order` domain objects looks like this:
+
 `src/main/java/com/yummynoodlebar/core/domain/Order.java`
 ```java
 package com.yummynoodlebar.core.domain;
@@ -93,420 +107,28 @@ public class Order {
   }
 }
 ```
+	
+You can view the rest of the domain objects [here](https://github.com/spring-guides/tut-rest/tree/master/initial/src/main/java/com/yummynoodlebar/core/domain).
 
-* **OrderStatus**. Current status allocated to an `Order`.
-
-`src/main/java/com/yummynoodlebar/core/domain/OrderStatus.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-import com.yummynoodlebar.core.events.orders.OrderStatusDetails;
-
-import java.util.Date;
-import java.util.UUID;
-
-public class OrderStatus {
-
-  private Date statusDate;
-  private String status;
-
-  public OrderStatus(final Date date, final String status) {
-    this.status = status;
-    this.statusDate = date;
-  }
-
-  public Date getStatusDate() {
-    return statusDate;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public OrderStatusDetails toStatusDetails() {
-    return new OrderStatusDetails(statusDate, status);
-  }
-}
-```
-
-* **Payment**. Payment that a customer wants to make for a given `Order`.
-
-`src/main/java/com/yummynoodlebar/core/domain/Payment.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-public class Payment {
-}
-```
-
-* **PaymentDetails**. Details of the `Payment` that a customer wants to make for a given `Order`.
-
-`src/main/java/com/yummynoodlebar/core/domain/PaymentDetails.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-public class PaymentDetails {
-}
-```
-
-* **PaymentStatus**. Current status of a `Payment` that a customer wants to make for a given `Order`.
-
-`src/main/java/com/yummynoodlebar/core/domain/PaymentStatus.java`
-```java
-package com.yummynoodlebar.core.domain;
-
-public class PaymentStatus {
-}
-```
-
-This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
-
-![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
-
-Events in this case decouple out the domain concepts in the core of the Yummy Noodle Bar application from the various integrations that may need to access and work upon the core. 
+Events in this case decouple the domain concepts in the core of the Yummy Noodle Bar application from the various integrations that may need to access and work upon the core. 
 
 The event components associated with Orders include:
 
 * **RequestAllOrdersEvent** and **AllOrdersEvent**. Corresponding events to request the associated OrderDetails about all Orders and the response to that request.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/RequestAllOrdersEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.RequestReadEvent;
-
-public class RequestAllOrdersEvent extends RequestReadEvent {
-}
-```
-	
-`src/main/java/com/yummynoodlebar/core/events/orders/AllOrdersEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.ReadEvent;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-public class AllOrdersEvent extends ReadEvent {
-
-  private final List<OrderDetails> ordersDetails;
-
-  public AllOrdersEvent(List<OrderDetails> orders) {
-    this.ordersDetails = Collections.unmodifiableList(orders);
-  }
-
-  public Collection<OrderDetails> getOrdersDetails() {
-    return this.ordersDetails;
-  }
-}
-```
-
 * **CreateOrderEvent** and **OrderCreatedEvent**. Corresponding events to request the creation of a new Order, and a confirmation that the new Order has been created.
-
-`src/main/java/com/yummynoodlebar/core/events/orders/CreateOrderEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.CreateEvent;
-
-public class CreateOrderEvent extends CreateEvent {
-  private OrderDetails details;
-
-  public CreateOrderEvent(OrderDetails details) {
-    this.details = details;
-  }
-
-  public OrderDetails getDetails() {
-    return details;
-  }
-}
-```
-	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderCreatedEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.CreatedEvent;
-
-import java.util.UUID;
-
-public class OrderCreatedEvent extends CreatedEvent {
-
-  private final UUID newOrderKey;
-  private final OrderDetails details;
-
-  public OrderCreatedEvent(final UUID newOrderKey, final OrderDetails details) {
-    this.newOrderKey = newOrderKey;
-    this.details = details;
-  }
-
-  public OrderDetails getDetails() {
-    return details;
-  }
-
-  public UUID getNewOrderKey() {
-    return newOrderKey;
-  }
-}
-```
 
 * **DeleteOrderEvent** and **OrderDeletedEvent**. Corresponding events to delete an existing Order and then to confirm that the Order has been deleted.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/DeleteOrderEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.DeleteEvent;
-
-import java.util.UUID;
-
-public class DeleteOrderEvent extends DeleteEvent {
-
-  private final UUID key;
-
-  public DeleteOrderEvent(final UUID key) {
-    this.key = key;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-}
-```
-	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderDeletedEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.DeletedEvent;
-
-import java.util.UUID;
-
-public class OrderDeletedEvent extends DeletedEvent {
-
-  private UUID key;
-  private OrderDetails details;
-  private boolean deletionCompleted;
-
-  private OrderDeletedEvent(UUID key) {
-    this.key = key;
-  }
-
-  public OrderDeletedEvent(UUID key, OrderDetails details) {
-    this.key = key;
-    this.details = details;
-    this.deletionCompleted = true;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderDetails getDetails() {
-    return details;
-  }
-
-  public boolean isDeletionCompleted() {
-    return deletionCompleted;
-  }
-
-  public static OrderDeletedEvent deletionForbidden(UUID key, OrderDetails details) {
-    OrderDeletedEvent ev = new OrderDeletedEvent(key, details);
-    ev.entityFound=true;
-    ev.deletionCompleted=false;
-    return ev;
-  }
-
-  public static OrderDeletedEvent notFound(UUID key) {
-    OrderDeletedEvent ev = new OrderDeletedEvent(key);
-    ev.entityFound=false;
-    return ev;
-  }
-}
-```
-
 * **RequestOrderDetailsEvent** and **OrderDetailsEvent**. Corresponding events to request the current details of an Order, and then to receive those details.
-
-`src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderDetailsEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.RequestReadEvent;
-
-import java.util.UUID;
-
-public class RequestOrderDetailsEvent extends RequestReadEvent {
-  private UUID key;
-
-  public RequestOrderDetailsEvent(UUID key) {
-    this.key = key;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-}
-```
-	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderDetailsEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.ReadEvent;
-
-import java.util.UUID;
-
-public class OrderDetailsEvent extends ReadEvent {
-  private UUID key;
-  private OrderDetails orderDetails;
-
-  private OrderDetailsEvent(UUID key) {
-    this.key = key;
-  }
-
-  public OrderDetailsEvent(UUID key, OrderDetails orderDetails) {
-    this.key = key;
-    this.orderDetails = orderDetails;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderDetails getOrderDetails() {
-    return orderDetails;
-  }
-
-  public static OrderDetailsEvent notFound(UUID key) {
-    OrderDetailsEvent ev = new OrderDetailsEvent(key);
-    ev.entityFound=false;
-    return ev;
-  }
-}
-```
 
 * **RequestOrderStatusEvent** and **OrderStatusEvent**. Corresponding events to request the current status of an Order, and then to receive the current status.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/RequestOrderStatusEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.RequestReadEvent;
-
-import java.util.UUID;
-
-public class RequestOrderStatusEvent extends RequestReadEvent {
-  private UUID key;
-
-  public RequestOrderStatusEvent(UUID key) {
-    this.key = key;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-}
-```
-	
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderStatusEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.ReadEvent;
-
-import java.util.UUID;
-
-public class OrderStatusEvent extends ReadEvent {
-  private UUID key;
-  private OrderStatusDetails orderStatus;
-
-  private OrderStatusEvent(UUID key) {
-    this.key = key;
-  }
-
-  public OrderStatusEvent(UUID key, OrderStatusDetails orderStatus) {
-    this.key = key;
-    this.orderStatus = orderStatus;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderStatusDetails getOrderStatus() {
-    return orderStatus;
-  }
-
-  public static OrderStatusEvent notFound(UUID key) {
-    OrderStatusEvent ev = new OrderStatusEvent(key);
-    ev.entityFound=false;
-    return ev;
-  }
-}
-```
-
 * **SetOrderPaymentEvent**. Triggered when Payment is to be set on an existing Order.
-
-`src/main/java/com/yummynoodlebar/core/events/orders/SetOrderPaymentEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.UpdateEvent;
-
-import java.util.UUID;
-
-public class SetOrderPaymentEvent extends UpdateEvent {
-
-  private UUID key;
-  private PaymentDetails paymentDetails;
-
-  public SetOrderPaymentEvent(UUID key, PaymentDetails paymentDetails) {
-    this.key = key;
-    this.paymentDetails = paymentDetails;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public PaymentDetails getPaymentDetails() {
-    return paymentDetails;
-  }
-}
-```
 
 * **OrderUpdatedEvent**. Triggered when an Order is updated.
 
-`src/main/java/com/yummynoodlebar/core/events/orders/OrderUpdatedEvent.java`
-```java
-package com.yummynoodlebar.core.events.orders;
-
-import com.yummynoodlebar.core.events.UpdatedEvent;
-
-import java.util.UUID;
-
-public class OrderUpdatedEvent extends UpdatedEvent {
-
-  private UUID key;
-  private OrderDetails orderDetails;
-
-  public OrderUpdatedEvent(UUID key, OrderDetails orderDetails) {
-    this.key = key;
-    this.orderDetails = orderDetails;
-  }
-
-  public UUID getKey() {
-    return key;
-  }
-
-  public OrderDetails getOrderDetails() {
-    return orderDetails;
-  }
-}
-```
-	
+You can view the code for these events [here](https://github.com/spring-guides/tut-rest/tree/master/initial/src/main/java/com/yummynoodlebar/core/events/orders).
 
 ## Model the orders and order resources
 
@@ -528,7 +150,7 @@ To determine the resources that you will support through your RESTful service, l
 * PaymentDetails
 * PaymentStatus
 
-The purpose of the Yummy Noodle RESTful service is to allow aggregators and partners to submit and track orders as they are executed and delivered from the Yummy Noodle Bar. Therefore, we don't need to expose the entirety of these domain concepts via REST. Instead we can take the following subset:
+The purpose of the Yummy Noodle RESTful service is to submit and track orders as they are executed and delivered. Therefore, we don't need to expose all of these domain concepts via REST. Instead we can focus on exposing the following subset:
 
 * Order
 * OrderStatus
@@ -543,7 +165,7 @@ As mentioned before, although these concepts exist in both the Core domain and t
 
 ### Design your resource URIs
 
-While these resources will be represented by a class in code, you must first decide the REST API, as this will drive the design of the code that implements the API and so the implementation of the resources.
+While these resources will be represented by a class in code, you must first decide the REST API. That is because the REST API will drive the design of code and the implementation of the resources.
 
 Each resource needs to be addressable by a URI. In addition, the address implies the relationship between each of the resources.
 
@@ -624,9 +246,9 @@ The following methods are supported.
 
 The HTTP 1.1 Specification provides a detailed description of all the HTTP Methods.
 
-POST and PUT have similar but not identical functions. You use POST to create new entities without knowing the final URI, and use PUT to create and update entities in a previously known URI.
+POST and PUT have similar but not identical functions. You use POST to create new entities without knowing the final URI, and you use PUT to create and update entities in a previously known URI.
 
-The following table describes what HTTP methods will be supported for each supported resource address.
+The following table describes what HTTP methods will be supported for each resource address.
 
 <table>
     <thead>
@@ -678,7 +300,7 @@ The following table describes what HTTP methods will be supported for each suppo
 
 ## Capture status codes
 
-No RESTful design is complete without considering responses to requests. Now you need to capture the [HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) your service will respond with for a given combination of URI and HTTP method on a request.
+No RESTful design is complete without considering responses to requests. Now is the time to capture the [HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) your service will respond with for a given combination of URI and HTTP method on a request.
 
 The following table describes the HTTP status codes that each of your URIs and HTTP method combinations will respond with.
 
@@ -731,7 +353,7 @@ The following table describes the HTTP status codes that each of your URIs and H
 
 ## Summary
 
-Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
+Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
 
 ![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-core-domain-zoom-out.png)
 
