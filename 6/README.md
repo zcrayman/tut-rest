@@ -139,27 +139,6 @@ public class OrderTests {
     assertTrue(order.getLink("Order Status").getHref().endsWith(orderBase + "/status"));
   }
 
-  @Test
-  public void thatNewOrderHasOrdersStatusCreated() {
-
-    ResponseEntity<Order> entity = createOrder();
-
-    Order order = entity.getBody();
-
-    HttpEntity<String> requestEntity = new HttpEntity<String>(
-        RestDataFixture.standardOrderJSON(),getHeaders("letsnosh" + ":" + "noshing"));
-
-    RestTemplate template = new RestTemplate();
-
-    ResponseEntity<OrderStatus> response = template.exchange(
-        order.getLink("Order Status").getHref(),
-        HttpMethod.GET,
-        requestEntity, OrderStatus.class);
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("Order Created", response.getBody().getStatus());
-  }
-
   private ResponseEntity<Order> createOrder() {
     HttpEntity<String> requestEntity = new HttpEntity<String>(
         RestDataFixture.standardOrderJSON(),getHeaders("letsnosh" + ":" + "noshing"));
