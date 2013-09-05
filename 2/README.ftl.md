@@ -31,7 +31,23 @@ It's possible to implement these two categories of interactions using one contro
 
 ### Implement failing test(s) for a controller with MockMVC
 
-You won't implement all tests needed for your RESTful service here; the full source is available for download separately. Instead you use two unit tests that look for an example of each category of interaction through the RESTful service, commands, and queries.
+You won't implement all tests needed for your RESTful service here; the full breadth of tests needed would confuse things. You can see the full listing in the `complete` project. Instead you use two unit tests that look for an example of each category of interaction through the RESTful service, commands, and queries.
+
+#### Create placeholders and starter Order
+
+First, create two empty classes `com.yummynoodlebar.rest.controller.OrderCommandsController` and `com.yummynoodlebar.rest.controller.OrderQueriesController`.  These are left as placeholders so the tests written below can compile. against them.
+
+Next, view the web `com.yummynoodlebar.rest.domain.Order`, as described earlier, that is already in the `initial` project.
+
+#### Set up test fixtures
+
+You will need some test data to use in the tests.  A test fixture is a well known piece of test data that is extracted into its own setup method or class.  You will need to create two test fixtures.
+
+    <@snippet path="src/test/java/com/yummynoodlebar/rest/controller/fixture/RestEventFixtures.java" prefix="/complete"/>
+    
+    <@snippet path="src/test/java/com/yummynoodlebar/rest/controller/fixture/RestDataFixture.java" prefix="/complete"/>
+
+You are now ready to start writing tests using this test data and placeholder classes.
 
 #### Test GET HTTP method HTTP requests
 
@@ -92,7 +108,7 @@ Create a new test class, `CreateNewOrderIntegrationTest` class and enter the fol
 
 The focus here is the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI.
 
-Now look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point those tests will fail as you haven't created any corresponding controllers.
+There are other test implementations in the section 2 `complete` project, so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point those tests will fail as you haven't created any corresponding controllers.
 
 ## Make the tests pass: Implement the controllers
 
@@ -108,7 +124,7 @@ Map the root URI to the controller as shown in the following code snippet:
 
 The `ViewOrdersIntegrationTest` is specifically looking to test requests that are sent to **/aggregators/orders/{id}** and so you need to implement a controller handler method that will service those requests as shown below:
 
-	<@snippet "src/main/java/com/yummynoodlebar/rest/controller/OrderQueriesController.java" "viewOrder" "/complete"/>
+	<@snippet path="src/main/java/com/yummynoodlebar/rest/controller/OrderQueriesController.java" prefix="/complete"/>
 
 Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. It is a reasonable design goal to avoid business logic in your controllers and delegate that responsibility to a collaborating component.
 
@@ -141,6 +157,10 @@ The following code demonstrates how the POST case can be handled:
 	<@snippet "src/main/java/com/yummynoodlebar/rest/controller/OrderCommandsController.java" "createOrder" "/complete"/>
 
 The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP Headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
+
+Your entire controller should now look like 
+
+<@snippet path="src/main/java/com/yummynoodlebar/rest/controller/OrderCommandsController.java" prefix="/complete"/>
 
 ## Where did the JSON representations come from?
 
