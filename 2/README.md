@@ -31,7 +31,114 @@ It's possible to implement these two categories of interactions using one contro
 
 ### Implement failing test(s) for a controller with MockMVC
 
-You won't implement all tests needed for your RESTful service here; the full source is available for download separately. Instead you use two unit tests that look for an example of each category of interaction through the RESTful service, commands, and queries.
+You won't implement all tests needed for your RESTful service here; the full breadth of tests needed would confuse things. You can see the full listing in the `complete` project. Instead you use two unit tests that look for an example of each category of interaction through the RESTful service, commands, and queries.
+
+#### Create placeholders and starter Order
+
+First, create two empty classes `com.yummynoodlebar.rest.controller.OrderCommandsController` and `com.yummynoodlebar.rest.controller.OrderQueriesController`.  These are left as placeholders so the tests written below can compile. against them.
+
+Next, view the web `com.yummynoodlebar.rest.domain.Order`, as described earlier, that is already in the `initial` project.
+
+#### Set up test fixtures
+
+You will need some test data to use in the tests.  A test fixture is a well known piece of test data that is extracted into its own setup method or class.  You will need to create two test fixtures.
+
+`src/test/java/com/yummynoodlebar/rest/controller/fixture/RestEventFixtures.java`
+```java
+package com.yummynoodlebar.rest.controller.fixture;
+
+import com.yummynoodlebar.core.events.orders.*;
+import static com.yummynoodlebar.rest.controller.fixture.RestDataFixture.*;
+
+import java.util.Date;
+import java.util.UUID;
+
+public class RestEventFixtures {
+  public static OrderStatusEvent orderStatusNotFound(UUID key) {
+    return OrderStatusEvent.notFound(key);
+  }
+  public static OrderStatusEvent orderStatus(UUID key, String status) {
+    return new OrderStatusEvent(key, new OrderStatusDetails(new Date(), status));
+  }
+  public static OrderDetailsEvent orderDetailsNotFound(UUID key) {
+    return OrderDetailsEvent.notFound(key);
+  }
+  public static OrderDetailsEvent orderDetailsEvent(UUID key) {
+    return new OrderDetailsEvent(key, customKeyOrderDetails(key));
+  }
+  public static OrderCreatedEvent orderCreated(UUID key) {
+    return new OrderCreatedEvent(key, customKeyOrderDetails(key));
+  }
+  public static OrderDeletedEvent orderDeleted(UUID key) {
+    return new OrderDeletedEvent(key, standardOrderDetails());
+  }
+  public static OrderDeletedEvent orderDeletedFailed(UUID key) {
+    return OrderDeletedEvent.deletionForbidden(key, standardOrderDetails());
+  }
+  public static OrderDeletedEvent orderDeletedNotFound(UUID key) {
+    return OrderDeletedEvent.notFound(key);
+  }
+}
+```
+    
+`src/test/java/com/yummynoodlebar/rest/controller/fixture/RestDataFixture.java`
+```java
+package com.yummynoodlebar.rest.controller.fixture;
+
+import com.yummynoodlebar.core.events.orders.*;
+import com.yummynoodlebar.rest.domain.Order;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+//TODOCUMENT.  Use of test data fixture classes is considered good practice.
+/*
+ The majority of tests aren't testing data edge cases, they are testing logical flows and
+ what happens to a generic set of data.  For these, use a small, standardised set of fixtures.
+
+ For anything more esoteric, create a new fixture in the test class.
+ */
+public class RestDataFixture {
+  public static final String YUMMY_ITEM = "yummy1";
+
+  public static AllOrdersEvent allOrders() {
+    List<OrderDetails> orders = new ArrayList<OrderDetails>();
+
+    orders.add(standardOrderDetails());
+    orders.add(standardOrderDetails());
+    orders.add(standardOrderDetails());
+
+    return new AllOrdersEvent(orders);
+  }
+
+  public static Order standardOrder() {
+    Order order = new Order();
+
+    order.setItems(Collections.singletonMap(YUMMY_ITEM, 12));
+
+    return order;
+  }
+
+  public static OrderDetails customKeyOrderDetails(UUID key) {
+    OrderDetails orderdetails = new OrderDetails(key);
+
+    orderdetails.setOrderItems(Collections.singletonMap(YUMMY_ITEM, 12));
+
+    return orderdetails;
+  }
+  public static OrderDetails standardOrderDetails() {
+    return customKeyOrderDetails(UUID.randomUUID());
+  }
+
+  public static String standardOrderJSON() {
+    return "{ \"items\": { \"yummy1\": 12, \"yummy15\": 42 } }";
+  }
+}
+```
+
+You are now ready to start writing tests using this test data and placeholder classes.
 
 #### Test GET HTTP method HTTP requests
 
@@ -412,7 +519,7 @@ public class CreateNewOrderIntegrationTest {
 
 The focus here is the `andExpect` condition at the end of the `perform` call to `mockMvc`. Here you're testing that the response of the `post` has resulted in a new `Location` HTTP Header and that it contains a URI.
 
-Now look at the remaining test implementations in the tutorial sample project so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point those tests will fail as you haven't created any corresponding controllers.
+There are other test implementations in the section 2 `complete` project, so you can see how the rest of the tests for your RESTful interface is implemented. Of course at this point those tests will fail as you haven't created any corresponding controllers.
 
 ## Make the tests pass: Implement the controllers
 
@@ -435,6 +542,43 @@ The `ViewOrdersIntegrationTest` is specifically looking to test requests that ar
 
 `src/main/java/com/yummynoodlebar/rest/controller/OrderQueriesController.java`
 ```java
+package com.yummynoodlebar.rest.controller;
+
+import com.yummynoodlebar.core.events.orders.*;
+import com.yummynoodlebar.core.services.OrderService;
+import com.yummynoodlebar.rest.domain.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Controller
+@RequestMapping("/aggregators/orders")
+public class OrderQueriesController {
+
+    private static Logger LOG = LoggerFactory.getLogger(OrderQueriesController.class);
+
+    @Autowired
+    private OrderService orderService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<Order> getAllOrders() {
+        List<Order> orders = new ArrayList<Order>();
+        for (OrderDetails detail : orderService.requestAllOrders(new RequestAllOrdersEvent()).getOrdersDetails()) {
+            orders.add(Order.fromOrderDetails(detail));
+        }
+        return orders;
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<Order> viewOrder(@PathVariable String id) {
 
@@ -448,6 +592,7 @@ The `ViewOrdersIntegrationTest` is specifically looking to test requests that ar
 
         return new ResponseEntity<Order>(order, HttpStatus.OK);
     }
+}
 ```
 
 Notice how a controller handler method implementation is kept very clean as all interactions with the underlying system occur via firing events into the core domain. It is a reasonable design goal to avoid business logic in your controllers and delegate that responsibility to a collaborating component.
@@ -521,6 +666,77 @@ The following code demonstrates how the POST case can be handled:
 ```
 
 The major difference here from the previous controller method implementation is that you're using the `ResponseEntity` return object to also set the HTTP Headers. This is necessary as you need to return the newly generated URI for the newly created Order resource.
+
+Your entire controller should now look like 
+
+`src/main/java/com/yummynoodlebar/rest/controller/OrderCommandsController.java`
+```java
+package com.yummynoodlebar.rest.controller;
+
+import com.yummynoodlebar.core.events.orders.CreateOrderEvent;
+import com.yummynoodlebar.core.events.orders.DeleteOrderEvent;
+import com.yummynoodlebar.core.events.orders.OrderCreatedEvent;
+import com.yummynoodlebar.core.events.orders.OrderDeletedEvent;
+import com.yummynoodlebar.core.services.OrderService;
+import com.yummynoodlebar.rest.domain.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.UUID;
+
+@Controller
+@RequestMapping("/aggregators/orders")
+public class OrderCommandsController {
+
+    private static Logger LOG = LoggerFactory.getLogger(OrderCommandsController.class);
+
+    @Autowired
+    private OrderService orderService;
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Order> createOrder(@RequestBody Order order, UriComponentsBuilder builder) {
+
+        OrderCreatedEvent orderCreated = orderService.createOrder(new CreateOrderEvent(order.toOrderDetails()));
+
+        Order newOrder = Order.fromOrderDetails(orderCreated.getDetails());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(
+                builder.path("/aggregators/orders/{id}")
+                        .buildAndExpand(orderCreated.getNewOrderKey().toString()).toUri());
+
+        return new ResponseEntity<Order>(newOrder, headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public ResponseEntity<Order> cancelOrder(@PathVariable String id) {
+
+        OrderDeletedEvent orderDeleted = orderService.deleteOrder(new DeleteOrderEvent(UUID.fromString(id)));
+
+        if (!orderDeleted.isEntityFound()) {
+            return new ResponseEntity<Order>(HttpStatus.NOT_FOUND);
+        }
+
+        Order order = Order.fromOrderDetails(orderDeleted.getDetails());
+
+        if (orderDeleted.isDeletionCompleted()) {
+            return new ResponseEntity<Order>(order, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<Order>(order, HttpStatus.FORBIDDEN);
+    }
+}
+```
 
 ## Where did the JSON representations come from?
 

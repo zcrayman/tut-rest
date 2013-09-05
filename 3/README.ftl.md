@@ -15,6 +15,8 @@ To complete these tasks, you'll need a new domain, the Configuration domain.
 
 ![Life Preserver showing Configuration Domain](../images/life-preserver-empty-config-domain-focus.png)
 
+As with `core` and `rest`, the Configuration domain will have its own code package `com.yummynoodlebar.config`.
+
 ## Create a configuration for your application's Core domain using Spring JavaConfig
 
 The Yummy Noodle Bar application contains a core set of components that include domain classes and services.
@@ -23,7 +25,9 @@ You could just create a configuration for these components; however, as in the p
 
 ### Test your Core configuration
 
-First, construct an integration test that contains the following:
+First, create an empty placeholder class `com.yummynoodlebar.config.CoreConfig`.
+
+Next, construct an integration test that contains the following:
 
     <@snippet path="src/test/java/com/yummynoodlebar/config/CoreDomainIntegrationTest.java" prefix="complete"/>
 

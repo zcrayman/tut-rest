@@ -12,7 +12,7 @@ You'll use Spring's `RestTemplate` to create functional tests. Following the abo
 
 ## Implement a functional test with RestTemplate
 
-Create a new class `com.yummynoodlebar.functional.OrderTests` and enter the following code:
+Create a new class `com.yummynoodlebar.rest.functional.OrderTests` and enter the following code:
 
 `src/test/java/com/yummynoodlebar/rest/functional/OrderTests.java`
 ```java
