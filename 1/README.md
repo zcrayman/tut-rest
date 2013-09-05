@@ -30,7 +30,7 @@ This tutorial focuses on the `Order` domain class, which can be acted upon by a 
 
 ![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
 
-The `Order` domain objects looks like this:
+The `Order` domain object looks like this:
 
 `src/main/java/com/yummynoodlebar/core/domain/Order.java`
 ```java

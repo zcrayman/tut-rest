@@ -14,7 +14,7 @@ It's time to implement your Yummy Noodle Bar RESTful web service. The first step
 
 Before you start creating tests, consider the categories of requests that your service will respond to. You are going to be writing tests that look for all the HTTP RESTful interactions that you designed in [Step 1](../1/).
 
-These interactions can be split into X categories:
+These interactions can be split into five categories:
 
 * Requests that read, or query, the current state of an Order
 * Requests that change the state of a new or existing Order

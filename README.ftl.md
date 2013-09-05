@@ -37,7 +37,7 @@ The **initial** code set contains:
 
 The **complete** code set in each section includes the initial code base plus the code developed up to that point in the tutorial.
 
-You can choose to start with the **initial** code set. Or you can start with the **complete** code set for a given section. Not every code file is displayed in the tutorial, because that would slow things down too much. But important ones are such as writing tests, creating RESTful services, and looking at some key domain objects
+You can choose to start with the **initial** code set. Or you can start with the **complete** code set for a given section. Not every code file is displayed in the tutorial, because that would slow things down too much. But important ones are, such as writing tests, creating RESTful services, and looking at some key domain objects.
 
 While there are many build systems, this tutorial is built using [Gradle][gs-gradle] and includes the Gradle Wrapper, so if you grab a copy of the code (as shown below) you don't have to install anything to run the code.
 
