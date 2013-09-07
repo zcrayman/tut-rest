@@ -479,5 +479,5 @@ Your full Life Preserver should now look like the following:
 
 But how do you really know that when you've deployed your service it really works? That's the job of functional testing, and that's your task in the next section of this tutorial.
 
-[Next… Testing your Service using REStTemplate](../4/)
+[Next… Testing your Service using RestTemplate](../4/)
 
