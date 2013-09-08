@@ -20,8 +20,8 @@
 
 ### Tutorials
 
-* [Designing and Implementing a Web Site with Spring][tut-web]
-* [Persisting Data with Spring][tut-data]
+* [Designing and Implementing a Web Application with Spring][tut-web]
+* [Data Access with Spring][tut-data]
 
 [tut-web]: /guides/tutorials/web
 [tut-data]: /guides/tutorials/data
