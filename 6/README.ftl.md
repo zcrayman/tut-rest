@@ -93,7 +93,7 @@ This creates an explicit relation link, that of 'Order Status' that can then be 
 
 In the life preserver model, the `rest.domain.Order` class is the focus for all view and representation concerns that relate the to Order Resources. So it is the rest.domain.Order class that is the natural place to embed the generation of links into that class. 
 
-![Life Preserver showing REST Domain Components](../images/life-preserver-rest-domain-components-focus.png)
+![Life Preserver showing REST Domain Components](../images/life-preserver-7.png)
 
 Now it's time for you to extend the `rest.domain.Order` class to include all links:
 
