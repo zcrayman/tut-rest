@@ -18,6 +18,14 @@
 [gs-securing-web]: /guides/gs/securing-web
 [gs-authenticating-ldap]: /guides/gs/authenticating-ldap
 
+### Tutorials
+
+* [Designing and Implementing a Web Application with Spring][tut-web]
+* [Data Access with Spring][tut-data]
+
+[tut-web]: /guides/tutorials/web
+[tut-data]: /guides/tutorials/data
+
 ### Concepts and technologies
 
 * [REST][u-rest]
