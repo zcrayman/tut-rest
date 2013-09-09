@@ -1,6 +1,6 @@
 Now that you have [written and tested your controllers](../2/), proudly added to your Life Preserver as shown below, it's time to bring the whole application together.
 
-![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-controllers-and-core-domain-zoom-out.png)
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-8.png)
 
 # Step 3: Configuring and deploying your service
 
@@ -13,7 +13,7 @@ At this point you are ready to:
 
 To complete these tasks, you'll need a new domain, the Configuration domain.
 
-![Life Preserver showing Configuration Domain](../images/life-preserver-empty-config-domain-focus.png)
+![Life Preserver showing Configuration Domain](../images/life-preserver-9.png)
 
 As with `core` and `rest`, the Configuration domain will have its own code package `com.yummynoodlebar.config`.
 
@@ -154,11 +154,11 @@ You've come a long way! You've now got a fully configured RESTful web service th
 
 You've added two new components to your Configuration domain, `CoreConfig` and `MVCConfig` as shown in the updated life preserver below.
 
-![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-initial-config-domain-focus.png)
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-10.png)
 
 Your full Life Preserver should now look like the following:
 
-![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-rest-domain-and-controllers-and-core-domain-and-config-domain-initial-zoom-out.png)
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-11.png)
 
 But how do you really know that when you've deployed your service it really works? That's the job of functional testing, and that's your task in the next section of this tutorial.
 
