@@ -129,11 +129,11 @@ Now the tests should all pass.
 
 You've extended your Configuration domain to secure your RESTful service as shown in the updated life preserver:
 
-![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-13.png)
+![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-12.png)
 
 Your full Life Preserver should look like the following:
 
-![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-14.png)
+![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-13.png)
 
 Now that you have a secure RESTful service that allows you to access data in your chosen format, it's time to think about *discovery*.
 
