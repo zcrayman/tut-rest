@@ -1,7 +1,7 @@
 
 You've set up functionality for the Yummy Noodle Bar RESTful service and your Life Preserver is looking great at this point:
 
-![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-rest-domain-and-controllers-and-core-domain-and-config-domain-initial-zoom-out.png)
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-11.png)
 
 The problem is, at this point the Yummy Noodle Bar RESTful service is a little *too* functional; you only want the right clients and aggregators to be able to submit and manage orders through the service. 
 
@@ -9,7 +9,7 @@ The problem is, at this point the Yummy Noodle Bar RESTful service is a little *
 
 Once again, all changes here are constrained to the Configuration domain:
 
-![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-initial-config-domain-focus.png)
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-10.png)
 
 ## RESTful security basics
 
@@ -331,11 +331,11 @@ Now the tests should all pass.
 
 You've extended your Configuration domain to secure your RESTful service as shown in the updated life preserver:
 
-![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-security-config-domain-focus.png)
+![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-12.png)
 
 Your full Life Preserver should look like the following:
 
-![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-rest-domain-and-controllers-and-core-domain-and-config-domain-full-zoom-out.png)
+![Life Preserver showing Configuration Domain with Security Components](../images/life-preserver-13.png)
 
 Now that you have a secure RESTful service that allows you to access data in your chosen format, it's time to think about *discovery*.
 

@@ -12,7 +12,7 @@ In the Core domain the concepts are captured as part of the internal ubiquitous 
 
 ## Components of the Core application domain for Yummy Noodle Bar
 
-![Life Preserver showing Core Domain](../images/life-preserver-core-domain-focus.png)
+![Life Preserver showing Core Domain](../images/life-preserver-3.png)
 
 Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`, you see the components of the core, application-internal domain of Yummy Noodle Bar:
 
@@ -28,7 +28,7 @@ Open the `initial` project. Under `src/main/java/com/yummynoodlebar/core/domain`
 
 This tutorial focuses on the `Order` domain class, which can be acted upon by a number of events under the `com.yummynoodlebar.events.orders` package as shown on the following diagram:
 
-![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-event-domain-focus-with-orders.png)
+![Life Preserver showing Orders Sub-Domain in Events Domain](../images/life-preserver-4.png)
 
 The `Order` domain object looks like this:
 
@@ -132,7 +132,7 @@ You can view the code for these events [here](https://github.com/spring-guides/t
 
 ## Model the orders and order resources
 
-There are three stages to modeling your RESTful service domain:
+There are three stages to modelling your RESTful service domain:
 
 * Design your resources. What resources do you need to expose to the outside world?
 * Design your URIs. How will your resources be publicly addressed?
@@ -159,7 +159,7 @@ The purpose of the Yummy Noodle RESTful service is to submit and track orders as
 
 The updated life preserver shows where these domain components will live in the design.
 
-![Life Preserver RESTful Domain Focus](../images/life-preserver-rest-domain-concepts-focus.png)
+![Life Preserver RESTful Domain Focus](../images/life-preserver-5.png)
 
 As mentioned before, although these concepts exist in both the Core domain and the RESTful Service domain, this is not duplication as the purpose of the implementations are very different from Core to REST.
 
@@ -355,7 +355,7 @@ The following table describes the HTTP status codes that each of your URIs and H
 
 Congratulations! You've determined the resources you're going to expose and captured those in the REST domain as shown in the following Life Preserver:
 
-![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-core-domain-zoom-out.png)
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-6.png)
 
 You've also decided the URI addresses of your resources; the HTTP methods that will be supported for requests to those URIs; and finally the HTTP status codes that you intend to return for the requests.
 

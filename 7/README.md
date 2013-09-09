@@ -15,6 +15,6 @@ Here's what you did to build your RESTful web service:
 
 Reflecting on the different domains you've been working in and how they relate to the core of the Yummy Noodle Bar application, the final life preserver looks like this:
 
-![Life Preserver showing all Domains completed in this Tutorial](../images/life-preserver-complete.png)
+![Life Preserver showing all Domains completed in this Tutorial](../images/life-preserver-13.png)
 
 We hope you've enjoyed this tutorial! Check out the next steps in the navigation bar for what you might want to explore next.

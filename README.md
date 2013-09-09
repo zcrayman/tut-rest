@@ -73,7 +73,7 @@ Some of the sections don't require running the web application to execute the te
 
 The current architecture of the application is shown in the following "Life Preserver" diagram:
 
-![Life Preserver showing Core packages](images/life-preserver-initial.png)
+![Life Preserver showing Core packages](images/life-preserver-1.png)
 
 The Life Preserver diagram is a tool for building applications that following the principles of the [Hexagonal Architecture, sometimes referred to as 'Ports and Adapters' originally characterised by Alistair Cockburn](http://alistair.cockburn.us/Hexagonal+architecture). The Life Preserver diagram shows your application's core internal domains along with the surrounding 'integration' domains that map directly to the packages and components that you'll be working on throughout this tutorial, so it's a great way to understand where things are.
 
@@ -92,7 +92,7 @@ Take a moment to familiarize yourself with the components in each package. The t
 
 RESTful web services integrate your application and the all of the possible clients that need to consume your services. As such, RESTful services live in their own integration domain, outside your application's core, as shown in the following update to your life preserver.
 
-![Life Preserver showing Core and REST domain](images/life-preserver-rest-domain-intro.png)
+![Life Preserver showing Core and REST domain](images/life-preserver-2.png)
 
 Given the integration between your application and the outside world, consider the following design and implementation constraints:
 

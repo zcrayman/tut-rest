@@ -2,7 +2,7 @@
 
 You've decided on your RESTful service's resources and captured them on your Life Preserver as the RESTful domain's components:
 
-![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-core-domain-zoom-out.png)
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-6.png)
 
 It's time to implement your Yummy Noodle Bar RESTful web service. The first step in building a service with Spring MVC is to construct and test one or more controllers that are responsible for handling each incoming HTTP request that you defined for your service in the previous step.
 
@@ -883,10 +883,10 @@ Congratulations! You've created controllers that can implement your RESTful serv
 
 Your Life Preserver now contains a whole new set of components, your controllers, in the RESTful domain:
 
-![Life Preserver showing RESTful Controllers](../images/life-preserver-rest-controllers-focus.png)
+![Life Preserver showing RESTful Controllers](../images/life-preserver-7.png)
 
 The full view of your current Life Preserver should look like the following:
 
-![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-rest-domain-and-controllers-and-core-domain-zoom-out.png)
+![Life Preserver Full showing Core Domain and REST Domain](../images/life-preserver-8.png)
 
 [Next… Wiring Up and Deploying your Service](../3/)
