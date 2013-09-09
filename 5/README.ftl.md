@@ -9,7 +9,7 @@ The problem is, at this point the Yummy Noodle Bar RESTful service is a little *
 
 Once again, all changes here are constrained to the Configuration domain:
 
-![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-12.png)
+![Life Preserver showing Configuration Domain with Initial Components](../images/life-preserver-10.png)
 
 ## RESTful security basics
 
