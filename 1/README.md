@@ -244,7 +244,7 @@ The following methods are supported.
 	</tbody>
 </table>
 
-The HTTP 1.1 Specification provides a detailed description of all the HTTP Methods.
+The [HTTP 1.1 Specification](http://www.w3.org/Protocols/rfc2616/rfc2616.html) provides a detailed description of all the [HTTP Methods](http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5.1.1).
 
 POST and PUT have similar but not identical functions. You use POST to create new entities without knowing the final URI, and you use PUT to create and update entities in a previously known URI.
 
