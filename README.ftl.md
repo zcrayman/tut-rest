@@ -44,7 +44,7 @@ While there are many build systems, this tutorial is built using [Gradle][gs-gra
 For example, if you want to inspect the initial code set, do this:
 
 ```sh
-$ git clone git@github.com:spring-guides/tut-rest.git
+$ git clone https://github.com/spring-guides/tut-rest.git
 $ cd tut-rest/initial
 $ ./gradlew clean test
 ```
